@@ -43,7 +43,7 @@ If a step fails or finds nothing for a company, it is recorded as `skipped` with
 
 ## Output: `data/collect/shard_<N>/` (not in git)
 
-- `features_<date>.csv`: one row per company. It has the 30 brief features plus raw inputs. `python -m collect.merge` combines the four shards' files into `data/collect/merged/`.
+- `scraper<N>_features_<date>.csv`: one row per company. It has the 30 brief features plus raw inputs. `python -m collect.merge` combines the four shards' files into `data/collect/merged/`.
 - `candidates_<run_id>.jsonl`: evidence rows. Send these to the verifier.
 - `postings_<date>.jsonl` and `postings_extra_<date>.jsonl`: postings in the contract's columns, plus extra fields (closing date, states, requirement bullets).
 - `ats_summary_<date>.csv`: the board found for each company. **Check the `detection` column for any guessed boards.**

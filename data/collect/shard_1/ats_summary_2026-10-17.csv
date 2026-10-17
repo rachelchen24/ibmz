@@ -1,0 +1,76 @@
+ticker,name,ats,careers_url,detection,open_count,postings_written,status
+MDB,"MongoDB, Inc.",greenhouse:mongodb,https://job-boards.greenhouse.io/mongodb,greenhouse slug guess (board name matched),401,401,ok
+DBD,"DIEBOLD NIXDORF, Inc",,,not_found,,0,no public board found
+CTSH,COGNIZANT TECHNOLOGY SOLUTIONS CORP,,,not_found,,0,no public board found
+VISN,"Vistance Networks, Inc.",,,not_found,,0,no public board found
+SAIL,"SailPoint, Inc.",workday:sailpoint.wd1.myworkdayjobs.com/SailPoint,https://www.sailpoint.com/company/careers,link on https://www.sailpoint.com/careers,105,105,ok
+DOCS,"Doximity, Inc.",greenhouse:doximity,https://job-boards.greenhouse.io/doximity,greenhouse slug guess (board name matched),15,15,ok
+FA,FIRST ADVANTAGE CORP,,,not_found,,0,no public board found
+SAIC,Science Applications International Corp,,,not_found,,0,no public board found
+AVGO,Broadcom Inc.,,,not_found,,0,no public board found
+VRSN,VERISIGN INC/CA,greenhouse:verisign,https://job-boards.greenhouse.io/verisign,greenhouse slug guess (board name matched),18,18,ok
+PI,IMPINJ INC,greenhouse:impinj,https://job-boards.greenhouse.io/impinj,greenhouse slug guess (board name matched),0,0,ok
+ESE,ESCO TECHNOLOGIES INC,,,not_found,,0,no public board found
+PCTY,Paylocity Holding Corp,,,not_found,,0,no public board found
+LSCC,LATTICE SEMICONDUCTOR CORP,workday:latticesemi.wd5.myworkdayjobs.com/latticesemiconductorscareers,https://www.latticesemi.com/careers,link on https://www.latticesemi.com/careers,146,146,ok
+TYL,TYLER TECHNOLOGIES INC,,,not_found,,0,no public board found
+AGYS,AGILYSYS INC,greenhouse:agilysys,https://job-boards.greenhouse.io/agilysys,greenhouse slug guess (board name matched),12,12,ok
+DV,"DoubleVerify Holdings, Inc.",greenhouse:doubleverify,https://job-boards.greenhouse.io/doubleverify,greenhouse slug guess (board name matched),0,0,ok
+CRWD,"CrowdStrike Holdings, Inc.",workday:crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers,https://www.crowdstrike.com/en-us/careers/,link on https://www.crowdstrike.com/careers,357,357,ok
+FRME,FIRST MERCHANTS CORP,,,not_found,,0,no public board found
+LOB,"Live Oak Bancshares, Inc.",workday:liveoakbancshares.wd1.myworkdayjobs.com/Live_Oak,https://www.liveoak.bank/careers/,link on https://www.liveoak.bank/careers,8,8,ok
+RNST,RENASANT CORP,,,not_found,,0,no public board found
+FBK,FB Financial Corp,,,not_found,,0,no public board found
+BKU,"BankUnited, Inc.",,,not_found,,0,no public board found
+SFNC,SIMMONS FIRST NATIONAL CORP,workday:simmonsbank.wd5.myworkdayjobs.com/SimmonsCareers,https://www.simmonsbank.com/about/careers,link on https://www.simmonsbank.com/careers,136,136,ok
+CHCO,CITY HOLDING CO,,,not_found,,0,no public board found
+TFC,TRUIST FINANCIAL CORP,,,not_found,,0,no public board found
+GBCI,"GLACIER BANCORP, INC.",,,not_found,,0,no public board found
+GABC,"GERMAN AMERICAN BANCORP, INC.",,,not_found,,0,no public board found
+ALLY,Ally Financial Inc.,workday:ally.wd1.myworkdayjobs.com/Ally,https://www.ally.com/about/careers/,link on https://www.ally.com/careers,81,81,ok
+TRMK,TRUSTMARK CORP,,,not_found,,0,no public board found
+CATY,CATHAY GENERAL BANCORP,,,not_found,,0,no public board found
+EFSC,ENTERPRISE FINANCIAL SERVICES CORP,workday:osv-enterprise.wd1.myworkdayjobs.com/EnterpriseBankTrust_Jobs,https://www.enterprisebank.com/careers,link on https://www.enterprisebank.com/careers,,0,board fetch failed
+WABC,WESTAMERICA BANCORPORATION,,,not_found,,0,no public board found
+CVBF,CVB FINANCIAL CORP,,,not_found,,0,no public board found
+NOW,"ServiceNow, Inc.",,,not_found,,0,no public board found
+SFBS,"ServisFirst Bancshares, Inc.",,,not_found,,0,no public board found
+ONB,OLD NATIONAL BANCORP /IN/,,,not_found,,0,no public board found
+HWC,HANCOCK WHITNEY CORP,workday:hancockwhitney.wd5.myworkdayjobs.com/Careers,https://www.hancockwhitney.com/careers-home,link on https://www.hancockwhitney.com/careers,163,163,ok
+LAZ,"Lazard, Inc.",,,not_found,,0,no public board found
+HPE,Hewlett Packard Enterprise Co,,,not_found,,0,no public board found
+IBKR,"Interactive Brokers Group, Inc.",,,not_found,,0,no public board found
+C,CITIGROUP INC,workday:citi.wd5.myworkdayjobs.com/2,https://jobs.citi.com/,link on https://www.citigroup.com/careers,2000,2000,ok
+SNEX,StoneX Group Inc.,,,not_found,,0,no public board found
+GS,GOLDMAN SACHS GROUP INC,,,not_found,,0,no public board found
+ICE,"Intercontinental Exchange, Inc.",,,not_found,,0,no public board found
+CRCL,"Circle Internet Group, Inc.",,,not_found,,0,no public board found
+SOFI,"SoFi Technologies, Inc.",greenhouse:sofi,https://job-boards.greenhouse.io/sofi,greenhouse slug guess (board name matched),49,49,ok
+IVZ,Invesco Ltd.,workday:invesco.wd1.myworkdayjobs.com/IVZ,https://careers.invesco.com/,link on https://careers.invesco.com,236,236,ok
+APAM,Artisan Partners Asset Management Inc.,,,not_found,,0,no public board found
+VIRT,"Virtu Financial, Inc.",greenhouse:virtu,https://www.virtu.com/careers/,link on https://www.virtu.com/careers,49,49,ok
+CHYM,"Chime Financial, Inc.",greenhouse:chime,https://job-boards.greenhouse.io/chime,greenhouse slug guess (board name matched),72,72,ok
+TPG,TPG Inc.,,,not_found,,0,no public board found
+NAVI,NAVIENT CORP,,,not_found,,0,no public board found
+STEP,StepStone Group Inc.,greenhouse:stepstone,https://job-boards.greenhouse.io/stepstone,greenhouse slug guess (board name matched),53,53,ok
+HOOD,"Robinhood Markets, Inc.",greenhouse:robinhood,https://job-boards.greenhouse.io/robinhood,greenhouse slug guess (board name matched),153,153,ok
+HAPN,"Happen, Inc.",workday:lendingclub.wd1.myworkdayjobs.com/External,https://www.happen.com:443/company/careers,link on https://www.lendingclub.com/careers,34,34,ok
+KEY,KEYCORP /NEW/,workday:keybank.wd5.myworkdayjobs.com/External_Career_Site,https://keybank.wd5.myworkdayjobs.com/External_Career_Site,link on https://careers.key.com,563,563,ok
+WEX,WEX Inc.,,,not_found,,0,no public board found
+NNI,NELNET INC,workday:nelnet.wd1.myworkdayjobs.com/MyNelnet,https://nelnet.com/careers/,link on https://www.nelnetinc.com/careers,63,63,ok
+HLI,"HOULIHAN LOKEY, INC.",,,not_found,,0,no public board found
+PAY,"Paymentus Holdings, Inc.",,,not_found,,0,no public board found
+CPAY,"CORPAY, INC.",workday:corpay.wd103.myworkdayjobs.com/Ext_001,https://www.corpay.com/careers,link on https://www.corpay.com/careers,108,108,ok
+TTEK,TETRA TECH INC,greenhouse:tetra,https://job-boards.greenhouse.io/tetra,greenhouse slug guess (board name matched),1,1,ok
+ASTH,"Astrana Health, Inc.",,,not_found,,0,no public board found
+AMTM,"Amentum Holdings, Inc.",workday:pae.wd1.myworkdayjobs.com/PAE_AntarcticSupportContract,https://www.amentumcareers.com/,link on https://www.amentum.com/careers,24,24,ok
+RELY,"Remitly Global, Inc.",,,not_found,,0,no public board found
+ACM,AECOM,,,not_found,,0,no public board found
+DASH,"DoorDash, Inc.",,,not_found,,0,no public board found
+ALIT,"Alight, Inc. / Delaware",,,not_found,,0,no public board found
+EFX,EQUIFAX INC,,,not_found,,0,no public board found
+CART,Maplebear Inc.,,,not_found,,0,no public board found
+PHR,"Phreesia, Inc.",workday:phreesia.wd1.myworkdayjobs.com/Phreesia,https://www.phreesia.com/careers/,link on https://www.phreesia.com/careers,9,9,ok
+UBER,"Uber Technologies, Inc",,,not_found,,0,no public board found
+HURN,Huron Consulting Group Inc.,workday:huron.wd1.myworkdayjobs.com/huroncareers,https://www.huronconsultinggroup.com/en/careers,link on https://www.huronconsultinggroup.com/careers,273,273,ok
+FIS,"Fidelity National Information Services, Inc.",workday:fis.wd5.myworkdayjobs.com/SearchJobs,https://careers.fisglobal.com/us/en,link on https://careers.fisglobal.com,546,546,ok

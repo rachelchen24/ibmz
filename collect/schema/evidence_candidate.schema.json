@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RealRole candidate evidence row",
+  "description": "One collected value with its source. Written by collect/ (candidates_<run_id>.jsonl); checked by verify/. Mirrors collect/common/output.py validate_evidence.",
+  "type": "object",
+  "required": [
+    "evidence_id",
+    "ticker",
+    "field",
+    "value",
+    "unit",
+    "period",
+    "source_url",
+    "quote",
+    "page_date",
+    "collected_at",
+    "collector",
+    "prompt_version",
+    "run_id"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^ev_[0-9a-f]{16}$"
+    },
+    "ticker": {
+      "type": "string"
+    },
+    "field": {
+      "enum": [
+        "archived_open_postings",
+        "ats_board",
+        "careers_url",
+        "employee_count",
+        "employee_count_us",
+        "hiring_freeze_statements",
+        "hq_country",
+        "layoff_events",
+        "management_hiring_statements",
+        "reports_us_headcount",
+        "revenue",
+        "revenue_component"
+      ]
+    },
+    "value": {
+      "not": {
+        "type": "null"
+      }
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "period": {
+      "type": "string",
+      "description": "FY2025 for fiscal-year values, else a YYYY-MM-DD date"
+    },
+    "source_url": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "quote": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "page_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "collected_at": {
+      "type": "string"
+    },
+    "collector": {
+      "enum": [
+        "ats_scraper",
+        "claude",
+        "edgar",
+        "reference",
+        "warn",
+        "wayback"
+      ]
+    },
+    "prompt_version": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    }
+  }
+}

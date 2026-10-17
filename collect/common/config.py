@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
 COMPANY_LIST = DATA_DIR / "datathon_companies.csv"
+ATS_OVERRIDES = DATA_DIR / "labels" / "ats_overrides.csv"   # boards found by hand: ticker, ats, careers_url
 COLLECT_DIR = DATA_DIR / "collect"          # not in git
 CACHE_DIR = COLLECT_DIR / "cache"           # every raw HTTP response, gzipped
 REFERENCE_DIR = COLLECT_DIR / "reference"   # shared reference files (state WARN lists)
@@ -35,7 +36,7 @@ NO_DEADLINE_DAYS = 180
 REPOST_WINDOW_DAYS = 90
 LAYOFF_LOOKBACK_DAYS = 730
 STATEMENT_LOOKBACK_DAYS = 365
-WAYBACK_LOOKBACK_DAYS = 400
+WAYBACK_LOOKBACK_DAYS = 850   # covers the ground-truth fiscal year (FY2025, incl. June/Sept year-ends), not just 12 months
 SECTOR_TREND_DAYS = 90
 MAX_8K_PER_COMPANY = 16
 WORKDAY_MAX_DETAILS = 600     # job detail pages fetched per Workday company (0 = all)
@@ -49,6 +50,19 @@ WARN_SOURCES = [
     ("TX", "https://www.twc.texas.gov/sites/default/files/oei/docs/warn-act-listings-2025-twc.xlsx"),
 ]
 NY_WARN_URL = "https://dol.ny.gov/warn-dashboard"
+
+
+# Dataset stage (dataset/, verify/)
+VERIFY_DIR = DATA_DIR / "verify"            # verifier output (not in git)
+PROCESSED_DIR = DATA_DIR / "processed"      # outcomes and other derived tables (not in git)
+LABELS_DIR = DATA_DIR / "labels"            # spot check, survey (in git)
+PUBLISHED_DIR = ROOT / "dataset" / "published"
+CHARTS_DIR = ROOT / "artifacts" / "charts"
+METRICS_DIR = ROOT / "artifacts" / "metrics"
+SPOT_CHECK_N = 30
+FOLLOW_THROUGH_CAP = 1.0
+TYPICAL_POSTING_DAYS = 45      # placeholder posting lifetime until the survival model (2A-2) supplies one
+HEADCOUNT_JUMP = 0.30          # |net change| / prior headcount above this: likely acquisition or divestiture, excluded
 
 
 def shard_dir(shard: int) -> Path:

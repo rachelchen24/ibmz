@@ -57,7 +57,22 @@ def load_companies(path=config.COMPANY_LIST) -> list[dict]:
         })
     if any(c["shard"] is None for c in rows):
         assign_shards(rows)
+    apply_ats_overrides(rows)
     return rows
+
+
+def apply_ats_overrides(rows: list[dict], path=config.ATS_OVERRIDES) -> None:
+    """Boards a person found by hand (data/labels/ats_overrides.csv: ticker, ats, careers_url) win over detection.
+    An `ats` of `none` records that the company has no supported public board, so detection is skipped."""
+    if not path.exists():
+        return
+    df = pd.read_csv(path, dtype=str, keep_default_na=False)
+    by = {r["ticker"].strip().upper(): r for r in df.to_dict("records") if r.get("ticker")}
+    for c in rows:
+        o = by.get(c["ticker"])
+        if o:
+            c["ats"] = _clean(o.get("ats")) or c["ats"]
+            c["careers_url"] = _clean(o.get("careers_url")) or c["careers_url"]
 
 
 def assign_shards(rows: list[dict]) -> None:
