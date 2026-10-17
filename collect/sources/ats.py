@@ -49,8 +49,10 @@ class Ats:
 
     def detect(self, company: dict, website: str | None) -> dict:
         """{"ats", "careers_url", "method"}; ats is None when no public board is found."""
+        if company.get("ats") == "none":
+            return {"ats": None, "careers_url": company.get("careers_url"), "method": "marked none (ats_overrides.csv)"}
         if company.get("ats"):
-            return {"ats": company["ats"], "careers_url": company.get("careers_url"), "method": "company_list"}
+            return {"ats": company["ats"], "careers_url": company.get("careers_url"), "method": "company list / overrides"}
         pages = []
         if company.get("careers_url"):
             pages.append(company["careers_url"])

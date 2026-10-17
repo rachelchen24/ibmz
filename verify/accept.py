@@ -28,6 +28,7 @@ import pandas as pd
 
 from collect.common import config
 from collect.common.output import EVIDENCE_COLUMNS, read_jsonl, validate_evidence
+from collect.common.supersede import current_candidates
 
 from .conflicts import flag_conflicts
 from .fetch import VERIFY_DIR, Fetcher
@@ -38,8 +39,9 @@ OUT_COLUMNS = EVIDENCE_COLUMNS + ["check", "conflict", "used", "spot_check"]
 
 def load_candidates(paths: list[str]) -> list[dict]:
     rows = {}
-    files = [p for spec in paths for p in sorted(config.ROOT.glob(spec))] if paths else \
-        sorted(config.COLLECT_DIR.glob("shard_*/candidates_*.jsonl"))
+    if not paths:    # every shard, current rows only (a rerun of a step replaces that step's older rows)
+        return [r for d in sorted(config.COLLECT_DIR.glob("shard_*")) for r in current_candidates(d)]
+    files = [p for spec in paths for p in sorted(config.ROOT.glob(spec))]
     for p in files:
         if ".rejected" in p.name:
             continue

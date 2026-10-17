@@ -19,6 +19,7 @@ import pandas as pd
 from .common import config
 from .common.companies import load_companies
 from .common.output import read_jsonl
+from .common.supersede import current_candidates
 from .features import FEATURES
 
 
@@ -58,9 +59,7 @@ def main():
             if not df.empty and not ex.empty:
                 df = df.merge(ex.drop(columns=["ticker"], errors="ignore"), on="posting_id", how="left")
             posts.append(df)
-        for c in d.glob("candidates_*.jsonl"):
-            if ".rejected" not in c.name:
-                cands += read_jsonl(c)
+        cands += current_candidates(d)
 
     commits = {s["git_commit"] for s in report["shards"].values()}
     if len(commits) > 1:

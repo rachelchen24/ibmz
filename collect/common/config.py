@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
 COMPANY_LIST = DATA_DIR / "datathon_companies.csv"
+ATS_OVERRIDES = DATA_DIR / "labels" / "ats_overrides.csv"   # boards found by hand: ticker, ats, careers_url
 COLLECT_DIR = DATA_DIR / "collect"          # not in git
 CACHE_DIR = COLLECT_DIR / "cache"           # every raw HTTP response, gzipped
 REFERENCE_DIR = COLLECT_DIR / "reference"   # shared reference files (state WARN lists)

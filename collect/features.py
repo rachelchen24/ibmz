@@ -22,6 +22,7 @@ from .common import config
 from .common import textparse as tp
 from .common.companies import load_companies
 from .common.output import read_jsonl
+from .common.supersede import current_candidates
 from .sources.indeed import category_trends, sector_trend
 
 FEATURES = [
@@ -74,14 +75,8 @@ def _status(d) -> dict[str, dict[str, str]]:
 
 
 def _evidence(d) -> dict[str, dict[str, list[dict]]]:
-    rows = {}
-    for p in sorted(d.glob("candidates_*.jsonl")):
-        if ".rejected" in p.name:
-            continue
-        for r in read_jsonl(p):
-            rows[r["evidence_id"]] = r
     out: dict[str, dict[str, list[dict]]] = {}
-    for r in rows.values():
+    for r in current_candidates(d):
         out.setdefault(r["ticker"], {}).setdefault(r["field"], []).append(r)
     return out
 
