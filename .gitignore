@@ -1,0 +1,5 @@
+# Scraper output, raw responses and caches (build plan 1.2: never commit data/collect/)
+data/collect/
+__pycache__/
+*.pyc
+.env
