@@ -1,0 +1,6 @@
+[submodule "data/raw/indeed/job_postings_tracker"]
+	path = data/raw/indeed/job_postings_tracker
+	url = https://github.com/hiring-lab/job_postings_tracker.git
+[submodule "data/raw/open_jobs_data/open-jobs-data"]
+	path = data/raw/open_jobs_data/open-jobs-data
+	url = https://github.com/lookin4jobs/open-jobs-data.git
