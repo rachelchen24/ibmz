@@ -31,6 +31,15 @@ RAW_COLUMNS = [ID, "title", "location", "department", "salary_range", "company_p
 DERIVED_COLS = ["loc_country", "loc_state", "loc_city", "salary_min", "salary_max", "salary_invalid"]
 # Every predictive column: all raw columns except the identifier and the target (ml/PLAN.md).
 FEATURE_COLS = [c for c in RAW_COLUMNS if c not in (ID, TARGET)] + DERIVED_COLS
+# Feature groups for the preprocessing pipeline: every FEATURE_COLS entry is in exactly one group.
+# location and salary_range are kept as raw strings, but their parsed parts are what most encoders should use.
+FEATURE_GROUPS = {
+    "text": TEXT_COLS,
+    "categorical": CATEGORICAL_COLS + ["loc_country", "loc_state", "loc_city"],
+    "binary": BINARY_COLS + ["salary_invalid"],
+    "numeric": ["salary_min", "salary_max"],
+    "raw_parsed": ["location", "salary_range"],
+}
 
 _PLACEHOLDER = re.compile(r"#(URL|EMAIL|PHONE)_[0-9a-fA-F]+#")
 _GLUED = re.compile(r"(?<=[a-z]{2})(?=[A-Z][a-z])")   # "skillsAbility" -> "skills Ability" (lost line breaks)

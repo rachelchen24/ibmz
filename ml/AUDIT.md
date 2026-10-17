@@ -70,6 +70,16 @@ Cleaning is row-wise and deterministic, with nothing fitted, so it runs before t
 
 No row is dropped except exact duplicates. `FEATURE_COLS` lists every raw column except `job_id` and `fraudulent`, plus the parsed columns: 22 in total.
 
+`FEATURE_GROUPS` puts each of the 22 into exactly one group:
+
+| Group | Columns |
+|---|---|
+| text | the 5 text fields |
+| categorical | 6 fields + `loc_country`, `loc_state`, `loc_city` |
+| binary | 3 flags + `salary_invalid` |
+| numeric | `salary_min`, `salary_max` |
+| raw_parsed | `location`, `salary_range`: raw strings whose parsed parts are in the groups above; most pipelines can skip them |
+
 ## Schema and missingness
 
 - **Types:** 3 binary columns (`telecommuting`, `has_company_logo`, `has_questions`), all 0/1 with no missing values. The label is 0/1 with no missing values: 866 fraud (4.84%). `job_id` runs 1–17,880, unique and contiguous.

@@ -54,6 +54,11 @@ class Schema(unittest.TestCase):
         self.assertNotIn(C.ID, C.FEATURE_COLS)
         self.assertTrue(set(C.RAW_COLUMNS) - {C.ID, C.TARGET} <= set(C.FEATURE_COLS))
 
+    def test_feature_groups_cover_every_feature_once(self):
+        grouped = [c for cols in C.FEATURE_GROUPS.values() for c in cols]
+        self.assertEqual(sorted(grouped), sorted(C.FEATURE_COLS))
+        self.assertEqual(len(grouped), len(set(grouped)))
+
     def test_rejects_bad_schema(self):
         df = raw_frame([{"job_id": 1}])
         with self.assertRaises(C.SchemaError):
