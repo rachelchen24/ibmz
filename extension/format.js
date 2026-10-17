@@ -1,18 +1,28 @@
 // Display helpers shared by the badge, side panel and popup.
 // The API's `probability` is the chance a posting leads to a hire; we display the flip of it.
 (function () {
-  const SUFFIXES = /[\s,]+(inc|incorporated|corp|corporation|co|company|ltd|llc|plc|holdings|group|n\.?a|national association)\.?$/i;
+  const SUFFIXES = /[\s,]+(inc|incorporated|corp|corporation|co|company|ltd|llc|plc|holdings|group|n\.?a|s\.?a|national association)\.?$/i;
+
+  const SMALL_WORDS = new Set(["of", "and", "the", "for", "in", "at", "on", "de"]);
+  // Short all-caps words that are words, not acronyms.
+  const COMMON_SHORT = new Set(["OLD", "NEW", "ONE", "BIG", "AIR", "SUN", "OAK", "WEB", "BAY", "FOX"]);
 
   function displayName(name) {
     if (!name) return "";
-    let n = name.trim().replace(/\s*\/\s*[A-Z]{2,}.*$/, ""); // "Inc. / Delaware"
-    for (let i = 0; i < 3; i++) n = n.replace(SUFFIXES, "");
-    n = n.replace(/[\s,]+$/, "");
-    // Fix ALL-CAPS names ("IMPINJ INC" -> "Impinj"), but keep short acronyms like "IBM".
+    let n = name
+      .trim()
+      .replace(/\s+\/\s*[A-Za-z]+$/, "") // "Inc. / Delaware", but not "Cullen/Frost"
+      .replace(/\s*\/[A-Z]{2,3}\/?$/i, ""); // SEC tags: "/IN/", "/DE/", "/MN", "/NEW/"
+    for (let i = 0; i < 3; i++) n = n.replace(SUFFIXES, "").replace(/[\s,&/]+$/, "");
+    // Fix ALL-CAPS names ("BANK OF HAWAII CORP" -> "Bank of Hawaii"), keeping short acronyms ("IBM").
     if (n === n.toUpperCase() && /[A-Z]{2}/.test(n)) {
       n = n
-        .split(/(\s+|-)/)
-        .map((w) => (w.length <= 3 && /^[A-Z&]+$/.test(w) ? w : w.charAt(0) + w.slice(1).toLowerCase()))
+        .split(/(\s+|-|\/)/)
+        .map((w, i) => {
+          if (i > 0 && SMALL_WORDS.has(w.toLowerCase())) return w.toLowerCase();
+          if (w.length <= 3 && /^[A-Z&]+$/.test(w) && !COMMON_SHORT.has(w)) return w;
+          return w.charAt(0) + w.slice(1).toLowerCase();
+        })
         .join("");
     }
     return n;

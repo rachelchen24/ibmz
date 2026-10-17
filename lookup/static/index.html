@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RealRole Lookup</title>
+    <meta name="description" content="Paste a job link to see how likely that company's postings are to lead to a hire, with reasons and sources." />
+    <link rel="stylesheet" href="/shared/report.css" />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="mark" href="/">RealRole</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Will this job posting lead to a hire?</h1>
+        <p class="sub">Paste a link to a job posting. We'll show how often that company's postings lead to a hire, with the reasons and sources behind it.</p>
+
+        <form id="link-form" class="search" autocomplete="off">
+          <label for="link" class="visually-hidden">Job posting link</label>
+          <input id="link" name="url" type="text" inputmode="url" placeholder="https://job-boards.greenhouse.io/…" required />
+          <button type="submit">Check</button>
+        </form>
+        <p class="hint">
+          Works with Greenhouse, Workday, Lever and LinkedIn links.
+          <button type="button" class="linkish" id="show-search">Search by company name instead</button>
+        </p>
+        <p class="examples" id="examples"></p>
+      </section>
+
+      <section id="company-search" class="company-search" hidden>
+        <p id="search-why" class="search-why"></p>
+        <label for="company" class="search-label">Which company is it?</label>
+        <div class="combo">
+          <input id="company" type="text" placeholder="Start typing a company name" role="combobox"
+                 aria-expanded="false" aria-controls="company-results" aria-autocomplete="list" />
+          <ul id="company-results" class="results" role="listbox"></ul>
+        </div>
+      </section>
+
+      <div id="status" class="status" aria-live="polite"></div>
+      <div id="result" class="result"></div>
+    </main>
+
+    <footer class="page-foot">
+      RealRole · IBM Z Datathon 2026. Scores are company-level likelihoods from public data, not a verdict on any one posting.
+    </footer>
+
+    <script src="/shared/config.js"></script>
+    <script src="/shared/format.js"></script>
+    <script src="/shared/report.js"></script>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
