@@ -1,0 +1,69 @@
+{
+  "shard": 3,
+  "scraper": "scraper3",
+  "run_id": "s3-20261017T121627",
+  "snapshot_date": "2026-10-17",
+  "tickers": [
+    "POWI",
+    "BFC",
+    "SSB",
+    "KKR",
+    "PYPL"
+  ],
+  "git_commit": "ffff6c8e42c1f50427f9bc3033839adff60182d9",
+  "prompt_version": "none",
+  "started_at": "2026-10-17T16:16:27+00:00",
+  "ended_at": "2026-10-17T16:18:40+00:00",
+  "claude_cost_usd": 0.0,
+  "steps": [
+    "edgar",
+    "filings",
+    "warn",
+    "ats",
+    "wayback"
+  ],
+  "row_counts": {
+    "evidence": 86,
+    "evidence_by_field": {
+      "hq_country": 5,
+      "revenue": 6,
+      "revenue_component": 8,
+      "employee_count": 10,
+      "reports_us_headcount": 5,
+      "layoff_events": 11,
+      "management_hiring_statements": 41
+    },
+    "evidence_rejected_by_validator": 0,
+    "postings_this_run": 0,
+    "wayback_history_rows": 0
+  },
+  "steps_ok": {
+    "edgar": 5,
+    "filings": 5,
+    "warn": 5
+  },
+  "failed": {
+    "edgar": [],
+    "filings": [],
+    "warn": [],
+    "ats": [
+      "BFC",
+      "KKR",
+      "POWI",
+      "PYPL",
+      "SSB"
+    ],
+    "wayback": [
+      "BFC",
+      "KKR",
+      "POWI",
+      "PYPL",
+      "SSB"
+    ]
+  },
+  "http": {
+    "requests": 193,
+    "cache_hits": 0,
+    "errors": 8
+  }
+}

@@ -1,0 +1,7 @@
+12:16:27 scraper3 INFO collect: run s3-20261017T121627: shard 3, 5 companies (0 already done), steps ['edgar', 'filings', 'warn', 'ats', 'wayback'], snapshot 2026-10-17
+12:16:29 scraper3 INFO collect.sources.warn: WARN: 973 notices since 2024-10-17 from ['CA', 'NY', 'TX']
+12:17:52 scraper3 INFO collect: [1/5] SSB edgar=ok filings=ok warn=ok ats=skip wayback=skip (83s)
+12:18:08 scraper3 INFO collect: [2/5] POWI edgar=ok filings=ok warn=ok ats=skip wayback=skip (99s)
+12:18:15 scraper3 INFO collect: [3/5] KKR edgar=ok filings=ok warn=ok ats=skip wayback=skip (105s)
+12:18:21 scraper3 INFO collect: [4/5] BFC edgar=ok filings=ok warn=ok ats=skip wayback=skip (111s)
+12:18:40 scraper3 INFO collect: [5/5] PYPL edgar=ok filings=ok warn=ok ats=skip wayback=skip (48s)
