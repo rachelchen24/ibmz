@@ -61,10 +61,10 @@ def chart_sectors(out_df: pd.DataFrame, plt) -> dict:
     ax.set_xlim(0, 1)
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
     ax.set_ylim(-0.7, len(order) - 0.3)
-    fig.suptitle("Estimated hires per posting, by sector", x=0.02, ha="left", fontsize=13, color=INK, weight="bold")
-    ax.set_title("Median follow-through ratio (estimated hires ÷ postings, capped at 100%), 95% interval",
+    fig.suptitle("Net hires per posting, by sector", x=0.02, ha="left", fontsize=13, color=INK, weight="bold")
+    ax.set_title("Median follow-through ratio (net hires ÷ postings, clipped to 0-100%), 95% interval",
                  loc="left", fontsize=9.5, color=INK_2)
-    fig.text(0.02, 0.01, "Source: RealRole dataset. Hires estimated from 10-K headcount + BLS JOLTS separations; "
+    fig.text(0.02, 0.01, "Source: RealRole dataset. Net hires from 10-K headcount change; "
              "postings from archived careers boards.", fontsize=7.5, color=INK_2)
     fig.tight_layout(rect=(0, 0.04, 1, 1))
     fig.savefig(config.CHARTS_DIR / "findings_follow_through_by_sector.png", facecolor=SURFACE)

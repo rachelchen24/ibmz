@@ -22,7 +22,6 @@ This list is required by the competition rules. Add every package and source whe
 | Workday public job search (per company) | Current postings | Each company's `*.myworkdayjobs.com` site |
 | Internet Archive Wayback Machine (CDX API) | Posting history | https://archive.org/developers/wayback-cdx-server.html |
 | Indeed Hiring Lab job postings tracker | Sector posting trend | https://github.com/hiring-lab/job_postings_tracker |
-| BLS JOLTS via FRED | Industry separation rates (ground truth) | https://fred.stlouisfed.org/categories/32241 |
 | NY DOL WARN dashboard | Layoff notices | https://dol.ny.gov/warn-dashboard |
 | California EDD WARN report | Layoff notices | https://edd.ca.gov/en/jobs_and_training/Layoff_Services_WARN |
 | Texas Workforce Commission WARN notices | Layoff notices | https://www.twc.texas.gov/data-reports/warn-notice |

@@ -2,27 +2,11 @@
 import unittest
 from datetime import date
 
-import pandas as pd
-
-from dataset.build_outcomes import annual_rate, fiscal_year_end, headcounts, jolts_industry
+from dataset.build_outcomes import fiscal_year_end, headcounts
 from dataset.spot_check import wilson
 
 
 class Outcomes(unittest.TestCase):
-    def test_industry(self):
-        self.assertEqual(jolts_industry("6021"), "finance_insurance")
-        self.assertEqual(jolts_industry("7372"), "information")
-        self.assertEqual(jolts_industry("7389"), "professional_business")
-        self.assertEqual(jolts_industry("3674"), "durable_manufacturing")
-        self.assertEqual(jolts_industry(None), "total_private")
-
-    def test_annual_rate(self):
-        s = pd.Series([0.02] * 24, index=pd.date_range("2024-01-01", periods=24, freq="MS"))
-        rate, n = annual_rate(s, date(2024, 12, 31), date(2025, 12, 31))
-        self.assertEqual(n, 12)
-        self.assertAlmostEqual(rate, 0.24)
-        self.assertIsNone(annual_rate(s, date(2026, 6, 30), date(2027, 6, 30))[0])
-
     def test_fiscal_year_end_from_xbrl_quote(self):
         ev = {"revenue": [{"period": "FY2026", "quote": '{"start":"2025-02-01","end":"2026-01-31","val":5}'}]}
         self.assertEqual(fiscal_year_end(ev, 2026), date(2026, 1, 31))
