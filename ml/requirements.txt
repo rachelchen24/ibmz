@@ -1,4 +1,6 @@
 # ML dependencies (ml/ only; collection uses collect/requirements.txt). Add yours below with a comment.
 pandas>=2.0
 numpy>=1.26
-scikit-learn>=1.4   # StratifiedGroupKFold (ml/split.py)
+scikit-learn>=1.6   # StratifiedGroupKFold (ml/split.py); FrozenEstimator for calibration (ml/lgbm.py)
+lightgbm>=4.0       # stronger model (ml/lgbm.py)
+joblib>=1.3         # saved model bundles (ml/lgbm.py); also installed by scikit-learn

@@ -12,3 +12,5 @@ __pycache__/
 .env
 data/verify/
 data/processed/
+# Fitted model binaries (ml/PLAN.md: keep large outputs out of git); reports in ml/reports/ are committed.
+ml/models/
