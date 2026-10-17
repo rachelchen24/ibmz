@@ -15,6 +15,7 @@ Raw downloads for RealRole, pulled 2026-10-16. Don't edit files in `raw/`; write
 | `raw/usajobs/` | [USAJOBS archive (Hugging Face)](https://huggingface.co/datasets/loyoladatamining/usajobs) | Monthly, Jan 2025–Mar 2026 (18 files) | 2.4 GB | Only 3 columns: `usajobsControlNumber`, `title`, `text`. Agency, series and dates must be parsed from `text` |
 | `raw/open_jobs_data/open-jobs-data/` | [open-jobs-data](https://github.com/lookin4jobs/open-jobs-data) | 94 daily snapshots, 2026-08-03 to 2026-10-16, ~380 tech companies | 115 MB | Git history = daily snapshots; walk commits to get each posting's first-seen / last-seen dates. **Don't run its scripts**; we only read the data |
 | `raw/ny_warn/` | [NY DOL WARN dashboard](https://dol.ny.gov/warn-dashboard) (Tableau CSV export) | 208 notices, 2026-01-06 to 2026-10-02 | 34 KB | 2026 only. Columns: business name, layoff start date, notice date, posted date, site address/county, layoff vs closure, permanent vs temporary, reason, # affected workers |
+| `fake_job_postings.csv` | [Real / Fake Job Posting Prediction](https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction), acknowledging the University of the Aegean EMSCAD project | 17,880 job postings; `fraudulent` label | 48 MB | Kaggle lists CC0: Public Domain. The label concerns fraudulent/scam postings, not ghost jobs or whether a real employer filled a role; do not use it as ground truth for RealRole's ghost-risk score |
 
 ## Still needed
 
