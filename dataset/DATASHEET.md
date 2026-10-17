@@ -45,7 +45,6 @@ Four collection runs (`collect/scraper1` … `scraper4`) each covered one balanc
 | Greenhouse, Lever and Workday public job-board APIs | current postings (the `postings` table, not published) | Public board endpoints, rate-limited |
 | Internet Archive Wayback Machine | monthly open-posting counts, past job IDs | CDX API, ≤ 1 request/s per run |
 | Indeed Hiring Lab job postings index | sector posting trend | Published CSV (`hiring-lab/job_postings_tracker`) |
-| BLS JOLTS via FRED | industry separation rates (ground truth only) | Public series |
 
 We did not scrape LinkedIn, Glassdoor or Indeed job listings. We collected nothing about individual people. We never collected reviews, complaints or opinions about whether a company "posts ghost jobs". That is the outcome we are measuring, not an input.
 
@@ -67,9 +66,9 @@ Two exceptions to independent fetching:
 
 The model is trained against a follow-through ratio built in `dataset/build_outcomes.py`:
 
-- **Estimated hires** = the net change in 10-K headcount, plus replacement hiring. Replacement hiring is average headcount × the industry's BLS JOLTS total-separations rate over the fiscal year.
-- **Follow-through ratio** = estimated hires ÷ postings over the same year, capped at 1.
-- **Postings over the year** come from archived board snapshots (method in `postings_year_method`).
+- **Net hires per posting** = the change in 10-K headcount between two fiscal years ÷ postings over the same fiscal year. It uses only company-specific data; no industry averages.
+- **Follow-through ratio** = net hires per posting, clipped to 0–1. A company that shrank gets 0.
+- **Postings over the year** = distinct job IDs observed on archived copies of the company's board during that year (method in `postings_year_method`). This is a lower bound, so the ratio can be overstated for companies whose boards are rarely archived.
 
 Headcount change is never a model feature.
 

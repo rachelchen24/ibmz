@@ -1,0 +1,4 @@
+# ML dependencies (ml/ only; collection uses collect/requirements.txt). Add yours below with a comment.
+pandas>=2.0
+numpy>=1.26
+scikit-learn>=1.4   # StratifiedGroupKFold (ml/split.py)

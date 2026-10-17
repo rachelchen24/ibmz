@@ -1,0 +1,64 @@
+{
+  "version": "v1",
+  "seed": 42,
+  "data_file": "fake_job_postings.csv",
+  "data_sha256": "b1d8918f57f1b62a53814fcc9379427533cd7b8878f21d3f8cdc41ba567ea7d0",
+  "group_keys": [
+    "company_profile",
+    "description"
+  ],
+  "rows_raw": 17880,
+  "rows_dropped_duplicates": 281,
+  "splits": {
+    "test": {
+      "rows": 2514,
+      "share": 0.1428,
+      "fraud": 122,
+      "prevalence": 0.0485,
+      "groups": 655
+    },
+    "train": {
+      "rows": 12571,
+      "share": 0.7143,
+      "fraud": 612,
+      "prevalence": 0.0487,
+      "groups": 3271
+    },
+    "val": {
+      "rows": 2514,
+      "share": 0.1428,
+      "fraud": 122,
+      "prevalence": 0.0485,
+      "groups": 656
+    }
+  },
+  "cv_folds": {
+    "0": {
+      "rows": 2514,
+      "fraud": 123,
+      "prevalence": 0.0489
+    },
+    "1": {
+      "rows": 2515,
+      "fraud": 123,
+      "prevalence": 0.0489
+    },
+    "2": {
+      "rows": 2514,
+      "fraud": 122,
+      "prevalence": 0.0485
+    },
+    "3": {
+      "rows": 2514,
+      "fraud": 122,
+      "prevalence": 0.0485
+    },
+    "4": {
+      "rows": 2514,
+      "fraud": 122,
+      "prevalence": 0.0485
+    }
+  },
+  "groups_crossing_splits": 0,
+  "groups_crossing_cv_folds": 0
+}

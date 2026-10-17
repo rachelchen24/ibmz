@@ -1,12 +1,11 @@
 """Ground-truth outcomes (build plan 2B-2; brief "Ground truth and the probability score").
 
-Per company, for its latest fiscal year with two years of headcount:
-  1. net_change        = headcount - headcount_prev            (verified 10-K employee counts; US where reported)
-  2. replacement_hires = average headcount x separation_rate     (BLS JOLTS total separations, company's industry,
-                                                                  summed over the 12 months of the fiscal year)
-  3. est_hires         = max(net_change + replacement_hires, 0)
-  4. postings_year     = postings over the same fiscal year, from Wayback archives of the company's board
-  5. follow_through    = min(est_hires / postings_year, FOLLOW_THROUGH_CAP)
+Per company, for its latest fiscal year with two years of headcount (company-specific data only; no industry
+averages such as BLS JOLTS separation rates, team decision 2026-10-17):
+  1. net_change            = headcount - headcount_prev       (verified 10-K employee counts; US where reported)
+  2. postings_year         = postings over the same fiscal year, from Wayback archives of the company's board
+  3. net_hires_per_posting = net_change / postings_year       (raw; negative when the company shrank)
+  4. follow_through        = net_hires_per_posting clipped to 0..FOLLOW_THROUGH_CAP
 
 postings_year methods (the plan's open question; decide with Workstream A, then pass --method):
   turnover    mean archived open-posting count in the year x 365 / typical posting lifetime (days). The lifetime
@@ -30,58 +29,11 @@ from datetime import date, timedelta
 import pandas as pd
 
 from collect.common import config
-from collect.common.http import Client
 from collect.common.output import read_jsonl
 
 from .common import by_ticker_field, companies, dump_json, fy, used_evidence
 
-FRED = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={id}"
-JOLTS = {   # JOLTS total separations rate, not seasonally adjusted (% of employment, monthly)
-    "finance_insurance": "JTU5200TSR", "durable_manufacturing": "JTU3200TSR", "information": "JTU5100TSR",
-    "professional_business": "JTU540099TSR", "total_private": "JTU1000TSR",
-}
-
-
 MIN_JOB_PAGE_IDS = 20   # distinct archived job pages in the fiscal year needed for a unique_ids label
-
-
-def jolts_industry(sic: str | None) -> str:
-    s = int(sic) if sic and str(sic).isdigit() else 0
-    if 6000 <= s < 6800:
-        return "finance_insurance"
-    if 3400 <= s < 3900:
-        return "durable_manufacturing"
-    if s == 7372 or 4800 <= s < 4900:
-        return "information"
-    if 7300 <= s < 7400 or 8100 <= s < 8200 or 8700 <= s < 8800:
-        return "professional_business"
-    return "total_private"
-
-
-def load_jolts(client: Client) -> dict[str, pd.Series]:
-    """Monthly rates (fractions) by industry, cached to data/collect/reference/jolts/."""
-    out = {}
-    for key, sid in JOLTS.items():
-        dest = config.REFERENCE_DIR / "jolts" / f"{sid}.csv"
-        if not dest.exists():
-            r = client.fetch(FRED.format(id=sid), cache_tag=date.today().isoformat())
-            if not r.ok:
-                continue
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_text(r.text, encoding="utf-8")
-        df = pd.read_csv(dest)
-        df.columns = ["date", "rate"]
-        df["rate"] = pd.to_numeric(df["rate"], errors="coerce") / 100
-        out[key] = df.dropna().set_index(pd.to_datetime(df.dropna()["date"]))["rate"]
-    return out
-
-
-def annual_rate(series: pd.Series, start: date, end: date) -> tuple[float | None, int]:
-    """Sum of the monthly rates for the months in (start, end]; scaled up if some months aren't published yet."""
-    months = series[(series.index > pd.Timestamp(start)) & (series.index <= pd.Timestamp(end))]
-    if len(months) < 6:
-        return None, len(months)
-    return float(months.mean() * 12), len(months)
 
 
 def fiscal_year_end(ev: dict, year: int) -> date:
@@ -138,7 +90,6 @@ def main():
 
     ev_all = by_ticker_field(used_evidence())
     comp = companies()
-    jolts = load_jolts(Client())
     life = lifetimes(a.lifetimes)
     archive_urls = {r["source_url"] for t in ev_all.values()
                     for f in ("archived_open_postings", "archived_job_ids") for r in t.get(f, [])}
@@ -156,16 +107,8 @@ def main():
         h, hp = hc[pair], hc[pair - 1]
         end = fiscal_year_end(ev, pair)
         start = end - timedelta(days=365)
-        industry = jolts_industry(c.get("sic"))
-        rate, n_months = annual_rate(jolts.get(industry, pd.Series(dtype=float)), start, end)
         row = {"ticker": t, "fiscal_year": pair, "fy_start": start.isoformat(), "fy_end": end.isoformat(),
-               "headcount_basis": basis, "headcount": h, "headcount_prev": hp, "net_change": h - hp,
-               "jolts_industry": industry, "jolts_months": n_months, "separation_rate": rate}
-        if rate is None:
-            excluded.append({"ticker": t, "reason": f"JOLTS {industry} has only {n_months} months for {start}..{end}"})
-            continue
-        row["replacement_hires"] = (h + hp) / 2 * rate
-        row["est_hires"] = max(row["net_change"] + row["replacement_hires"], 0.0)
+               "headcount_basis": basis, "headcount": h, "headcount_prev": hp, "net_change": h - hp}
         if hp and abs(h - hp) / hp > config.HEADCOUNT_JUMP:
             excluded.append({"ticker": t, "reason": f"headcount changed {100 * (h - hp) / hp:+.0f}% (acquisition or divestiture?)"})
             continue
@@ -194,8 +137,11 @@ def main():
             excluded.append({"ticker": t, "reason": f"too little archived posting history in FY{pair} "
                                                     f"({row['archived_snapshots_in_year']} board snapshots, {len(seen)} job IDs)"})
             continue
-        row["follow_through"] = min(row["est_hires"] / py, config.FOLLOW_THROUGH_CAP)
-        row["follow_through_capped"] = row["est_hires"] / py > config.FOLLOW_THROUGH_CAP
+        ratio = row["net_change"] / py
+        row["net_hires_per_posting"] = ratio
+        row["follow_through"] = min(max(ratio, 0.0), config.FOLLOW_THROUGH_CAP)
+        row["follow_through_capped"] = ratio > config.FOLLOW_THROUGH_CAP
+        row["follow_through_floored"] = ratio < 0
         row["evidence_ids"] = json.dumps(hc_ids + [i for _, _, i in in_year])
         rows.append(row)
 
@@ -213,7 +159,8 @@ def main():
     if len(out):
         print(f"  follow_through median {out['follow_through'].median():.2f}  "
               f"IQR {out['follow_through'].quantile(.25):.2f}-{out['follow_through'].quantile(.75):.2f}  "
-              f"capped at {config.FOLLOW_THROUGH_CAP}: {int(out['follow_through_capped'].sum())}")
+              f"capped at {config.FOLLOW_THROUGH_CAP}: {int(out['follow_through_capped'].sum())}  "
+              f"shrank (floored at 0): {int(out['follow_through_floored'].sum())}")
         both = out.dropna(subset=["postings_year_turnover", "postings_year_unique_ids"])
         if len(both) >= 5:
             print(f"  methods agree? Spearman r = {both['postings_year_turnover'].corr(both['postings_year_unique_ids'], method='spearman'):.2f} "

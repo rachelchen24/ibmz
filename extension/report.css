@@ -1,0 +1,120 @@
+/* The RealRole analysis (report.js). Shared by the extension side panel and the lookup website.
+   Color tokens live here so every surface uses the same bands. */
+:root {
+  --rr-ink: #1d2433;
+  --rr-muted: #5b6475;
+  --rr-line: #e3e6ec;
+  --rr-surface: #ffffff;
+  --rr-page: #f6f7f9;
+  --rr-track: #e8eaef;
+  --rr-green: #1f7a4d;
+  --rr-green-soft: #d8efe2;
+  --rr-amber: #e8806b;
+  --rr-amber-ink: #b5503b;
+  --rr-amber-soft: #fbdcd2;
+  --rr-red: #b3261e;
+  --rr-red-soft: #f8d9d6;
+  --rr-notice: #fff6e0;
+  --rr-notice-line: #f0d48a;
+  --rr-on-accent: #ffffff; /* text on --rr-amber-ink buttons */
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rr-ink: #e7e9ee;
+    --rr-muted: #a3aab8;
+    --rr-line: #2e3442;
+    --rr-surface: #1b1f29;
+    --rr-page: #13161d;
+    --rr-track: #2e3442;
+    --rr-green: #5cc995;
+    --rr-green-soft: #1f3d2f;
+    --rr-amber: #f0937c;
+    --rr-amber-ink: #f4a593;
+    --rr-amber-soft: #4a2a22;
+    --rr-red: #f2827a;
+    --rr-red-soft: #4a2321;
+    --rr-notice: #3a3220;
+    --rr-notice-line: #6b5a2a;
+    --rr-on-accent: #2a1410;
+  }
+}
+
+.rr-band-green { --rr-band: var(--rr-green); --rr-band-ink: var(--rr-green); --rr-band-soft: var(--rr-green-soft); }
+.rr-band-amber { --rr-band: var(--rr-amber); --rr-band-ink: var(--rr-amber-ink); --rr-band-soft: var(--rr-amber-soft); }
+.rr-band-red   { --rr-band: var(--rr-red);   --rr-band-ink: var(--rr-red);   --rr-band-soft: var(--rr-red-soft); }
+
+.rr-report { color: var(--rr-ink); }
+.rr-report * { box-sizing: border-box; }
+
+.rr-report section {
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--rr-line);
+  border-radius: 12px;
+  background: var(--rr-surface);
+}
+
+.rr-report h1 { margin: 0; font-size: 20px; line-height: 1.25; }
+.rr-report h2 {
+  margin: 0 0 8px;
+  color: var(--rr-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.rr-report p { margin: 0 0 6px; }
+.rr-meta { color: var(--rr-muted); font-size: 13px; }
+
+.rr-summary { border-top: 4px solid var(--rr-band) !important; }
+.rr-headline { margin-top: 10px !important; font-size: 16px; }
+.rr-num { color: var(--rr-band-ink); font-size: 26px; font-weight: 800; }
+
+.rr-bar {
+  position: relative;
+  height: 10px;
+  margin: 10px 0 6px;
+  border-radius: 5px;
+  background: var(--rr-track);
+  overflow: hidden;
+}
+.rr-bar-range { position: absolute; top: 0; bottom: 0; background: var(--rr-band-soft); }
+.rr-bar-fill { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 5px; background: var(--rr-band); }
+
+.rr-range { color: var(--rr-muted); font-size: 13px; }
+.rr-lede { margin-top: 8px !important; }
+
+.rr-reasons { margin: 0; padding: 0; list-style: none; }
+.rr-reasons li { padding: 10px 0; border-top: 1px solid var(--rr-line); }
+.rr-reasons li:first-child { padding-top: 0; border-top: 0; }
+.rr-dir { font-size: 12px; font-weight: 700; }
+.rr-raises .rr-dir { color: var(--rr-red); }
+.rr-lowers .rr-dir { color: var(--rr-green); }
+.rr-reason-text { margin: 2px 0 4px !important; }
+
+.rr-report details summary { color: var(--rr-muted); font-size: 13px; cursor: pointer; }
+.rr-source { margin: 8px 0 0 4px; }
+.rr-report blockquote {
+  margin: 0 0 4px;
+  padding: 6px 10px;
+  border-left: 3px solid var(--rr-line);
+  color: var(--rr-ink);
+  font-size: 13px;
+}
+.rr-response { border-left-color: var(--rr-band) !important; }
+
+.rr-report a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.rr-fine { color: var(--rr-muted); font-size: 12px; }
+
+.rr-notice {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--rr-notice-line);
+  border-radius: 10px;
+  background: var(--rr-notice);
+  font-size: 13px;
+}
+
+.rr-foot { padding: 4px 4px 0; color: var(--rr-muted); font-size: 13px; }

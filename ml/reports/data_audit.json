@@ -1,0 +1,449 @@
+{
+  "rows": 17880,
+  "columns": 18,
+  "dtypes": {
+    "job_id": "int64",
+    "title": "string",
+    "location": "string",
+    "department": "string",
+    "salary_range": "string",
+    "company_profile": "string",
+    "description": "string",
+    "requirements": "string",
+    "benefits": "string",
+    "telecommuting": "int64",
+    "has_company_logo": "int64",
+    "has_questions": "int64",
+    "employment_type": "string",
+    "required_experience": "string",
+    "required_education": "string",
+    "industry": "string",
+    "function": "string",
+    "fraudulent": "int64"
+  },
+  "label": {
+    "values": {
+      "0": 17014,
+      "1": 866
+    },
+    "prevalence": 0.0484
+  },
+  "job_id": {
+    "unique": true,
+    "min": 1,
+    "max": 17880,
+    "contiguous": true
+  },
+  "missingness": {
+    "title": {
+      "missing": 0,
+      "share": 0.0,
+      "fraud_rate_if_missing": null,
+      "fraud_rate_if_present": 0.0484
+    },
+    "location": {
+      "missing": 346,
+      "share": 0.0194,
+      "fraud_rate_if_missing": 0.0549,
+      "fraud_rate_if_present": 0.0483
+    },
+    "department": {
+      "missing": 11553,
+      "share": 0.6461,
+      "fraud_rate_if_missing": 0.046,
+      "fraud_rate_if_present": 0.0529
+    },
+    "salary_range": {
+      "missing": 15012,
+      "share": 0.8396,
+      "fraud_rate_if_missing": 0.0428,
+      "fraud_rate_if_present": 0.0778
+    },
+    "company_profile": {
+      "missing": 3308,
+      "share": 0.185,
+      "fraud_rate_if_missing": 0.1774,
+      "fraud_rate_if_present": 0.0191
+    },
+    "description": {
+      "missing": 2,
+      "share": 0.0001,
+      "fraud_rate_if_missing": 1.0,
+      "fraud_rate_if_present": 0.0483
+    },
+    "requirements": {
+      "missing": 2698,
+      "share": 0.1509,
+      "fraud_rate_if_missing": 0.0571,
+      "fraud_rate_if_present": 0.0469
+    },
+    "benefits": {
+      "missing": 7220,
+      "share": 0.4038,
+      "fraud_rate_if_missing": 0.0504,
+      "fraud_rate_if_present": 0.0471
+    },
+    "telecommuting": {
+      "missing": 0,
+      "share": 0.0,
+      "fraud_rate_if_missing": null,
+      "fraud_rate_if_present": 0.0484
+    },
+    "has_company_logo": {
+      "missing": 0,
+      "share": 0.0,
+      "fraud_rate_if_missing": null,
+      "fraud_rate_if_present": 0.0484
+    },
+    "has_questions": {
+      "missing": 0,
+      "share": 0.0,
+      "fraud_rate_if_missing": null,
+      "fraud_rate_if_present": 0.0484
+    },
+    "employment_type": {
+      "missing": 3471,
+      "share": 0.1941,
+      "fraud_rate_if_missing": 0.0694,
+      "fraud_rate_if_present": 0.0434
+    },
+    "required_experience": {
+      "missing": 7050,
+      "share": 0.3943,
+      "fraud_rate_if_missing": 0.0617,
+      "fraud_rate_if_present": 0.0398
+    },
+    "required_education": {
+      "missing": 8105,
+      "share": 0.4533,
+      "fraud_rate_if_missing": 0.0556,
+      "fraud_rate_if_present": 0.0425
+    },
+    "industry": {
+      "missing": 4903,
+      "share": 0.2742,
+      "fraud_rate_if_missing": 0.0561,
+      "fraud_rate_if_present": 0.0455
+    },
+    "function": {
+      "missing": 6455,
+      "share": 0.361,
+      "fraud_rate_if_missing": 0.0522,
+      "fraud_rate_if_present": 0.0463
+    }
+  },
+  "binary": {
+    "telecommuting": {
+      "values": {
+        "0": 17113,
+        "1": 767
+      },
+      "fraud_rate_if_1": 0.0834,
+      "fraud_rate_if_0": 0.0469
+    },
+    "has_company_logo": {
+      "values": {
+        "1": 14220,
+        "0": 3660
+      },
+      "fraud_rate_if_1": 0.0199,
+      "fraud_rate_if_0": 0.1593
+    },
+    "has_questions": {
+      "values": {
+        "0": 9088,
+        "1": 8792
+      },
+      "fraud_rate_if_1": 0.0284,
+      "fraud_rate_if_0": 0.0678
+    }
+  },
+  "categorical": {
+    "department": {
+      "distinct": 1337,
+      "case_or_space_variants": 113,
+      "top": {
+        "Sales": 551,
+        "Engineering": 487,
+        "Marketing": 401,
+        "Operations": 270,
+        "IT": 225,
+        "Development": 146,
+        "Product": 112,
+        "Information Technology": 86
+      }
+    },
+    "employment_type": {
+      "distinct": 5,
+      "case_or_space_variants": 0,
+      "top": {
+        "Full-time": 11620,
+        "Contract": 1524,
+        "Part-time": 797,
+        "Temporary": 241,
+        "Other": 227
+      }
+    },
+    "required_experience": {
+      "distinct": 7,
+      "case_or_space_variants": 0,
+      "top": {
+        "Mid-Senior level": 3809,
+        "Entry level": 2697,
+        "Associate": 2297,
+        "Not Applicable": 1116,
+        "Director": 389,
+        "Internship": 381,
+        "Executive": 141
+      }
+    },
+    "required_education": {
+      "distinct": 13,
+      "case_or_space_variants": 0,
+      "top": {
+        "Bachelor's Degree": 5145,
+        "High School or equivalent": 2080,
+        "Unspecified": 1397,
+        "Master's Degree": 416,
+        "Associate Degree": 274,
+        "Certification": 170,
+        "Some College Coursework Completed": 102,
+        "Professional": 74
+      }
+    },
+    "industry": {
+      "distinct": 131,
+      "case_or_space_variants": 0,
+      "top": {
+        "Information Technology and Services": 1734,
+        "Computer Software": 1376,
+        "Internet": 1062,
+        "Marketing and Advertising": 828,
+        "Education Management": 822,
+        "Financial Services": 779,
+        "Hospital & Health Care": 497,
+        "Consumer Services": 358
+      }
+    },
+    "function": {
+      "distinct": 37,
+      "case_or_space_variants": 0,
+      "top": {
+        "Information Technology": 1749,
+        "Sales": 1468,
+        "Engineering": 1348,
+        "Customer Service": 1229,
+        "Marketing": 830,
+        "Administrative": 630,
+        "Design": 340,
+        "Health Care Provider": 338
+      }
+    },
+    "location": {
+      "distinct": 3105,
+      "case_or_space_variants": 288,
+      "top": {
+        "GB, LND, London": 718,
+        "US, NY, New York": 658,
+        "US, CA, San Francisco": 472,
+        "GR, I, Athens": 464,
+        "US, , ": 339,
+        "US, TX, Houston": 269,
+        "US, IL, Chicago": 255,
+        "US, DC, Washington": 251
+      }
+    }
+  },
+  "text": {
+    "title": {
+      "chars_median": 25.0,
+      "chars_p95": 57.0,
+      "chars_max": 142,
+      "chars_median_fraud": 28.0,
+      "chars_median_real": 25.0,
+      "html_entities": 0,
+      "run_together_words": 307,
+      "replacement_char": 0,
+      "url_placeholder_rows": 0,
+      "url_placeholder_fraud_rate": null,
+      "email_placeholder_rows": 0,
+      "email_placeholder_fraud_rate": null,
+      "phone_placeholder_rows": 0,
+      "phone_placeholder_fraud_rate": null
+    },
+    "company_profile": {
+      "chars_median": 570.0,
+      "chars_p95": 1594.0,
+      "chars_max": 6178,
+      "chars_median_fraud": 0.0,
+      "chars_median_real": 588.0,
+      "html_entities": 2775,
+      "run_together_words": 4294,
+      "replacement_char": 0,
+      "url_placeholder_rows": 1948,
+      "url_placeholder_fraud_rate": 0.0334,
+      "email_placeholder_rows": 303,
+      "email_placeholder_fraud_rate": 0.1122,
+      "phone_placeholder_rows": 190,
+      "phone_placeholder_fraud_rate": 0.1474
+    },
+    "description": {
+      "chars_median": 1017.0,
+      "chars_p95": 2848.0,
+      "chars_max": 14907,
+      "chars_median_fraud": 844.5,
+      "chars_median_real": 1027.0,
+      "html_entities": 3942,
+      "run_together_words": 10561,
+      "replacement_char": 6,
+      "url_placeholder_rows": 3262,
+      "url_placeholder_fraud_rate": 0.061,
+      "email_placeholder_rows": 592,
+      "email_placeholder_fraud_rate": 0.103,
+      "phone_placeholder_rows": 329,
+      "phone_placeholder_fraud_rate": 0.0942
+    },
+    "requirements": {
+      "chars_median": 467.0,
+      "chars_p95": 1667.0499999999993,
+      "chars_max": 10864,
+      "chars_median_fraud": 249.0,
+      "chars_median_real": 476.5,
+      "html_entities": 2222,
+      "run_together_words": 10372,
+      "replacement_char": 19,
+      "url_placeholder_rows": 978,
+      "url_placeholder_fraud_rate": 0.0266,
+      "email_placeholder_rows": 131,
+      "email_placeholder_fraud_rate": 0.0534,
+      "phone_placeholder_rows": 36,
+      "phone_placeholder_fraud_rate": 0.0278
+    },
+    "benefits": {
+      "chars_median": 45.0,
+      "chars_p95": 886.0,
+      "chars_max": 4429,
+      "chars_median_fraud": 36.0,
+      "chars_median_real": 47.0,
+      "html_entities": 1364,
+      "run_together_words": 4600,
+      "replacement_char": 1,
+      "url_placeholder_rows": 712,
+      "url_placeholder_fraud_rate": 0.0618,
+      "email_placeholder_rows": 342,
+      "email_placeholder_fraud_rate": 0.2281,
+      "phone_placeholder_rows": 53,
+      "phone_placeholder_fraud_rate": 0.3962
+    }
+  },
+  "salary_range": {
+    "present": 2868,
+    "parsed": 2700,
+    "invalid_excel_dates_or_zero": 168,
+    "max_under_1000": 192
+  },
+  "location": {
+    "present": 17534,
+    "country_state_city_format": 17320,
+    "other_formats": 214
+  },
+  "duplicates": {
+    "exact_duplicate_rows_removed": 281,
+    "exact_duplicates_fraud": 10,
+    "exact_duplicate_label_conflicts": 0,
+    "rows_sharing_title+description": 3219,
+    "groups_sharing_title+description": 923,
+    "label_conflict_groups_title+description": 0,
+    "rows_sharing_description": 4550,
+    "groups_sharing_description": 1263,
+    "label_conflict_groups_description": 1
+  },
+  "company_overlap": {
+    "rows_with_profile": 14572,
+    "distinct_profiles": 1707,
+    "largest_profile_rows": 726,
+    "profiles_with_2plus_postings": 1173,
+    "rows_in_shared_profiles": 14038,
+    "profiles_with_any_fraud": 49,
+    "profiles_with_mixed_labels": 0,
+    "fraud_rate_profile_missing": 0.1774,
+    "fraud_rate_profile_present": 0.0191
+  },
+  "split": {
+    "version": "v1",
+    "seed": 42,
+    "data_file": "fake_job_postings.csv",
+    "data_sha256": "b1d8918f57f1b62a53814fcc9379427533cd7b8878f21d3f8cdc41ba567ea7d0",
+    "group_keys": [
+      "company_profile",
+      "description"
+    ],
+    "rows_raw": 17880,
+    "rows_dropped_duplicates": 281,
+    "splits": {
+      "test": {
+        "rows": 2514,
+        "share": 0.1428,
+        "fraud": 122,
+        "prevalence": 0.0485,
+        "groups": 655
+      },
+      "train": {
+        "rows": 12571,
+        "share": 0.7143,
+        "fraud": 612,
+        "prevalence": 0.0487,
+        "groups": 3271
+      },
+      "val": {
+        "rows": 2514,
+        "share": 0.1428,
+        "fraud": 122,
+        "prevalence": 0.0485,
+        "groups": 656
+      }
+    },
+    "cv_folds": {
+      "0": {
+        "rows": 2514,
+        "fraud": 123,
+        "prevalence": 0.0489
+      },
+      "1": {
+        "rows": 2515,
+        "fraud": 123,
+        "prevalence": 0.0489
+      },
+      "2": {
+        "rows": 2514,
+        "fraud": 122,
+        "prevalence": 0.0485
+      },
+      "3": {
+        "rows": 2514,
+        "fraud": 122,
+        "prevalence": 0.0485
+      },
+      "4": {
+        "rows": 2514,
+        "fraud": 122,
+        "prevalence": 0.0485
+      }
+    },
+    "groups_crossing_splits": 0,
+    "groups_crossing_cv_folds": 0,
+    "group_stats": {
+      "groups": 4582,
+      "singletons": 3297,
+      "largest_rows": 723,
+      "largest_share": 0.0411,
+      "mixed_label_groups": 1,
+      "fraud_groups": 456,
+      "largest_fraud_group_rows": 90
+    },
+    "random_split_leakage": {
+      "test_rows_with_group_in_train": 0.7992,
+      "test_fraud_rows_with_group_in_train": 0.5312
+    }
+  }
+}
