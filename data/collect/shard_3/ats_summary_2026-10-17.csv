@@ -1,7 +1,6 @@
 ticker,name,ats,careers_url,detection,open_count,postings_written,status
 LDOS,"Leidos Holdings, Inc.",,,not_found,,0,no public board found
 VERX,"Vertex, Inc.",workday:vertexinc.wd1.myworkdayjobs.com/VertexInc,https://www.vertexinc.com/company/careers,link on https://www.vertexinc.com/careers,21,21,ok
-ADSK,"Autodesk, Inc.",,,not_found,,0,no public board found
 RBRK,"Rubrik, Inc.",greenhouse:rubrik,https://job-boards.greenhouse.io/rubrik,greenhouse slug guess (board name matched),143,143,ok
 TTD,"Trade Desk, Inc.",,,not_found,,0,no public board found
 DGII,DIGI INTERNATIONAL INC,,,not_found,,0,no public board found
@@ -59,7 +58,6 @@ VRTS,"VIRTUS INVESTMENT PARTNERS, INC.",,,not_found,,0,no public board found
 EXPO,EXPONENT INC,,,not_found,,0,no public board found
 FCN,"FTI CONSULTING, INC",,,not_found,,0,no public board found
 EVH,"Evolent Health, Inc.",workday:evolent.wd1.myworkdayjobs.com/External,https://www.evolent.com/careers,link on https://www.evolent.com/careers,41,41,ok
-PYPL,"PayPal Holdings, Inc.",,,not_found,,0,no public board found
 IQV,IQVIA HOLDINGS INC.,,,not_found,,0,no public board found
 WU,Western Union CO,workday:westernunion.wd5.myworkdayjobs.com/WesternUnionJobs,https://careers.westernunion.com,link on https://www.westernunion.com/careers,84,84,ok
 HQY,"HEALTHEQUITY, INC.",,,not_found,,0,no public board found
@@ -74,3 +72,5 @@ FOUR,"Shift4 Payments, Inc.",,,not_found,,0,no public board found
 MA,Mastercard Inc,workday:mastercard.wd1.myworkdayjobs.com/CorporateCareers,https://careers.mastercard.com/us/en/,link on https://careers.mastercard.com,1113,1113,ok
 TRU,TransUnion,,,not_found,,0,no public board found
 ACN,Accenture plc,workday:accenture.wd103.myworkdayjobs.com/AccentureCareers,https://www.accenture.com/us-en/careers,link on https://www.accenture.com/careers,2000,2000,ok
+PYPL,"PayPal Holdings, Inc.",workday:paypal.wd1.myworkdayjobs.com/jobs,,company list / overrides,335,335,ok
+ADSK,"Autodesk, Inc.",workday:autodesk.wd1.myworkdayjobs.com/Ext,,company list / overrides,355,355,ok

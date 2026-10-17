@@ -17,7 +17,9 @@ Both are computed and kept; `postings_year` uses --method, and `postings_year_me
 
 This table is the answer, never a model input: ml/ must not join it into features.
 
-    python -m dataset.build_outcomes [--method turnover|unique_ids] [--lifetimes path.csv]
+    python -m dataset.build_outcomes [--method unique_ids|turnover] [--lifetimes path.csv]
+
+Default is unique_ids: observed job IDs only, no assumed posting lifetime (team decision 2026-10-17).
 """
 import argparse
 import json
@@ -38,6 +40,9 @@ JOLTS = {   # JOLTS total separations rate, not seasonally adjusted (% of employ
     "finance_insurance": "JTU5200TSR", "durable_manufacturing": "JTU3200TSR", "information": "JTU5100TSR",
     "professional_business": "JTU540099TSR", "total_private": "JTU1000TSR",
 }
+
+
+MIN_JOB_PAGE_IDS = 20   # distinct archived job pages in the fiscal year needed for a unique_ids label
 
 
 def jolts_industry(sic: str | None) -> str:
@@ -127,7 +132,7 @@ def wayback_ids(used_urls: set[str]) -> dict[str, list[dict]]:
 
 def main():
     ap = argparse.ArgumentParser(description="Build the ground-truth outcomes table.")
-    ap.add_argument("--method", choices=["turnover", "unique_ids"], default="turnover")
+    ap.add_argument("--method", choices=["turnover", "unique_ids"], default="unique_ids")
     ap.add_argument("--lifetimes", help="CSV of ticker-or-sector,days from the survival model (2A-2)")
     a = ap.parse_args()
 
@@ -135,7 +140,8 @@ def main():
     comp = companies()
     jolts = load_jolts(Client())
     life = lifetimes(a.lifetimes)
-    archive_urls = {r["source_url"] for t in ev_all.values() for r in t.get("archived_open_postings", [])}
+    archive_urls = {r["source_url"] for t in ev_all.values()
+                    for f in ("archived_open_postings", "archived_job_ids") for r in t.get(f, [])}
     ids_by_ticker = wayback_ids(archive_urls)
 
     rows, excluded = [], []
@@ -172,15 +178,21 @@ def main():
         row["posting_lifetime_days"] = lt
         row["postings_year_turnover"] = (statistics.mean(v for _, v, _ in in_year) * 365 / lt
                                          if len(in_year) >= 3 else None)
-        seen = {str(r["ats_job_id"]) for r in ids_by_ticker.get(t, [])
-                if r.get("ats_job_id") and start < date.fromisoformat(r["seen"]) <= end}
-        row["postings_year_unique_ids"] = float(len(seen)) if row["archived_snapshots_in_year"] >= 6 else None
+        in_fy = [r for r in ids_by_ticker.get(t, [])
+                 if r.get("ats_job_id") and start < date.fromisoformat(r["seen"]) <= end]
+        seen = {str(r["ats_job_id"]) for r in in_fy}
+        from_pages = {str(r["ats_job_id"]) for r in in_fy if r.get("kind") == "job_page"}
+        row["archived_job_ids_in_year"] = len(seen)
+        row["archived_job_ids_from_job_pages"] = len(from_pages)
+        enough = row["archived_snapshots_in_year"] >= 6 or len(from_pages) >= MIN_JOB_PAGE_IDS
+        row["postings_year_unique_ids"] = float(len(seen)) if enough else None
         py = row[f"postings_year_{a.method}"]
         row["postings_year"] = py
         row["postings_year_method"] = (f"turnover (lifetime {lt:g} days{', placeholder' if lt == config.TYPICAL_POSTING_DAYS else ''})"
                                        if a.method == "turnover" else "unique_ids (lower bound)")
         if not py:
-            excluded.append({"ticker": t, "reason": f"too few archived snapshots in FY{pair} ({row['archived_snapshots_in_year']})"})
+            excluded.append({"ticker": t, "reason": f"too little archived posting history in FY{pair} "
+                                                    f"({row['archived_snapshots_in_year']} board snapshots, {len(seen)} job IDs)"})
             continue
         row["follow_through"] = min(row["est_hires"] / py, config.FOLLOW_THROUGH_CAP)
         row["follow_through_capped"] = row["est_hires"] / py > config.FOLLOW_THROUGH_CAP

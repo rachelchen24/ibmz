@@ -28,7 +28,7 @@ SEC_USER_AGENT = f"RealRole IBM Z Datathon 2026 {CONTACT_EMAIL}"
 WEB_USER_AGENT = "Mozilla/5.0 (compatible; RealRole-collector/1.0; IBM Z Datathon 2026 research)"
 
 # Requests per second, per scraper process. Four scrapers in parallel keep SEC at 8/s (< 10/s limit).
-RATES = {"sec": 2.0, "wayback": 1.0, "ats": 2.0, "web": 1.0}
+RATES = {"sec": 2.0, "wayback": 0.25, "ats": 2.0, "web": 1.0}   # archive.org blocks the IP above ~1 req/s in total
 
 LONG_OPEN_DAYS = 90
 PAY_RANGE_STATES = {"NY", "CA", "CO", "WA"}   # verify each law's scope and thresholds

@@ -7,8 +7,9 @@
   --track: #e8eaef;
   --green: #1f7a4d;
   --green-soft: #d8efe2;
-  --amber: #a65d00;
-  --amber-soft: #fbe7c8;
+  --amber: #e8806b;
+  --amber-ink: #b5503b;
+  --amber-soft: #fbdcd2;
   --red: #b3261e;
   --red-soft: #f8d9d6;
   --notice: #fff6e0;
@@ -26,8 +27,9 @@
     --track: #2e3442;
     --green: #5cc995;
     --green-soft: #1f3d2f;
-    --amber: #f0a542;
-    --amber-soft: #44331a;
+    --amber: #f0937c;
+    --amber-ink: #f4a593;
+    --amber-soft: #4a2a22;
     --red: #f2827a;
     --red-soft: #4a2321;
     --notice: #3a3220;
@@ -69,13 +71,13 @@ h2 { margin: 0 0 8px; font-size: 13px; font-weight: 700; text-transform: upperca
 p { margin: 0 0 6px; }
 .meta { color: var(--muted); font-size: 13px; }
 
-.band-green { --band: var(--green); --band-soft: var(--green-soft); }
-.band-amber { --band: var(--amber); --band-soft: var(--amber-soft); }
-.band-red   { --band: var(--red);   --band-soft: var(--red-soft); }
+.band-green { --band: var(--green); --band-ink: var(--green); --band-soft: var(--green-soft); }
+.band-amber { --band: var(--amber); --band-ink: var(--amber-ink); --band-soft: var(--amber-soft); }
+.band-red   { --band: var(--red);   --band-ink: var(--red);   --band-soft: var(--red-soft); }
 .summary { border-top: 4px solid var(--band); }
 
 .headline { margin-top: 10px; font-size: 16px; }
-.headline .num { color: var(--band); font-size: 26px; font-weight: 800; }
+.headline .num { color: var(--band-ink); font-size: 26px; font-weight: 800; }
 
 .bar {
   position: relative;

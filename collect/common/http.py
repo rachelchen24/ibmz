@@ -91,7 +91,7 @@ class Client:
         return self.cache_dir / group / h[:2] / f"{h}.json.gz"
 
     def fetch(self, url: str, method: str = "GET", json_body=None, cache: bool = True,
-              cache_tag: str = "", headers: dict | None = None) -> Response:
+              cache_tag: str = "", headers: dict | None = None, cache_only: bool = False) -> Response:
         """Return a Response for 2xx and 404/410 (both cached). Raise FetchError otherwise.
 
         cache_tag separates cache entries for content that changes (e.g. the snapshot date for ATS boards).
@@ -108,6 +108,8 @@ class Client:
             except (OSError, ValueError):
                 pass
 
+        if cache_only:
+            raise FetchError(f"not cached (cache_only) for {url}")
         h = {"User-Agent": config.SEC_USER_AGENT if group == "sec" else config.WEB_USER_AGENT,
              "Accept-Encoding": "gzip, deflate"}
         if json_body is not None:
@@ -124,6 +126,8 @@ class Client:
             except requests.RequestException as e:
                 last = f"{type(e).__name__}: {e}"
             else:
+                if r.status_code == 200 and group == "wayback" and "Internet Archive: Temporarily Offline" in r.text[:500]:
+                    r.status_code = 503   # outage page served as 200: retry later, never cache it
                 if r.status_code == 200 or r.status_code in (404, 410):
                     resp = Response(r.url, r.status_code, r.text if r.status_code == 200 else "", False)
                     if cache:
@@ -134,7 +138,9 @@ class Client:
                     break
                 ra = r.headers.get("Retry-After", "")
                 if ra.isdigit():
-                    time.sleep(min(int(ra), 120))
+                    time.sleep(min(int(ra), 300))
+                elif r.status_code == 429 and group == "wayback":
+                    time.sleep(min(60 * (attempt + 1), 300))   # archive.org rate limit: back off for minutes
             if attempt < self.retries:
                 time.sleep(min(2 ** attempt * 2 + random.random(), 60))
         self.stats["errors"] += 1

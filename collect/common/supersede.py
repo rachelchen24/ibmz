@@ -8,6 +8,7 @@ STEP_FIELDS = {
     "edgar": {"hq_country", "revenue", "revenue_component", "employee_count", "employee_count_us", "reports_us_headcount"},
     "filings": {"hiring_freeze_statements", "management_hiring_statements"},
     "wayback": {"archived_open_postings"},
+    "wayback_jobs": {"archived_job_ids"},
 }
 
 

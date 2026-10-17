@@ -7,6 +7,7 @@ collect is recorded as skipped and the run continues. Features are built at the 
 import argparse
 import json
 import logging
+import os
 import subprocess
 import sys
 import threading
@@ -27,9 +28,10 @@ from .sources.edgar import Edgar
 from .sources.filings_text import FilingsText
 from .sources.warn import Warn
 from .sources.wayback import Wayback
+from .sources.wayback_jobs import WaybackJobs
 
 log = logging.getLogger("collect")
-STEPS = ["edgar", "filings", "warn", "ats", "wayback"]
+STEPS = ["edgar", "filings", "warn", "ats", "wayback", "wayback_jobs"]
 
 
 def _setup_logging(shard: int, run_id: str):
@@ -125,7 +127,7 @@ def main(shard: int, argv=None):
     unknown = set(steps) - set(STEPS)
     if unknown:
         ap.error(f"unknown steps {sorted(unknown)}")
-    run_id = args.resume or f"s{shard}-{datetime.now():%Y%m%dT%H%M%S}"
+    run_id = args.resume or f"s{shard}-{datetime.now():%Y%m%dT%H%M%S}-p{os.getpid()}"   # pid: two runs can start in the same second
     snapshot = args.snapshot_date or date.today().isoformat()
     today = date.today()
     out = config.shard_dir(shard)
@@ -157,6 +159,7 @@ def main(shard: int, argv=None):
     warn = Warn(client, today) if "warn" in steps else None
     ats = Ats(client, date.fromisoformat(snapshot), args.workday_max_details)
     wayback = Wayback(client, today)
+    wayback_jobs = WaybackJobs(client, today)
     history = _load_history(shard, snapshot) if "ats" in steps else {}
 
     ev_writer = JsonlWriter(out / f"candidates_{run_id}.jsonl", validate_evidence)
@@ -228,6 +231,10 @@ def main(shard: int, argv=None):
             board = (info or {}).get("ats") or c.get("ats") or _known_ats.get(c["ticker"])
             notes["wayback"] = step("wayback", lambda: wayback.collect(c, board, run_id, ev_writer.write,
                                                                        hist_writer.write))
+        if "wayback_jobs" in steps:
+            board = (info or {}).get("ats") or c.get("ats") or _known_ats.get(c["ticker"])
+            notes["wayback_jobs"] = step("wayback_jobs", lambda: wayback_jobs.collect(c, board, run_id, ev_writer.write,
+                                                                                 hist_writer.write))
         status_writer.write({"ticker": c["ticker"], "run_id": run_id, "steps": st, "notes": notes,
                              "finished_at": now_iso(), "seconds": round(time.time() - ts, 1)})
         with summary_lock:
@@ -239,7 +246,7 @@ def main(shard: int, argv=None):
 
     steps_need_edgar = bool({"edgar", "filings", "ats"} & set(steps))
     _known_ats = {}
-    if "wayback" in steps and "ats" not in steps and summary_path.exists():
+    if {"wayback", "wayback_jobs"} & set(steps) and "ats" not in steps and summary_path.exists():
         prev = pd.read_csv(summary_path, dtype=str).dropna(subset=["ats"])
         _known_ats = dict(zip(prev["ticker"], prev["ats"]))
 

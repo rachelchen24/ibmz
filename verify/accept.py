@@ -73,8 +73,8 @@ def plant(rows: list[dict]) -> list[dict]:
     return [a, b]
 
 
-def verify(rows: list[dict], workers: int, today: date) -> list[dict]:
-    fetcher = Fetcher(today)
+def verify(rows: list[dict], workers: int, today: date, defer_wayback: bool = False) -> list[dict]:
+    fetcher = Fetcher(today, defer_wayback)
     by_url = defaultdict(list)
     for r in rows:
         r["check"], r["_detail"], r["_match"] = None, "", ""
@@ -124,6 +124,8 @@ def main():
     ap.add_argument("--limit", type=int, help="only the first N candidates (for a quick check)")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--verbose", action="store_true", help="print every decision, not just a sample")
+    ap.add_argument("--defer-wayback", action="store_true",
+                    help="archive.org unreachable: check Wayback rows only against pages already fetched today")
     a = ap.parse_args()
 
     t0 = time.time()
@@ -132,7 +134,7 @@ def main():
         rows = rows[:a.limit]
     planted = plant(rows) if a.plant else []
     print(f"verifying {len(rows)} candidate rows" + (f" + {len(planted)} planted wrong rows" if planted else ""))
-    verify(rows + planted, a.workers, date.today())
+    verify(rows + planted, a.workers, date.today(), a.defer_wayback)
 
     stamp = datetime.now().strftime("%Y%m%dT%H%M%S")
     VERIFY_DIR.mkdir(parents=True, exist_ok=True)

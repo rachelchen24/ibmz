@@ -6,8 +6,9 @@
 .rr-badge {
   --rr-green: #1f7a4d;
   --rr-green-soft: #d8efe2;
-  --rr-amber: #a65d00;
-  --rr-amber-soft: #fbe7c8;
+  --rr-amber: #e8806b;
+  --rr-amber-ink: #b5503b;
+  --rr-amber-soft: #fbdcd2;
   --rr-red: #b3261e;
   --rr-red-soft: #f8d9d6;
   --rr-ink: #1d2433;
@@ -32,9 +33,9 @@
   text-align: left;
 }
 
-.rr-green { --rr-band: var(--rr-green); --rr-band-soft: var(--rr-green-soft); }
-.rr-amber { --rr-band: var(--rr-amber); --rr-band-soft: var(--rr-amber-soft); }
-.rr-red   { --rr-band: var(--rr-red);   --rr-band-soft: var(--rr-red-soft); }
+.rr-green { --rr-band: var(--rr-green); --rr-band-ink: var(--rr-green); --rr-band-soft: var(--rr-green-soft); }
+.rr-amber { --rr-band: var(--rr-amber); --rr-band-ink: var(--rr-amber-ink); --rr-band-soft: var(--rr-amber-soft); }
+.rr-red   { --rr-band: var(--rr-red);   --rr-band-ink: var(--rr-red);   --rr-band-soft: var(--rr-red-soft); }
 
 .rr-mark {
   flex: none;
@@ -59,7 +60,7 @@
 }
 
 .rr-num {
-  color: var(--rr-band);
+  color: var(--rr-band-ink);
   font-weight: 700;
 }
 
@@ -94,13 +95,13 @@
   border: 1px solid var(--rr-band);
   border-radius: 999px;
   background: var(--rr-surface);
-  color: var(--rr-band);
+  color: var(--rr-band-ink);
   font: 600 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   cursor: pointer;
 }
 
 .rr-why:hover {
-  background: var(--rr-band);
+  background: var(--rr-band-ink);
   color: #fff;
 }
 

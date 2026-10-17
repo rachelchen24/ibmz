@@ -20,7 +20,7 @@ COLLECTORS = {"claude", "ats_scraper", "wayback", "reference", "edgar", "warn"}
 FIELDS = {
     "employee_count", "employee_count_us", "reports_us_headcount", "revenue", "revenue_component",
     "hq_country", "careers_url", "ats_board", "layoff_events", "hiring_freeze_statements",
-    "management_hiring_statements", "archived_open_postings",
+    "management_hiring_statements", "archived_open_postings", "archived_job_ids",
 }
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 MAX_QUOTE = 500

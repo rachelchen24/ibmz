@@ -45,9 +45,10 @@ def _sheet_rows(content: bytes) -> list[str]:
 
 
 class Fetcher:
-    def __init__(self, today: date):
+    def __init__(self, today: date, defer_wayback: bool = False):
         self.client = Client(cache_dir=VERIFY_DIR / "cache")
         self.tag = today.isoformat()
+        self.defer_wayback = defer_wayback   # archive.org unreachable: use only pages already fetched today
 
     def get(self, url: str) -> Page:
         if not url or not url.startswith("http"):
@@ -68,10 +69,11 @@ class Fetcher:
             return Page(url, True, "\n".join(rows), rows)
         if url.lower().endswith(".pdf"):
             return Page(url, False, reason="PDF sources are not supported yet")
+        deferred = self.defer_wayback and "archive.org" in url
         try:
-            r = self.client.fetch(url, cache_tag=self.tag)
+            r = self.client.fetch(url, cache_tag=self.tag, cache_only=deferred)
         except FetchError as e:
-            return Page(url, False, reason=str(e)[:200])
+            return Page(url, False, reason="deferred: archive.org unreachable, rerun later" if deferred else str(e)[:200])
         if not r.ok:
             return Page(url, False, reason=f"HTTP {r.status}")
         text = extract_text(r.text)

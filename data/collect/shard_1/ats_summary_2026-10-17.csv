@@ -66,7 +66,6 @@ ASTH,"Astrana Health, Inc.",,,not_found,,0,no public board found
 AMTM,"Amentum Holdings, Inc.",workday:pae.wd1.myworkdayjobs.com/PAE_AntarcticSupportContract,https://www.amentumcareers.com/,link on https://www.amentum.com/careers,24,24,ok
 RELY,"Remitly Global, Inc.",,,not_found,,0,no public board found
 ACM,AECOM,,,not_found,,0,no public board found
-DASH,"DoorDash, Inc.",,,not_found,,0,no public board found
 ALIT,"Alight, Inc. / Delaware",,,not_found,,0,no public board found
 EFX,EQUIFAX INC,,,not_found,,0,no public board found
 CART,Maplebear Inc.,,,not_found,,0,no public board found
@@ -74,3 +73,4 @@ PHR,"Phreesia, Inc.",workday:phreesia.wd1.myworkdayjobs.com/Phreesia,https://www
 UBER,"Uber Technologies, Inc",,,not_found,,0,no public board found
 HURN,Huron Consulting Group Inc.,workday:huron.wd1.myworkdayjobs.com/huroncareers,https://www.huronconsultinggroup.com/en/careers,link on https://www.huronconsultinggroup.com/careers,273,273,ok
 FIS,"Fidelity National Information Services, Inc.",workday:fis.wd5.myworkdayjobs.com/SearchJobs,https://careers.fisglobal.com/us/en,link on https://careers.fisglobal.com,546,546,ok
+DASH,"DoorDash, Inc.",greenhouse:doordashusa,,company list / overrides,456,456,ok
