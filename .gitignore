@@ -3,3 +3,4 @@ data/collect/
 __pycache__/
 *.pyc
 .env
+data/verify/

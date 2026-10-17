@@ -398,7 +398,7 @@ _WORKERS = re.compile(r"(?:approximately|about|roughly|nearly|over|more than|up 
 _PCT = re.compile(r"(\d{1,2}(?:\.\d+)?)\s?%\s+(?:of\s+)?(?:(?:our|its|the company's|the)\s+)?(?:global |total |overall )?"
                   r"(?:workforce|employees|headcount|staff)|(?:workforce|headcount|staff)\s+by\s+(?:approximately\s+|about\s+)?"
                   r"(\d{1,2}(?:\.\d+)?)\s?%", re.I)
-_MONTH_YEAR = re.compile(rf"\b(?:in|on|during)\s+({_MONTHS})\.?\s+(?:\d{{1,2}},?\s+)?(20\d\d)\b", re.I)
+_MONTH_YEAR = re.compile(rf"\b(?:in|on|during|as of|by|through|since|of|beginning|starting)\s+({_MONTHS})\.?\s+(?:\d{{1,2}},?\s+)?(20\d\d)\b", re.I)
 _MONTH_NUM = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
 
@@ -445,6 +445,8 @@ _US_EMP = [
     re.compile(r"(?:United States|U\.S\.|domestic)\s+(?:employees|workforce|headcount)\s+(?:was|of|were|totaled|"
                r"is)?\s*(?:approximately|about)?\s*" + _EMP_NUM, re.I),
 ]
+_NON_US_EMP = re.compile(_EMP_NUM + r"\s+(?:\w+\s+){0,4}?(?:were |are |was |is )?(?:located|based|employed)?\s*outside\s+(?:of\s+)?the\s+"
+                         r"(?:United States|U\.S\.)", re.I)
 _US_PCT = re.compile(r"(\d{1,3}(?:\.\d+)?)\s?%\s+(?:\w+\s+){0,6}?(?:in|within)\s+the\s+(?:United States|U\.S\.)", re.I)
 
 
@@ -487,6 +489,11 @@ def extract_employee_counts(text: str) -> dict | None:
                             if v and v <= total:
                                 out["us"], out["us_quote"] = v, s2
                                 break
+                    if out["us"] is None:
+                        mn = _NON_US_EMP.search(s2)
+                        v = _emp_value(mn.group(1)) if mn else None
+                        if v and v < total:
+                            out["us"], out["us_quote"] = total - v, s2
                     if out["us"] is None:
                         mp = _US_PCT.search(s2)
                         if mp and 0 < float(mp.group(1)) <= 100:
