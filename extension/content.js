@@ -1,0 +1,132 @@
+// Finds the employer on a job page, asks the service worker for its score, and shows the badge
+// next to the job title. Shows nothing for companies outside our dataset.
+(function () {
+  const HOST_ID = "realrole-badge-host";
+  const state = { key: null, score: null, host: null, floating: false, dismissedKey: null, pending: false };
+
+  function send(msg) {
+    try {
+      return chrome.runtime.sendMessage(msg);
+    } catch {
+      return Promise.resolve(null); // extension was reloaded; this page's script is orphaned
+    }
+  }
+
+  function removeBadge() {
+    if (state.host) state.host.remove();
+    document.querySelectorAll("#" + HOST_ID).forEach((el) => el.remove());
+    state.host = null;
+  }
+
+  function clear() {
+    removeBadge();
+    if (state.key !== null) send({ type: "clear" });
+    state.key = null;
+    state.score = null;
+  }
+
+  async function detect() {
+    const site = RealRoleSites.forUrl(location.href);
+    if (!site) return clear();
+    const name = site.getCompanyName(document);
+    if (!name) return clear();
+
+    const key = location.href + "|" + name;
+    if (key === state.key) {
+      if (state.pending || !state.score || key === state.dismissedKey) return;
+      const anchor = site.getTitleAnchor(document);
+      const attached = state.host && document.contains(state.host);
+      // Re-render if the page redrew and dropped the badge, or the title appeared after a fallback.
+      if (!attached || (state.floating && anchor)) render(state.score, anchor);
+      return;
+    }
+
+    removeBadge();
+    state.key = key;
+    state.score = null;
+    state.pending = true;
+    const resp = await send({ type: "score", company_name: name, source: site.source });
+    if (state.key !== key) return; // the page moved on while we waited
+    state.pending = false;
+    if (!resp || !resp.ok || !resp.score || !resp.score.in_dataset) return;
+    state.score = resp.score;
+    render(resp.score, site.getTitleAnchor(document));
+  }
+
+  function render(score, anchor) {
+    removeBadge();
+    const v = RealRoleFormat.view(score);
+    const host = document.createElement("div");
+    host.id = HOST_ID;
+    host.style.cssText = "all: initial; display: block;";
+    const root = host.attachShadow({ mode: "open" });
+
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = chrome.runtime.getURL("badge.css");
+    root.appendChild(css);
+
+    const floating = !anchor;
+    const badge = el("div", `rr-badge rr-${v.band}${floating ? " rr-floating" : ""}`);
+    badge.setAttribute("role", "status");
+
+    const mark = el("span", "rr-mark", "RealRole");
+    const main = el("div", "rr-main");
+    const text = el("div", "rr-text");
+    text.append(el("strong", "rr-num", `${v.pct}% ± ${v.plusMinus}%`), ` chance ${RealRoleFormat.possessive(v.name)} postings don't lead to a hire`);
+
+    const bar = el("div", "rr-bar");
+    bar.setAttribute("aria-hidden", "true");
+    const range = el("div", "rr-range");
+    range.style.left = `${v.barLow * 100}%`;
+    range.style.width = `${(v.barHigh - v.barLow) * 100}%`;
+    const fill = el("div", "rr-fill");
+    fill.style.width = `${v.noHire * 100}%`;
+    bar.append(range, fill);
+    main.append(text, bar);
+
+    const why = el("button", "rr-why", "Tell me why");
+    why.type = "button";
+    why.addEventListener("click", () => send({ type: "openPanel" }));
+
+    badge.append(mark, main, why);
+
+    if (floating) {
+      const close = el("button", "rr-close", "×");
+      close.type = "button";
+      close.setAttribute("aria-label", "Hide RealRole badge");
+      close.addEventListener("click", () => {
+        state.dismissedKey = state.key;
+        removeBadge();
+      });
+      badge.append(close);
+    }
+    root.appendChild(badge);
+
+    if (floating) document.body.appendChild(host);
+    else anchor.insertAdjacentElement("afterend", host);
+    state.host = host;
+    state.floating = floating;
+  }
+
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text;
+    return e;
+  }
+
+  // Single-page apps (Workday, LinkedIn) change the job without a page load: re-check on DOM
+  // changes, debounced. detect() is a no-op when nothing relevant changed.
+  let timer = null;
+  const schedule = () => {
+    clearTimeout(timer);
+    timer = setTimeout(detect, 400);
+  };
+  new MutationObserver((mutations) => {
+    if (mutations.every((m) => state.host && (m.target === state.host || state.host.contains(m.target)))) return;
+    schedule();
+  }).observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener("popstate", schedule);
+  detect();
+})();

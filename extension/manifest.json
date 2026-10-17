@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "RealRole",
+  "version": "0.1.0",
+  "description": "Shows how likely a company's job postings are to lead to a hire, with reasons and sources.",
+  "minimum_chrome_version": "116",
+  "permissions": ["sidePanel", "storage"],
+  "host_permissions": [
+    "https://*.greenhouse.io/*",
+    "https://*.myworkdayjobs.com/*",
+    "https://www.linkedin.com/*",
+    "http://localhost:8000/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://boards.greenhouse.io/*",
+        "https://job-boards.greenhouse.io/*",
+        "https://*.myworkdayjobs.com/*",
+        "https://www.linkedin.com/*",
+        "http://localhost:8000/demo/*"
+      ],
+      "js": [
+        "config.js",
+        "format.js",
+        "sites/common.js",
+        "sites/greenhouse.js",
+        "sites/workday.js",
+        "sites/linkedin.js",
+        "sites/demo.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["badge.css"],
+      "matches": [
+        "https://*.greenhouse.io/*",
+        "https://*.myworkdayjobs.com/*",
+        "https://www.linkedin.com/*",
+        "http://localhost:8000/*"
+      ]
+    }
+  ],
+  "side_panel": { "default_path": "sidepanel.html" },
+  "action": { "default_title": "RealRole", "default_popup": "popup.html" }
+}

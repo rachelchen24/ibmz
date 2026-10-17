@@ -1,0 +1,131 @@
+/* Badge styles. Loaded inside the badge's shadow root, so page CSS can't reach it. */
+:host {
+  all: initial;
+}
+
+.rr-badge {
+  --rr-green: #1f7a4d;
+  --rr-green-soft: #d8efe2;
+  --rr-amber: #a65d00;
+  --rr-amber-soft: #fbe7c8;
+  --rr-red: #b3261e;
+  --rr-red-soft: #f8d9d6;
+  --rr-ink: #1d2433;
+  --rr-muted: #5b6475;
+  --rr-surface: #ffffff;
+  --rr-track: #e8eaef;
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  margin: 8px 0 12px;
+  padding: 10px 12px 10px 14px;
+  border: 1px solid #dfe2e8;
+  border-left: 4px solid var(--rr-band);
+  border-radius: 10px;
+  background: var(--rr-surface);
+  box-shadow: 0 1px 3px rgba(20, 30, 50, 0.08);
+  color: var(--rr-ink);
+  font: 14px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  text-align: left;
+}
+
+.rr-green { --rr-band: var(--rr-green); --rr-band-soft: var(--rr-green-soft); }
+.rr-amber { --rr-band: var(--rr-amber); --rr-band-soft: var(--rr-amber-soft); }
+.rr-red   { --rr-band: var(--rr-red);   --rr-band-soft: var(--rr-red-soft); }
+
+.rr-mark {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #1d2433;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.rr-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rr-text {
+  color: var(--rr-ink);
+}
+
+.rr-num {
+  color: var(--rr-band);
+  font-weight: 700;
+}
+
+.rr-bar {
+  position: relative;
+  height: 6px;
+  min-width: 160px;
+  border-radius: 3px;
+  background: var(--rr-track);
+  overflow: hidden;
+}
+
+.rr-range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--rr-band-soft);
+}
+
+.rr-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 3px;
+  background: var(--rr-band);
+}
+
+.rr-why {
+  flex: none;
+  padding: 6px 12px;
+  border: 1px solid var(--rr-band);
+  border-radius: 999px;
+  background: var(--rr-surface);
+  color: var(--rr-band);
+  font: 600 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  cursor: pointer;
+}
+
+.rr-why:hover {
+  background: var(--rr-band);
+  color: #fff;
+}
+
+.rr-why:focus-visible,
+.rr-close:focus-visible {
+  outline: 2px solid var(--rr-band);
+  outline-offset: 2px;
+}
+
+.rr-floating {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483647;
+  max-width: min(560px, calc(100vw - 40px));
+  margin: 0;
+  box-shadow: 0 6px 24px rgba(20, 30, 50, 0.18);
+}
+
+.rr-close {
+  flex: none;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--rr-muted);
+  font: 18px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
