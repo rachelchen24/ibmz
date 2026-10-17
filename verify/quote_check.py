@@ -40,7 +40,7 @@ class PageIndex:
 
 def numbers_in(s: str) -> list[float]:
     out = []
-    for m in re.finditer(r"(\d[\d,]*(?:\.\d+)?)\s*(thousand|million|billion)?", s or "", re.I):
+    for m in re.finditer(r"(-?\d[\d,]*(?:\.\d+)?)\s*(thousand|million|billion)?", s or "", re.I):
         try:
             v = float(m.group(1).replace(",", ""))
         except ValueError:
