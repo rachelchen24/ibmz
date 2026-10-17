@@ -76,3 +76,68 @@ Assignments use generic labels until the team supplies names. Each contributor o
 - The dataset README identifies this as a Kaggle real/fake posting dataset and explicitly cautions that it is not ground truth for ghost jobs.
 - Keep generated model binaries and other large outputs out of source control unless the project explicitly decides otherwise.
 - The actual contributor names and their availability are not yet specified; the four labels above describe responsibilities only.
+
+## Shared contract (proposed by Person 4 — needs team sign-off)
+
+This is integration step 2: the interfaces Persons 2 and 3 build against. Person 1's half (split, feature
+exclusion) is settled in `ml/AUDIT.md`. Nothing here changes Person 1's code. Per `START-HERE.md`, agree
+these with the team before relying on them.
+
+### Handing over predictions (the only thing Person 4 strictly needs)
+
+Write a CSV with `job_id` and `y_prob` covering every row of the split being scored, then:
+
+```
+python -m ml.evaluate --predictions preds.csv --split val --name logreg \
+    --threshold 0.31 --threshold-source "train OOF, recall 0.80"
+```
+
+This keeps Persons 2–4 decoupled: no imports across workstreams, and a model can be evaluated without
+Person 4 being able to refit it. `ml/evaluate.py` validates coverage and refuses partial predictions.
+
+### Handing over a fitted model (needed to refit per CV fold)
+
+Each model module exposes an unfitted factory, so Person 4 can refit it inside folds:
+
+```python
+def build_model() -> sklearn.pipeline.Pipeline: ...   # unfitted
+# the fitted result must satisfy: predict_proba(X)[:, 1] -> (n,) floats in [0, 1]
+# X is load_split() output subset to FEATURE_COLS; the pipeline does its own imputing/encoding/vectorizing
+```
+
+### Threshold
+
+Person 3 hands over a **number**, the recall target it was chosen for, and the fitted calibrator. Person 4
+applies it once and does not re-derive it. Choose it on **train out-of-fold predictions (612 fraud rows)**,
+not on val's 122 — a threshold fitted on 122 positives is noisy, and that noise lands in every reported
+number. OOF is leakage-safe because no group crosses a CV fold. Val then checks the calibration instead of
+fitting it. If `--threshold` is omitted, the report says so, in words, in `threshold.chosen_on`.
+
+### Artifact paths
+
+| What | Where | In git? |
+|---|---|---|
+| Metrics report | `ml/reports/metrics_<name>.json` | yes — it is the deliverable |
+| Fitted model | `ml/artifacts/<name>/model.joblib` | no — add `ml/artifacts/` to `.gitignore` |
+
+### Metrics report
+
+`ml/evaluate.py` writes it; `schema_version` is `"1"`. Top level: `model`, `split`, `rows`, `groups`,
+`prevalence`, `threshold`, `ranking`, `at_threshold`, `operating_points`, `calibration`, `bootstrap`,
+`versions`, `generated_utc`. Two things worth knowing before reading one:
+
+- **PR-AUC's floor is the prevalence (~4.85%), not 0.5.** `ranking.pr_auc_lift_over_prevalence` is the
+  honest "better than guessing" number. ROC-AUC is reported but reads flatteringly: ~17k negatives mean an
+  FPR small enough to keep ROC-AUC near 0.98 can still leave most flags wrong. Quote `at_threshold.precision`.
+- **Intervals resample groups, not rows,** because `ml/AUDIT.md` found no company with both real and
+  fraudulent postings — the label is effectively per-company, so test's 122 fraud rows are far fewer
+  independent observations than 122. A row bootstrap would report intervals that are too narrow.
+
+### Two notes for Person 3 before picking the stronger model
+
+- **s390x.** `START-HERE.md` puts the server on IBM LinuxONE. XGBoost and LightGBM publish no s390x wheels
+  on PyPI. `sklearn.ensemble.HistGradientBoostingClassifier` is competitive on tabular + sparse data and
+  adds **no new dependency**, so it is the safe choice; anything else needs a build checked on the box first.
+- Log any new package in `docs/open-source.md` (competition rule). `ml/evaluate.py` added none — pandas,
+  NumPy and scikit-learn are already listed. `joblib` arrives with scikit-learn but should be listed by
+  whoever first imports it directly.

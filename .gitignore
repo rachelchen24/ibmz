@@ -5,6 +5,8 @@ data/collect/*
 !data/collect/shard_assignment.csv
 data/collect/shard_*/logs/
 data/collect/shard_*/*.rejected.jsonl
+# Fitted models are regenerable and large; ml/reports/*.json is the committed deliverable (ml/PLAN.md).
+ml/artifacts/
 __pycache__/
 *.pyc
 .env
