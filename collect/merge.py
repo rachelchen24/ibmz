@@ -100,7 +100,8 @@ def main():
         cov.to_csv(out / f"coverage_{snap}.csv", index=False)
     (out / "merge_report.json").write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
 
-    print(f"merged {len(report['shards'])}/4 shards: {len(F)} companies, {len(P)} postings, {len(C)} evidence rows")
+    print(f"merged features from {len(feats)}/4 shards ({len(F)} companies); full folders (postings + evidence) from "
+          f"{len(report['shards'])}/4: {len(P)} postings, {len(C)} evidence rows")
     print(f"missing companies: {len(missing)}" + (f" (e.g. {missing[:8]})" if missing else ""))
     for p in report["problems"]:
         print("PROBLEM:", p)
