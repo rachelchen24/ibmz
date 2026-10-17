@@ -7,10 +7,11 @@ This list is required by the competition rules. Add every package and source whe
 | Library | Used for | Link |
 |---|---|---|
 | requests | HTTP client for collection and verification (`collect/`, `verify/`) | https://github.com/psf/requests |
-| pandas | Tables, CSV and Excel reading (`collect/`, `verify/`, `dataset/`) | https://github.com/pandas-dev/pandas |
+| pandas | Tables, CSV and Excel reading (`collect/`, `verify/`, `dataset/`, `ml/`) | https://github.com/pandas-dev/pandas |
 | openpyxl | Reading state WARN spreadsheets (through pandas) | https://foss.heptapod.net/openpyxl/openpyxl |
-| NumPy | Bootstrap intervals (`dataset/`) | https://github.com/numpy/numpy |
+| NumPy | Bootstrap intervals (`dataset/`), arrays (`ml/`) | https://github.com/numpy/numpy |
 | Matplotlib | Findings charts (`dataset/findings.py`) | https://github.com/matplotlib/matplotlib |
+| scikit-learn | Group-aware stratified train/validation/test split (`ml/split.py`) | https://github.com/scikit-learn/scikit-learn |
 
 ## Data sources
 
@@ -25,3 +26,4 @@ This list is required by the competition rules. Add every package and source whe
 | NY DOL WARN dashboard | Layoff notices | https://dol.ny.gov/warn-dashboard |
 | California EDD WARN report | Layoff notices | https://edd.ca.gov/en/jobs_and_training/Layoff_Services_WARN |
 | Texas Workforce Commission WARN notices | Layoff notices | https://www.twc.texas.gov/data-reports/warn-notice |
+| Real / Fake Job Posting Prediction (EMSCAD, Kaggle, CC0) | Fraud classifier training data (`ml/`) | https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction |
