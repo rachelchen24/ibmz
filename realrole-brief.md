@@ -1,268 +1,381 @@
 # RealRole: Team Brief
 
-IBM Z Datathon 2026 · October 17–18, 2026 · Last updated 2026-10-16
+IBM Z Datathon 2026 · October 17–18, 2026 · Last updated 2026-10-17 · @liv
 
-> **New to the project?** Read [START-HERE.md](START-HERE.md) first: the one-paragraph summary, which files to read, the before-the-event checklist, a glossary, and notes for AI agents.
+> **New to the project?** Read [START-HERE.md](START-HERE.md) first: the one-paragraph summary, which files to read, a glossary, and notes for AI agents.
 
 ## What we're building
 
-**RealRole is a browser extension that flags likely ghost jobs on the posting you're viewing, plus a web app where you can paste any job listing and get a verdict. Behind both, an AI system on LinuxONE scores the posting and checks whether the employer actually hires, using confidential hiring records that never leave an encrypted, isolated zone on the mainframe.** Track: **Theme 2, AI Secured: Innovation Without Exposure** (with real-time scoring as a Theme 1 feature).
+**RealRole answers one question: how likely is a company to post real jobs?** For each company it gives a probability, e.g. *"64% of this company's postings are likely to lead to a hire,"* with the reasons behind it. The data comes from **our own dataset**, which we build during the event by having Claude collect company indicators from the web. The indicators we need don't exist in any public dataset, and the datasets that come close aren't reliable enough.
 
-Built by four people, each working with their own AI coding agent, in four parallel workstreams (see [Team and agents](#team-and-agents)).
+Two audiences use the same score:
+
+- **Investors** check whether a company's job postings reflect real hiring or inflated numbers, and screen their watchlist privately.
+- **Job seekers** see, on any posting, how often that company actually hires from its postings.
+
+Track: **Theme 2, AI Secured: Innovation Without Exposure** (see [Why Track 2](#why-track-2)). Four people, each with their own AI coding agent, in four workstreams (see [Team, build order and pitch](#team-build-order-and-pitch)).
 
 ### Product components
 
-| # | Component | Workstream |
-|---|---|---|
-| 1 | **Browser extension** (headline for job seekers): badge on any job posting, e.g. **"68% ghost-likely: reposted 4×, open 94 days, no salary,"** with a "why?" panel. Greenhouse, Lever, Workday and LinkedIn | D |
-| 2 | **Web app**: paste a listing's text or URL and get a verdict (*Likely real* / *Uncertain* / *Likely ghost*), reasons, and a "what to do" tip; includes a Granite-written follow-up email to the recruiter | D |
-| 3 | **Application tracker and community reports**: "I applied," a private "My applications" page, 30-day reminders, reports shown only when many users agree, and a link to report on the job board | D (UI) · C (server) |
-| 4 | **Scoring API**: multi-model AI (gradient-boosted scorer + time-to-hire survival model + Granite text embeddings + Granite generative explanations), running on LinuxONE with Telum acceleration where available | A (models) · C (service) |
-| 5 | **Confidential hiring-verification zone**: synthetic new-hire and wage records analyzed in an isolated, encrypted container on LinuxONE; only a privacy-protected "follow-through score" per employer comes out | B · C |
-| 6 | **Policy dashboard**: the "ghost gap" (job postings vs. actual hires, 2020–2026), a ghost-adjusted NY job-openings estimate, real NYC government evidence (postings vs. actual hires by job title), and the federal 2025 postings-vs-hires comparison | B |
-| 7 | **Employer page**: employers see their own follow-through score and can post a public response to reports | D |
-| 8 | **Model card and fairness audit**: what the model does, its data, limits, and results by company size and industry | A |
+| # | Component | What it does | Workstream |
+|---|---|---|---|
+| 1 | **RealRole dataset** | Our own company-level dataset: one row per company, each indicator with its source URL, supporting quote and date collected. Published in the repo as a datathon deliverable. | B |
+| 2 | **Collection pipeline** | Claude agents that research each company and return structured indicators; our code verifies every source before a value is accepted. | B · C |
+| 3 | **Scoring model** | Turns a company's indicators into a calibrated probability and plain-language reasons, on LinuxONE. | A |
+| 4 | **Investor dashboard** | Private watchlist screening: scores, sector comparison, change over time, alerts when a company's posting volume pulls away from its real growth. Watchlists are processed in a confidential zone. | D (UI) · C (zone) |
+| 5 | **Browser extension** | Company badge on any job posting (Greenhouse, Lever, Workday, LinkedIn), e.g. **"Acme Corp · 41% likely to hire from postings,"** with a "why?" panel and sources. | D |
+| 6 | **Company lookup** | Search any company in our dataset; same score, reasons and sources. | D |
+| 7 | **Employer page** | A company sees its score and reasons and can respond or correct a wrong fact. | D |
+| 8 | **Model card and fairness audit** | What the score means, how the data was collected, its error rate, limits, and results by sector and company size. | A |
 
-Scope: postings from New York State employers. Leftover ideas and the post-event roadmap are in [Improvements, if time](#improvements-if-time).
+**Company universe:** 300 publicly traded US companies, weighted toward the sectors with the most ghost jobs (about 180, or 60% of the list), with a smaller set from every other sector for comparison. Listed companies are what investors need, and they publish headcount, which gives us ground truth (see [Ground truth](#ground-truth-and-the-probability-score)). The list is fixed at the start of Block 1.
+
+## Why it matters
+
+Job postings are read as a sign that a company is growing, but nothing checks whether they turn into hires. RealRole measures the gap, so the people relying on postings stop being misled by them.
+
+- **Investors.** Hiring activity is watched as a growth signal, and posting counts are an easy number to look at. A company has little reason not to keep extra roles open, since open roles make it look like it's expanding. Our hypothesis is that some companies post far more than they hire. RealRole lets investors tell companies that are really hiring from companies whose postings run well ahead of their actual growth.
+- **Job seekers.** Applicants can't see which companies hire from their postings. A company-level probability tells them where an application is likely to be read, before they spend hours on it.
+- **The incentive loop.** Once scores are visible to investors, posting bloat starts to cost a company. Companies that trim unfilled postings see their scores improve, so the scores keep changing. That is why RealRole refreshes on a schedule rather than running once: it stays useful as companies respond to it.
+
+**Evidence for the video.** The main evidence comes from our own dataset: the gap between what companies post and how much they actually grow, by sector. We add a short student survey (sent at kickoff): *How many jobs did you apply to this year? How many never responded? Is there a company you applied to more than once and never heard back from?*
+
+**Framing:** we test a hypothesis and show the numbers. We never claim that a named company is deceiving anyone. Scores are probabilities with sources, not accusations, and nothing in the pitch is political. Every outside statistic used in the video gets checked against its source first.
+
+## Why Track 2
+
+Our dataset is built from public sources, so the data we collect is not what needs protecting. Two other things do, and protecting them is the core of the design, not an add-on.
+
+**1. Investors' watchlists are confidential.** The list of companies a fund screens reveals what it holds or plans to trade. Sent to an ordinary cloud service, that list is visible to whoever runs the service. In RealRole, watchlists, alerts and scores for them are handled inside an isolated, encrypted container on LinuxONE. We, the operators, never see which companies a fund looks up; only the fund's own session can read its results. In production this zone would run under **IBM Secure Execution / Hyper Protect**, where even system administrators can't look inside (Michael checks whether it is available on our instance).
+
+**2. The AI must be protected from the companies it scores.** Our collection agents read web pages written by the very companies being scored, and those companies have a reason to game the result. A careers page could carry hidden text aimed at the AI, or a company could publish misleading figures. So:
+
+- The collection agents run in their own **sandboxed container** with no access to the model, the database or any secrets other than the API key they need.
+- Every value must come with a **source URL and a quote**; our code fetches the page and rejects the value if the quote isn't there.
+- A value that **two sources disagree on is flagged**, not used.
+- Each score is **versioned and stored with the sources behind it**, so any change can be traced.
+
+**3. Job seekers' activity stays private.** The extension reads only the current page and sends only the company name. Nothing about what a person views or applies to is stored on our server.
+
+**Pitch line:** *"Investors get an honest hiring signal without revealing what they're watching, and the companies being scored can't tamper with the AI."*
+
+**One question to ask the organizers at kickoff:** does Theme 2 accept protection of users' queries and of the AI pipeline, rather than of a confidential dataset? If they say no, the investor zone is the part to strengthen.
 
 ## Official requirements (from the [official rules](https://www.starhacks.org/ibmzdatathon-official-rule))
 
+The requirements are unchanged; the right-hand column says what each rule means for a project built on our own dataset.
+
 ### What we must submit (on Hack2Skill)
 
-- [ ] **Demo video, 3 minutes maximum**, covering: the problem statement · supporting data that validates the problem · solution overview · how RealRole uses IBM Z, **including our tech stack and a demo of our LinuxONE instance and model**
-- [ ] **Public GitHub repo** with the complete code, plus **links to every open-source library and framework used**
-- [ ] **Project title** in this exact format: `[Team Name_IBM Z Datathon 2026 Project]`
-- [ ] Optional but recommended: **architecture flowchart** and **working prototype** (we'll include both)
-- [ ] All links checked live before submitting. Submit by hand: entries submitted by bots or scripts are disqualified
+- [ ] **Demo video, 3:00 maximum**: problem · supporting data · solution overview · how RealRole uses IBM Z (**tech stack, our LinuxONE instance and model**)
+- [ ] **Public GitHub repo** with all code, plus **links to every open-source library and framework used**
+- [ ] **Title** in this exact format: `[Team Name_IBM Z Datathon 2026 Project]`
+- [ ] **Architecture flowchart** and **working prototype** (optional; we include both)
+- [ ] All links checked live; **submitted by hand** (bot or script submissions are disqualified)
 
-### Rules that shape how we work
+### Rules and what they mean for us
 
-- **All code must be written during the event** (October 17–18). Nothing before: no code, no scripts, no notebooks. Planning documents, research, and downloading public data are fine. Our build plan is a plan, not code.
-- **Both IBM AI/ML labs are mandatory before we start building:** "Predictive AI Hybrid AI scenarios (multi-model)" and "Predictive AI + Generative AI." Our design deliberately matches both: several predictive models working together, plus Granite generative AI.
-- **Must run on the LinuxONE Community Cloud**, and judges want **screenshots as evidence** of containerization, security, scalability and compute.
-- **Open-source libraries are allowed** if we link them in the submission.
-- **Originality:** no code, ideas or projects from other teams or outside sources. AI coding agents are allowed; the README says we used them.
-- **Content standards:** no political messaging. Frame the problem around job seekers and data accuracy, not around any party, administration or politician.
-- Team of 4–6; one project per track. **We're competing in person at the New York hub** (1st $1,000 · 2nd $750 · 3rd $500), and can also win an Americas AI Innovation Excellence Award.
+| Rule | What it means for RealRole |
+|---|---|
+| All code written October 17–18 | The collection pipeline, prompts-as-code and the dataset itself are all produced during the event. A company list or indicator list written earlier is planning, not code. |
+| Both IBM labs mandatory before building | Our scoring stack still matches both: several predictive models together, plus Granite for generated explanations. |
+| Must run on LinuxONE Community Cloud, with screenshots | Collection, dataset store, scoring, investor zone and API all run in containers there (see [How we use Linux](#how-we-use-linux-linuxone)). |
+| Open-source libraries allowed if linked | Every library is listed in the README. |
+| Originality: nothing from other teams or outside sources | No code or ideas from existing fake-job projects. Our dataset is new, which helps here. |
+| AI coding agents allowed | The README says we used them. Claude is also a data-collection tool, which is a different use: **ask the organizers at kickoff** whether a non-IBM model may collect data. If not, Claude writes the scrapers and the scrapers collect. |
+| No political messaging | Talk about investors, job seekers and data accuracy, never about parties or administrations. |
+| Team of 4–6, one project per track | In person at the New York hub (1st $1,000 · 2nd $750 · 3rd $500), plus the Americas AI Innovation Excellence Award. |
 
-### How we'll be judged (4 criteria × 10 points)
+Two more of our own rules: **collect only from sources whose terms allow it** (no LinkedIn, Glassdoor or Indeed scraping), and **collect nothing about individual people**.
+
+## How we'll be judged (4 criteria × 10 points)
+
+Our strongest card is the dataset: nobody else will have it.
 
 | Criterion | What judges look for | How RealRole scores high |
 |---|---|---|
-| Value to community and theme fit | Real problem, clear beneficiaries, theme visible in idea and execution | Job seekers and unemployed workers; privacy-by-design is the core of the architecture, not an add-on |
-| Novelty and originality | New idea, built from scratch | Nobody else verifies postings against hiring records; community + AI + confidential data together |
-| Technical design and LinuxONE use | Strong architecture, AI/ML on LinuxONE, open-source AI packages, containers, security, scalability, compute | Multi-model predictive + generative AI on LinuxONE; containerized services; encrypted confidential zone; Telum/benchmark; screenshots of all of it |
-| Execution and pitch | Clear, professional, compelling video with a demo, within 3 minutes | Scripted, rehearsed video; live demo footage; real numbers |
+| Value to community and theme fit | Real problem, clear beneficiaries, theme visible | Two audiences (investors, job seekers) and an incentive loop that pushes companies toward honest postings; confidential watchlists and a tamper-resistant AI pipeline are the design's core |
+| Novelty and originality | New idea, built from scratch | A new dataset of company hiring indicators that doesn't exist anywhere, collected by AI with every value sourced and verified |
+| Technical design and LinuxONE use | Architecture, AI/ML on LinuxONE, open-source AI, containers, security, scalability, compute | Sandboxed collection container, encrypted dataset store, confidential investor zone, multi-model scoring on LinuxONE, scheduled refresh as Linux services |
+| Execution and pitch | Clear, compelling video with a demo, under 3:00 | One finding from our data, then the investor and job-seeker views of the same company |
 
-There is also an **AI Innovation Excellence Award** for unusually novel AI with strong technical depth on LinuxONE. Our multi-model design, survival modeling and privacy-protected verification are aimed at it.
+**AI Innovation Excellence Award angle:** an AI collection pipeline that verifies its own sources and resists manipulation, feeding a calibrated multi-model score.
 
-## The problem
+## Our dataset
 
-Ghost jobs, postings with no real intent to hire, waste job seekers' time and make the job market look stronger than it is. The data that could prove which jobs are real exists, but it's confidential.
+We build the RealRole dataset ourselves because the indicators we need aren't in any existing dataset, and the existing job-posting datasets aren't reliable enough to trust. Claude agents collect it from public sources during the event; our code checks every value before it is kept.
 
-- **Job seekers:** hours lost applying to postings that were never going to be filled. The worst-hit are unemployed workers, new grads and career changers.
-- **Unemployment claimants:** NY claimants must log job applications each week to keep their benefits, and ghost postings waste that effort.
-- **Data accuracy:** job-openings statistics (JOLTS) may count ghost postings, so labor demand looks higher than it is. Official job numbers also get large later revisions (about −818,000 jobs in the 2024 benchmark revision).
-- **Why now:** Ontario now requires postings to disclose whether a vacancy exists, and several US states have proposed ghost-job bills.
-- **Our own evidence (collected during the event):** a quick survey of students, and the "ghost gap" chart from public data.
+### Three tables
 
-All statistics are approximate and from memory. Check each one against its source before it goes in the video.
+| Table | One row per | Holds |
+|---|---|---|
+| `companies` | Company | Ticker, name, sector, size, and the 30 features below |
+| `postings` | Posting seen on a company's careers site | Title, location, posted date, salary range, description, date we saw it |
+| `evidence` | Collected value | The value, source URL, supporting quote, page date, date collected, and whether our check passed |
+
+### The indicators (model features, 30)
+
+RealRole scores companies, so each feature is **one number per company**. Features that start from single postings are rolled up over the company's open postings: a share, a median or a mean. Most come from our own `postings` table; the rest come from `evidence` rows collected from filings and other sources. Occupation norms (typical salary, description length, requirements and time to close for each occupation) are learned across all postings in our table plus the Kaggle LinkedIn set (2023–24), which is used only for norms.
+
+**Posting volume and growth (6)**
+
+| # | Feature | Definition (per company) | Why it signals real or inflated hiring | Source |
+|---|---|---|---|---|
+| 1 | `postings_per_100_employees` | Open postings ÷ latest employee count × 100 | Many more postings than a company could plausibly fill | ATS board; employee count from filings |
+| 2 | `open_postings_log` | log(1 + open postings) | Size of the posting footprint, apart from company size | ATS board |
+| 3 | `posting_trend_vs_revenue` | 12-month % change in open postings minus % change in revenue | Postings climbing faster than the business is growing | Wayback Machine archives; revenue from filings |
+| 4 | `revenue_growth` | Latest fiscal year's revenue growth | Context: a growing company has more reason to hire | 10-K / XBRL |
+| 5 | `sector_postings_trend` | 90-day % change in Indeed's US postings index for the company's sector | Context: is the whole sector posting more? | Indeed Hiring Lab (`job_postings_by_sector_US.csv`) |
+| 6 | `bulk_posting_share` | Share of open postings posted on the company's busiest 3 days | Batches of roles listed at once, often from a template | ATS posted dates |
+
+**Posting lifetime (3)**
+
+| # | Feature | Definition (per company) | Why | Source |
+|---|---|---|---|---|
+| 7 | `share_open_90_plus` | Share of open postings with posted date 90+ days ago | Roles that stay open long past normal hiring time | ATS posted dates |
+| 8 | `open_vs_expected` | Median of days open ÷ `expected_days_to_close` (from the survival model, by occupation, Job Zone, sector, location and seniority) | Same idea, but fair to roles that normally take long | Survival model on `postings` |
+| 9 | `no_real_deadline_share` | Share with no closing date, a closing date 180+ days out, or "until filled" / "rolling" / "open until" wording | Postings not tied to a hiring timeline | Posting text and dates |
+
+**Reposting and duplication (6)**
+
+| # | Feature | Definition (per company) | Why | Source |
+|---|---|---|---|---|
+| 10 | `repost_rate` | Share of postings whose normalized title + location reappeared with a new ID within 90 days | The same role recycled instead of filled | `postings`, across snapshots and archives |
+| 11 | `median_days_between_reposts` | Median gap between those reposts; NaN if fewer than 2 | Regular, scheduled reposting | Same |
+| 12 | `deleted_and_reposted_share` | Share of postings that disappeared and reappeared within 60 days with text of cosine similarity > 0.9 | Hiding a posting's age | Same, plus Granite embeddings |
+| 13 | `same_role_many_locations` | Median number of locations per normalized title currently open | One job listed in dozens of cities | `postings` |
+| 14 | `template_similarity` | Median, over the company's postings, of each posting's highest cosine similarity to its other current postings | Boilerplate rather than specific vacancies | Granite embeddings |
+| 15 | `text_pc_1..5` | Company's mean Granite embedding of title + description, reduced to 5 components with PCA (fit on training folds only) | What kinds of roles and wording the company posts | Granite embeddings |
+
+**Posting quality (10)**
+
+| # | Feature | Definition (per company) | Why | Source |
+|---|---|---|---|---|
+| 16 | `salary_listed_share` | Share of postings with a salary minimum, maximum or midpoint | Openness about a real role | Posting text / ATS fields |
+| 17 | `salary_missing_where_required` | Share of postings in NY, CA, CO or WA with no salary range | Low care about the posting being filled | Posting text and location |
+| 18 | `salary_range_ratio` | Median of max ÷ min, after converting to yearly pay | Very wide ranges suggest no specific role | Posting text |
+| 19 | `salary_vs_occupation` | Median of (salary midpoint − the occupation's median) ÷ the occupation's interquartile range | Pay far off the market for the role | Posting text; occupation norms |
+| 20 | `specificity_score` | Mean of a 0–4 score per posting: +1 each for a start date, a reporting line ("reports to," "hiring manager"), an interview process ("interview process," "rounds," "steps"), and 3+ named tools | Real vacancies tend to be specific | Posting text |
+| 21 | `named_team_share` | Share mentioning a named team, group or project ("join the Payments team") | Same | Posting text |
+| 22 | `seniority_mismatch_share` | Share where an intern/junior/entry title asks for 5+ years, or a senior/lead/principal title asks for 1 year or less | Postings written without a real role in mind | Title and text |
+| 23 | `vague_phrase_rate` | Mean count per posting of "talent community," "talent pool," "pipeline," "future opportunities," "evergreen," "always looking," "always hiring," "may not be an active," "general application," "expression of interest" | Postings not tied to a vacancy | Posting text |
+| 24 | `requirements_vs_job_zone` | Median of requirement bullets ÷ the median for the same Job Zone | Wish lists far beyond the role's level | Posting text; O*NET Job Zones |
+| 25 | `description_length_z` | Median absolute z-score of word count within the occupation group (very short and very long are both unusual) | Placeholder or copy-paste descriptions | Posting text |
+
+**Company signals (3)**
+
+| # | Feature | Definition (per company) | Why | Source |
+|---|---|---|---|---|
+| 26 | `days_since_layoff` + `layoff_workers` | Days since the latest layoff event (NaN if none in 24 months) and the workers affected | Cutting staff while still posting | State WARN notices, 8-K filings, earnings calls, press releases |
+| 27 | `hiring_freeze_stated` | A hiring freeze or pause stated in the last 12 months | Freezing hiring while still posting | Earnings calls, press releases, 8-Ks |
+| 28 | `management_hiring_tone` | Score from short quotes on hiring: "disciplined headcount," "slowing hiring" vs. "investing in talent" | What management says vs. what the careers site shows | 10-K, earnings calls, shareholder letters |
+
+**Occupation mix (2)**
+
+| # | Feature | Definition (per company) | Why | Source |
+|---|---|---|---|---|
+| 29 | `mean_job_zone` + `top_soc_group_share` | Mean O*NET Job Zone of the company's postings, and the share in its most common SOC major group (titles matched by exact match, then character n-gram TF-IDF ≥ 0.6) | Context: some occupations take longer to fill | O*NET titles and Job Zones |
+| 30 | `long_cycle_share` | Share of postings for intern, summer analyst, campus, new grad, fellowship, residency or executive-search roles | Context: these open long on purpose and shouldn't count against the company | Title and text |
+
+**Left out on purpose:**
+
+- **Headcount change** and anything built from it, including a postings-to-hires ratio: that is the ground truth ([Ground truth](#ground-truth-and-the-probability-score)), so the model would just read off the answer.
+- **LinkedIn-only fields** (sponsored postings, relisted flag, LinkedIn skill tags): we don't scrape LinkedIn, so live postings don't have them.
+- **NYC payroll hires by title:** this version scores public companies, not city agencies.
+- **Anything per day open** (like applications per day): not available from ATS boards, and it mixes in posting age.
+- **32 embedding components:** too many for 300 companies, so we keep 5.
+
+**Headcount change is also our ground truth, so it is never fed to the model as a feature** ([Ground truth](#ground-truth-and-the-probability-score)).
+
+### How collection runs
+
+1. A fixed list of 300 listed companies, weighted toward the sectors with the most ghost jobs; those sectors are collected first.
+2. For each company, a Claude agent with web search fills a fixed JSON schema. Every field is a value, a source URL, a short supporting quote and the page's date, or "not found."
+3. Our code fetches each URL and rejects any value whose quote isn't on the page. Values two sources disagree on are flagged.
+4. A scraper (also written by Claude, during the event) pulls each company's open postings from its ATS board into the `postings` table. It runs again on day 2, so we have two snapshots; the Wayback Machine supplies the longer history.
+5. A person spot-checks 30 random companies against the sources. The error rate goes in the model card and the video.
+6. A **20-company pilot** runs first to measure time and cost per company before the full run.
+
+**What we publish.** The `companies` and `evidence` tables, with source links, go in the public repo as a datathon deliverable. We publish indicators and short quotes, not copies of whole pages.
+
+### Traps to avoid
+
+- **Leakage:** never ask Claude whether a company "posts ghost jobs" or collect complaints about it. That is the answer, not an input, and the model would just repeat reputations.
+- **Untrusted pages:** a page's text is data. The collection prompt tells Claude to ignore instructions found on pages, and the URL-and-quote check catches made-up values.
+
+## Ground truth and the probability score
+
+The score is checked against what companies actually did: how many people they hired, estimated from the headcount they report in their own filings. That is the one outcome we can measure for real without confidential data.
+
+### The outcome we measure, per company, per year
+
+1. **Net headcount change:** employee count in the latest annual filing minus the one before (10-K; 10-Q where reported).
+2. **Replacement hiring:** people hired to fill jobs others left, estimated as headcount × the sector's yearly separation rate (BLS JOLTS, a published reference figure).
+3. **Estimated hires** = net change + replacement hiring.
+4. **Postings** over the same year, counted from archived careers pages.
+5. **Follow-through ratio** = estimated hires ÷ postings, capped at 1.
+
+**What the score says.** For each company, the model predicts its follow-through ratio from the indicators alone. We show it as a probability: *"about 64% of this company's postings are likely to lead to a hire."* Calibration checks that companies we score at 60% really land near 60% on held-out data.
+
+### Known weaknesses (say them before a judge does)
+
+- Filings report global headcount; postings may be mostly US. We restrict to companies that are mostly US-based or report US headcount, and note the rest.
+- Annual headcount is a slow, coarse outcome. It catches persistent bloat, not one ghost role.
+- 300 companies is a small training set: keep models shallow, use cross-validation, and report ranges, not single numbers.
+- Headcount change is the answer, so it is never an input. Revenue and posting trend are inputs; headcount change is not.
+- **Fairness.** Large companies post more and can look worse on raw counts, so indicators are per employee or compared within the sector. Results are reported by sector and size in the model card.
 
 ## How it works
 
-Public postings get scored in real time; confidential hiring records stay inside the confidential zone and confirm or correct those scores.
+Claude collects, our code verifies, and models on LinuxONE score. Scores are computed ahead of time and refreshed on a schedule; the extension, lookup and investor dashboard only read them.
 
 ```
-Browser extension ─── posting ──▶ Scoring API (container) ──┐
-Web app ───────── pasted text ──▶   multi-model AI on Telum  │
-                ◀── verdict, reasons, community count ───────┤
-                                                             ▼
-Public postings ──┐         ┌─ Confidential zone (isolated, encrypted container) ─┐──▶ Job seekers: badge, verdict
-WARN notices ─────┼────────▶│ Posting ↔ hire matching                             │──▶ Employers: follow-through + responses
-New-hire reports ─┤ (enc.)  │ Follow-through score + differential privacy         │──▶ Policy dashboard: ghost gap, NY index
-UI wage records ──┘         └──────────── keys never leave the zone ──────────────┘
+ Internet: careers sites · ATS boards · SEC filings · WARN notices · Wayback Machine
+                │
+                ▼
+ ┌─ COLLECTION SANDBOX (only container with internet) ─┐
+ │ Claude agents (web search) + ATS scrapers           │   API key = podman secret;
+ │ output: candidate values with URL + quote + date    │   no DB, no model, no other secrets
+ └──────────────────────────┬──────────────────────────┘
+                            ▼
+ VERIFICATION container: fetch each URL, check the quote, flag source conflicts
+                            │ accepted values only (the only writer to the store)
+                            ▼
+ DATASET STORE: PostgreSQL on a LUKS2-encrypted volume (companies · postings · evidence)
+                            │ internal network
+                            ▼
+ SCORING container (no internet): follow-through model + survival + Granite embeddings
+   + surge detection + calibration + SHAP/Granite reasons → versioned scores with evidence links
+                            │ published scores only
+            ┌───────────────┴──────────────────────────┐
+            ▼                                          ▼
+ PUBLIC API (only published port)          INVESTOR ZONE (own container, encrypted volume,
+   extension · lookup · employer page        own internal network): watchlists, alerts and
+   ← company name only                       scores for them; operators can't read it
 ```
 
-### The AI (Workstream A)
+Only the collection sandbox reaches the internet, nothing enters the dataset without passing verification, and investors' watchlists never leave their zone.
 
-Several models work together. This is the "multi-model" and "predictive + generative" pattern from the two mandatory labs.
+### The models (Workstream A)
 
-1. **Ghost-job scorer (predictive):** gradient-boosted trees on about 45 features: time (days open, reposts), engagement, pay, text (vagueness, boilerplate, seniority mismatch), employer behavior (posting volume vs. size, layoffs) and occupation.
-2. **Time-to-hire survival model (predictive):** learns how long each kind of job normally stays open, so 12-month summer analyst cycles aren't flagged as ghosts.
-3. **Text embeddings (Granite):** turn the job description into numbers the scorer can use.
-4. **Positive-unlabeled learning and calibration:** trains on approximate labels and makes "70%" really mean about 70%.
-5. **Explanations (SHAP + Granite, generative):** turn the score into plain-language reasons, and draft a follow-up email to the recruiter.
-6. **Extraction (Granite, generative):** pulls company, title, salary and dates out of pasted text.
-7. **Evaluation:** tested on a hand-labeled gold set and validated on real NYC hiring data.
+Several models work together, matching both mandatory IBM labs (multi-model predictive, plus predictive + generative):
 
-### Confidential hiring verification (Workstream B)
+1. **Follow-through model (predictive):** gradient-boosted trees, with a regularized linear model as the baseline, predicting each company's follow-through ratio from its indicators.
+2. **Posting-lifetime survival model (predictive):** on the `postings` table, how long postings stay open compared with similar roles elsewhere. Postings still open are handled properly as unfinished (censored) rather than dropped. Each company's result becomes one indicator.
+3. **Granite embeddings:** each posting is embedded to find near-duplicates, template text and roles listed in many locations.
+4. **Surge detection (predictive):** flags a company whose posting count jumps away from its own history; this drives investor alerts.
+5. **Calibration and ranges:** turns predictions into honest probabilities and shows a range for each score.
+6. **Explanations (SHAP + Granite, generative):** the top drivers become plain sentences, each linked to its evidence row.
+7. **Extraction (Granite, generative):** reads the company name from the posting page or pasted text and matches it to our `companies` table.
 
-1. **Matching:** inside the confidential zone, compare each employer's postings with its new hires (minus normal replacement hiring).
-2. **Follow-through score:** real hires ÷ postings, with differential-privacy noise added (IBM's diffprivlib) and small employers suppressed. That's the only number that leaves the zone.
-3. **Feedback loop:** verified outcomes recalibrate the public scorer, so it learns from confidential data without exposing it.
+Claude is used only to collect and to write code; scoring, explanations and extraction run on LinuxONE with open-source models and IBM Granite.
 
-On the LinuxONE Community Cloud, the confidential zone is an **isolated container with an encrypted data volume, using LinuxONE's built-in cryptographic hardware**. In production it would run under **IBM Secure Execution / Hyper Protect**, where even system administrators can't see inside (*verify* at setup whether Secure Execution is available on our instance; if so, use it).
+### Extension and lookup (Workstream D)
 
-### The browser extension and web app (Workstream D)
+The extension reads the employer from the page's structured `JobPosting` data (Greenhouse, Lever, Workday) or its layout (LinkedIn) and shows the company's badge. A company outside our dataset shows **"Not in our dataset yet."** Ground rules: read only the current page, send only the company name, phrase everything as likelihood, never "fake."
 
-- **Extension:** reads the posting from the page's structured `JobPosting` data (Greenhouse, Lever, Workday) or its page layout (LinkedIn), sends it to the API, and shows the badge. If the company isn't in our data, the score uses the page alone and the badge says so.
-- **Web app:** paste text or a URL; Granite extracts the fields; same API; verdict, reasons, "what to do," and a Granite-drafted follow-up email.
-- **Scam postings** (asking for payment or bank details, off-platform chat) get a separate scam warning instead of a ghost score.
-- Ground rules: read only the page the user is viewing, send only the posting, and phrase scores as likelihoods ("ghost-likely"), never accusations ("fake").
+### Investor dashboard (Workstream D with C)
 
-### Application tracker and follow-ups (no accounts)
+A fund logs in, uploads or types a watchlist, and sees scores, sector comparisons, trends and alerts. The watchlist and everything computed from it stay inside the confidential zone.
 
-1. **"I applied"** on the badge saves the job in the user's browser only.
-2. **"My applications"** page lists each application with its status.
-3. **30-day lock:** *Never heard back* and *Told it was filled* stay grayed out for 30 days, with a countdown. Positive outcomes can be reported any time.
-4. **Reminders** after 30 days: notification plus a count on the extension icon. *Still waiting* asks again later.
-5. **Sealed timestamp:** the server records only an anonymous ID, the posting and the date, and rejects early ghost reports, so the lock can't be bypassed.
-6. **Demo mode:** 30 days become 30 seconds for the video.
+## How we use Linux (LinuxONE)
 
-### Community reports
+RealRole is a pipeline that keeps running, and Linux on LinuxONE gives each stage its own container with only the access it needs. The collection stage is the only one on the internet, the dataset sits on an encrypted volume, and investors' watchlists live in a separate zone.
 
-1. Options: *Never heard back* · *Told it was filled* (locked 30 days) · *Keeps getting reposted* · *Interviewed, then the role disappeared* · *Got an interview* · *Got hired*.
-2. **Shown only when many agree:** at least 10 responses and at least 60% ghost. Example: *"14 of 18 RealRole users reported no response or a filled role."*
-3. **Private:** counts only, never who; stored encrypted with an anonymous ID; one report per user per posting; reports expire after 6 months.
-4. **Training:** postings that pass the threshold become labels; reporters who agree with others count more.
-5. **Report on the job board:** opens the board's own report page; the user submits it.
-6. **Employer responses** appear on the employer page (component 7).
-
-For the demo, community reports are **simulated** (seeded test data), and the video says so.
-
-## Why IBM Z / LinuxONE
-
-**Pitch line:** *"Whether a job is real can only be proven with hiring records that legally can't leave the state, so we bring the AI to the data, inside an encrypted zone on LinuxONE."*
-
-| LinuxONE capability | How RealRole uses it | Screenshot evidence for judges |
+| Stage | Linux mechanism | Screenshot for judges |
 |---|---|---|
-| **Containerization** | API, web app, confidential zone and dashboard each run in their own container (Podman) | `podman ps` showing all services; compose file |
-| **Security** | Encrypted volume for hiring data using the built-in crypto hardware; isolated container; keys never leave the zone; "access denied" test | Crypto hardware in use; encrypted volume; the denied access attempt |
-| **AI on Telum** | Scorer runs through IBM's AI Toolkit (Snap ML / Deep Learning Compiler) where the on-chip accelerator is available (*verify* on our instance) | Benchmark output; accelerator check |
-| **Scalability and compute** | Load test: thousands of scores per second; projected to every US posting daily | Load-test results and CPU/memory graphs |
-| **Data gravity** | State wage and benefits systems already run on mainframes; the AI moves to the data | Architecture diagram |
+| Collection sandbox (Claude agents + scrapers) | Its own container, the only one with internet access; the Claude API key held as a `podman secret`, never in the image or repo; read-only root filesystem, capabilities dropped, CPU and memory capped | `podman ps`; `podman secret ls`; the run's log in `journalctl` |
+| Verification | Separate container that fetches each source and checks the quote; it can write to the dataset, the collection sandbox cannot | Log of accepted and rejected values |
+| Dataset store | PostgreSQL in a container on a LUKS2-encrypted volume | `cryptsetup status`; `podman volume inspect` |
+| Scheduled refresh | Podman Quadlet units run by a systemd timer: new postings snapshot every day, full company refresh every week (cron as fallback) | `systemctl list-timers` |
+| Scoring | Model container on an internal Podman network (`podman network create --internal`), no internet | `podman network inspect`; batch-scoring time |
+| Investor zone | Separate container and encrypted volume on its own internal network; reads published scores, never the collection side; request bodies not logged | The "access denied" test: the API and scoring containers cannot read the zone's volume |
+| Public API | The only published port; serves scores to the extension and lookup | A `curl` returning a company's score |
+| Hardware crypto | LUKS2 with AES runs on LinuxONE's on-chip crypto unit (CPACF); protected keys if a Crypto Express adapter is present | `lszcrypt`, crypto flags in `/proc/cpuinfo`, `icastats` before and after |
+| AI on Telum | Models run through IBM's AI Toolkit for IBM Z (Snap ML) where the accelerator is exposed | `uname -m` (s390x), `lscpu`, the `nnpa` flag in `/proc/cpuinfo`, benchmark |
+| Scale | Load test on the API; time to rescore all companies | Requests per second, `podman stats` |
 
-## Data plan
+**An honest limit for the pitch:** on the Community Cloud we have root, so we could look inside the investor zone ourselves. IBM Secure Execution closes that gap in production, which is why the design names it.
 
-Postings are real public data; hiring records are synthetic, and the video says so plainly. All raw data is already downloaded in `data/raw/` (see [data/README.md](data/README.md)).
+**Michael checks at setup and posts the answers:**
 
-| Dataset | Real or synthetic | Used for |
-| --- | --- | --- |
-| LinkedIn job postings (Kaggle, 2023–24) | Real | Main training data |
-| NYC job postings (2026) + NYC payroll (FY2022–25) | Real | Real-world validation: posted titles vs. actual hires |
-| open-jobs-data (tech companies, Aug–Oct 2026) | Real | Recent postings, repost tracking |
-| USAJOBS postings + OPM federal hires (2025–26) | Real | Federal postings-vs-hires analysis (dashboard) |
-| FRED (JOLTS, Indeed index), Indeed Hiring Lab | Real | Ghost-gap chart, NY openings estimate |
-| O*NET 31.0 | Real | Job titles → occupations, normal hiring timelines |
-| NY WARN layoff notices (2026) | Real | Scorer feature |
-| New-hire reports, NYS-45 wage records | Synthetic, in the real government layouts | Confidential matching, follow-through |
-| Community reports | Simulated | Badge, threshold logic, extra labels |
-| Gold set: 300 hand-labeled postings | Real labels by our team, made during the event | Honest model evaluation |
-| Student survey | Real responses, collected during the event | Problem evidence in the video |
+- [ ] Can our instance reach the internet, and the Claude API? If not, collection runs on a laptop and only the verified dataset is copied to LinuxONE (stated in the README).
+- [ ] Does `pip install anthropic` work on s390x? If not, the collection code calls the API with plain HTTP requests.
+- [ ] Do we have sudo for `cryptsetup` and SELinux labels?
+- [ ] Is Podman 4.4+ installed (needed for Quadlet)?
+- [ ] Are Secure Execution, the Telum accelerator, a Crypto Express adapter and Granite available?
 
-## Team and agents
+Claude Code, the agents writing our code, runs on our laptops; the code runs on LinuxONE.
 
-### Four workstreams, four people, four agents
+## Team, build order and pitch
 
-| Workstream | Person | Their agent builds (folders) |
+Same four people; the dataset becomes the biggest workstream, so B owns it and A starts modeling as soon as the pilot rows exist.
+
+| Workstream | Person | Agent builds (folders) |
 |---|---|---|
-| **A: AI/ML** | ML lead (grad) | `ml/`: cleaning, features, scorer, survival model, embeddings, explanations, Granite extraction and email drafts, evaluation, model card |
-| **B: Data and confidential zone** | Data lead | `synth/`, `nyc/`, `enclave/`, `analysis/`, `dashboard/`: synthetic records, matching, differential privacy, NYC validation, policy dashboard |
-| **C: Platform** | **Michael** (owns the LinuxONE server) | `api/`, `deploy/`, `scripts/`: API, reports database, containers, encryption, Telum, load test, screenshots |
-| **D: Product** | Product and pitch lead | `extension/`, `webapp/`, `employer/`: extension, tracker, web app, employer page |
+| **A: AI/ML** | ML lead (grad) | `ml/`: indicators from postings, follow-through model, survival model, embeddings, surge detection, calibration, explanations, model card |
+| **B: Dataset** | Data lead | `collect/`, `verify/`, `dataset/`: company list, Claude collection agents, ATS scrapers, source verification, ground-truth headcounts, spot check, published dataset |
+| **C: Platform** | **Michael** (LinuxONE) | `deploy/`, `api/`, `zone/`, `scripts/`: containers, networks, encrypted volumes, timers, API, investor zone, Telum, load test, screenshots |
+| **D: Product** | Product and pitch lead | `extension/`, `lookup/`, `investor/`, `employer/`: badge, lookup, investor dashboard, employer page |
 
-Each agent works only in its own folders, on its own git branch, against the shared contracts (data tables and API formats) in the build plan. The person reviews and merges their agent's work. Contracts change only after telling the whole team.
+Each agent works only in its own folders, on its own git branch, against the shared contracts in the [build plan](realrole-build-plan.md). The person reviews and merges their agent's work. **Shared contracts for `CONTRACTS.md` at kickoff:** the three dataset tables (`companies`, `postings`, `evidence`) and the score response (probability, range, reasons with evidence links, date refreshed, "not in dataset").
 
 ### What humans do vs. what agents do
 
 | By hand (people) | By agents (with human review) |
 |---|---|
 | Complete the **two mandatory IBM labs** | All code for the build plan tasks |
-| Set up LinuxONE logins, keys and the shared folder; anything needing passwords or accounts | Data cleaning, feature engineering, model training scripts |
-| Michael: confirm with organizers whether Secure Execution, the Telum accelerator and Granite are available | Synthetic data generators |
-| Write `CONTRACTS.md` and `AGENTS.md` in the repo at the start (copied from the build plan) | API, database, containers, benchmark scripts |
-| **Label the gold set** (300 postings, two people each) while agents build | Extension, web app, employer page, dashboard |
-| Run the **student survey** (send the form at kickoff) | Tests, README draft, open-source link list |
-| Pick the 5–10 real postings for the demo | Charts from finished results |
+| LinuxONE logins and keys; store the Claude API key as a `podman secret`; anything needing passwords or accounts | Collection agents, ATS scrapers, the verifier |
+| Michael: run the setup checklist; **ask the organizers about Claude for data collection and about Theme 2** | Ground-truth headcount extraction, indicators, models |
+| Sign off the **company list** at the start of Block 1 | API, store, containers, timers, investor zone, benchmark scripts |
+| **Spot-check 30 random companies** against their sources | Extension, lookup, investor dashboard, employer page |
+| Run the **student survey** (send the form at kickoff) | Tests, README draft, open-source link list, dataset docs |
+| Pick the demo company and a demo watchlist | Charts from finished results |
 | Turn each task brief into a master prompt with your agent; review every pull request; merge; decide when a block is done | First drafts of the model card and architecture diagram |
-| Load and test the extension in Chrome; click through the demo | |
-| Take the **screenshots** for judges | |
-| Write the video script, record narration and screen capture, edit to under 3:00 | |
-| Fact-check every number in the video against its source | |
+| Take the **screenshots** for judges; write, record and edit the video to under 3:00; fact-check every number | |
 | **Submit on Hack2Skill** (must be done by a person) | |
-
-### Before the event (no code allowed)
-
-- [ ] **Michael:** attend the LinuxONE setup session; find out what's available (Secure Execution? Telum AI accelerator? watsonx or local Granite? inbound ports?) and share it with the team
-- [ ] Confirm the team name for the title format, and the New York hub's schedule and location
-- [ ] Prepare the survey questions (a 3-question form, sent at kickoff): How many jobs did you apply to this year? How many never responded? Do you think some were ghost jobs?
-- [ ] Download the LinkedIn dataset (Kaggle) into `data/raw/linkedin/`
-- [ ] Read the build plan; each person reads their workstream and the shared contracts
-- [ ] Agree on the label guide (in the build plan) so labeling starts quickly
-- [ ] Pick 5–10 candidate demo postings on Greenhouse/Lever/LinkedIn (mix of likely real and likely ghost)
-- [ ] Verify every statistic you plan to use and save the sources
 
 ### Build order
 
-Work through the blocks in order; within a block, the four workstreams run in parallel. **Task briefs for every block (goal, inputs and outputs, details, open questions, done-when) are in [realrole-build-plan.md](realrole-build-plan.md).** There are no ready-made prompts: each person explores their task with their agent, settles the open questions, has the agent draft a **master prompt**, edits it, then sends it. Final master prompts are saved in `docs/prompts/`.
+Work through the blocks in order; within a block, the four workstreams run in parallel. **Task briefs for every block are in [realrole-build-plan.md](realrole-build-plan.md).** There are no ready-made prompts: each person explores their task with their agent, settles the open questions, has the agent draft a **master prompt**, edits it, then sends it. Final master prompts are saved in `docs/prompts/`.
 
-| Block | A: AI/ML | B: Data and zone | C: Platform | D: Product | People (by hand) | Done when |
-| --- | --- | --- | --- | --- | --- | --- |
-| 0 Kickoff | Config, IDs | Data onto server | Accounts, repo, Python on s390x, containers | Repo, extension scaffold | **Both IBM labs**; contracts + AGENTS.md; survey sent | Labs done; everyone can run code on LinuxONE |
-| 1 Foundations | Clean data, occupations, weak labels, baseline model | Synthetic records; NYC postings ↔ payroll | Confidential zone, placeholder API, reports DB | Extension shows placeholder badge | Start gold-set labeling | Placeholder badge on a real page; first model |
-| 2 Real model | Full features, embeddings, survival, PU learning, SHAP | Matching, follow-through with DP; ghost-gap chart | Real API, containerized; access-denied test | Real badge; web app v1 | Keep labeling; review PRs | Real scores everywhere |
-| 3 Tracker, reports, AI extras | Granite extraction, follow-up emails, scam warning | Policy dashboard: NY index, NYC evidence | Reports endpoint, timestamps, threshold; Telum; load test | "I applied", lock, reminders, reports; LinkedIn | Finish gold set; screenshots | Apply → report → count shows |
-| 4 Results and polish | Gold-set and NYC evaluation, fairness, model card | Federal postings-vs-hires; dashboard polish | End-to-end test, tunnel, final benchmark | Employer page; web app polish; demo mode | Survey results; video script | Full demo runs twice with no help |
-| 5 If time | [Improvements, if time](#improvements-if-time) | | | | | |
-| 6 Freeze and submit | Bug fixes only | Bug fixes only | Bug fixes only | Bug fixes only | Record and edit video (≤3:00), README, flowchart, submit by hand | Submitted; all links live |
+| Block | A: AI/ML | B: Dataset | C: Platform | D: Product | Done when |
+| --- | --- | --- | --- | --- | --- |
+| 0 Kickoff | Config | Company list; collection schema | Python on s390x, Podman, internet check | Repo, extension scaffold | Both labs done; organizers asked about Claude and Theme 2; contracts written |
+| 1 Pilot | Indicator code on pilot rows | 20-company pilot; verifier; ATS scraper | Collection and verification containers; encrypted store | Placeholder badge | 20 verified companies in the store |
+| 2 Full data, first model | Follow-through + survival models; first scores | Full run; ground-truth headcounts; day-2 snapshot | Scoring container; API; timers | Real badge; lookup v1 | Real scores in the badge |
+| 3 Investor side | Surge detection; Granite explanations | 30-company spot check; first findings | Investor zone; access-denied test; Telum; load test | Investor dashboard; employer page | Watchlist scored inside the zone |
+| 4 Results | Calibration, fairness, model card | Publish dataset; findings chart | End-to-end test; final benchmark | Polish; demo mode | Full demo runs twice unaided |
+| 5 Freeze | Bug fixes only | Bug fixes only | Bug fixes only | Bug fixes only | Submitted by hand; links live |
 
-Sleep in shifts, and never have both people a task depends on asleep at once.
+[Improvements](#improvements-if-time) happen only between Blocks 4 and 5, once Blocks 0–4 work end to end. Sleep in shifts, and never have both people a task depends on asleep at once.
 
 ### Video plan (3:00 maximum, required content in order)
 
 | Time | Segment | Shows |
 |---|---|---|
-| 0:00–0:25 | **Problem** | A real ghost-job story; the cost to job seekers |
-| 0:25–0:50 | **Supporting data** | Ghost-gap chart, NYC postings-vs-hires evidence, our survey number |
-| 0:50–1:15 | **Solution overview** | RealRole in one sentence; architecture flowchart |
-| 1:15–2:15 | **Demo** | Extension badge on a real posting → "why?" with follow-through and community count → "I applied" → reminder → report → web app paste with Granite email → employer page |
-| 2:15–2:50 | **IBM Z** | Tech stack; **LinuxONE instance on screen**: containers running, encrypted zone, access denied, model scoring on LinuxONE, benchmark |
-| 2:50–3:00 | **Close** | Impact number and who it helps |
+| 0:00–0:25 | **Problem** | Postings are read as growth, but nobody checks whether they become hires |
+| 0:25–0:50 | **Supporting data** | Our dataset's headline finding: postings vs. actual hiring by sector; survey number |
+| 0:50–1:15 | **Solution** | "RealRole tells you how likely a company is to post real jobs"; architecture |
+| 1:15–2:15 | **Demo** | Same company twice: investor watchlist with an alert, then the job-seeker badge and "why?" with sources; employer response |
+| 2:15–2:50 | **IBM Z** | Collection sandbox, verification rejecting a bad value, encrypted store, investor zone access denied, timers, scoring on LinuxONE, benchmark |
+| 2:50–3:00 | **Close** | Who it helps and the incentive loop |
 
 Record at least one full backup take. Stay under 3:00: going over costs points.
 
-## Pitch framing
+### Likely judge questions
 
-Lead with people harmed, then the confidential-data problem, then the confidential zone. Keep it non-political: talk about job seekers and data accuracy, never about parties or administrations. Don't claim anyone fakes numbers; say the data that would make the numbers accurate exists but can't be used safely or in time.
-
-| Likely judge question | Our answer |
+| Question | Our answer |
 | --- | --- |
-| "Couldn't this run on a laptop?" | The scorer could. Proof can't: it needs confidential hiring records that must stay inside protected systems like LinuxONE. |
-| "Isn't your ground truth made up?" | The hiring records are synthetic by necessity. The scorer is validated separately on real data: a hand-labeled gold set and real NYC payroll records. |
-| "Who would deploy this?" | Job seekers directly (extension); the NY Department of Labor for its job bank; job boards wanting cleaner listings. |
-| "Is it fair to employers?" | Scores are probabilities with reasons, not accusations; employers see their score and can respond publicly; we audited results by company size and industry. |
-| "Why is this AI for Good?" | It protects job seekers' and unemployed workers' time and makes labor data more accurate. |
-| "What if people report wrongly or on purpose?" | One report never shows; 10+ responses and 60%+ agreement are needed; positive outcomes count too; one report per user per posting; reliable reporters count more; employers can respond. |
-| "Does the extension spy on users?" | It reads only the posting on the current page. The list of applications stays in the user's browser; the server only gets an anonymous timestamp. |
+| "Can you trust data an AI collected?" | Every value has a source URL and a quote our code checks on the live page; we hand-checked 30 companies and report the error rate. |
+| "What is your ground truth?" | Hiring estimated from the headcount companies report in their own filings, plus normal replacement hiring for their sector. |
+| "Where's the confidential part?" | Investors' watchlists, which reveal their positions, are processed in an isolated encrypted zone; in production, Secure Execution keeps even us out. |
+| "Can companies game it?" | Collection is sandboxed, every value needs a verified source, conflicting sources are flagged, and every score keeps its evidence trail. |
+| "Is it fair to companies?" | Probabilities with sources, compared within the sector; companies can respond and correct facts; audited by size and sector. |
+| "Couldn't this run on a laptop?" | The scoring could. Keeping investors' watchlists private from the operator can't; that needs LinuxONE's isolation. |
 
 ## Improvements, if time
 
-Only after Blocks 0–4 work end to end. In priority order:
+Only after Blocks 0–4 work end to end, in this order: grow the company list · score history chart per company · "I applied" tracker in the extension · sector leaderboard.
 
-| # | Improvement | Why it helps | Effort |
-| --- | --- | --- | --- |
-| 1 | Impact estimate: ghost share × applications × time per application = hours wasted per year in NY | One memorable number for the video | Small |
-| 2 | "I applied" in the web app (saved in the browser) | Tracker works for postings the extension can't read | Small |
-| 3 | NY pay transparency notice: when a NY posting has no salary range, explain the law and how to file a complaint | A real, enforceable report path | Small |
-| 4 | Subsidy jobs-promise check (published NY incentive awards vs. synthetic hiring) | Adds the taxpayer angle | Large |
-| 5 | Auto-detect clicks on a site's Apply button ("Did you apply?") | Users don't have to remember to click | Medium per site |
-| 6 | Survival model upgrade (DeepSurv-style neural network) | More advanced time-to-hire model | Large |
-| 7 | Submit the extension to the Chrome Web Store ($5 fee) | "It's in review" is a strong line | Small (plus review time) |
-
-### After the datathon (roadmap, not built)
-
-- **Optional accounts** (Sign in with Google) to sync applications across devices and make spam harder; only a hashed ID, kept apart from reports
-- **Public release** on the Chrome Web Store and Firefox Add-ons
-- **"Ghost job report card":** a privacy-protected monthly report by employer and industry for lawmakers and the NY Department of Labor
-- **Early warning for official job-estimate revisions**, comparing survey-based estimates with incoming hiring records
-- **Production deployment under IBM Secure Execution / Hyper Protect**, with state agencies holding their own keys
+**Roadmap (not built):** daily refresh at scale · an investor data feed · a monthly posting-bloat report by sector · production under Secure Execution.
