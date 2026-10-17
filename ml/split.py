@@ -1,6 +1,6 @@
 """Fixed, reproducible, group-aware train / validation / test split (ml/AUDIT.md explains why).
 
-    python -m ml.split            # writes ml/splits/split_v1.csv and split_v1.json
+    python -m ml.split            # writes ml/splits/split_v1.csv, split_v1.json and data/fake_job_postings_cleaned.csv
 
 Groups: postings are linked when they share a company profile or a description (after normalization, with the
 anonymized URL/email/phone hashes kept, since a shared hash means the same link). Linked postings form one group via
@@ -31,6 +31,7 @@ VERSION = "v1"
 SPLIT_DIR = Path(__file__).resolve().parent / "splits"
 SPLIT_CSV = SPLIT_DIR / f"split_{VERSION}.csv"
 SPLIT_JSON = SPLIT_DIR / f"split_{VERSION}.json"
+CLEAN_CSV = DATA_PATH.with_name("fake_job_postings_cleaned.csv")   # convenience copy; load_split() is the source
 GROUP_KEYS = [("company_profile", 30), ("description", 50)]   # (column, minimum normalized length)
 N_OUTER, N_CV = 7, 5
 
@@ -145,6 +146,14 @@ def main():
     print("  cv folds (train): " + "  ".join(f"{k}: {v['rows']} rows / {v['prevalence']:.2%}" for k, v in meta["cv_folds"].items()))
     print(f"  groups crossing splits: {meta['groups_crossing_splits']}   crossing cv folds: {meta['groups_crossing_cv_folds']}")
     print(f"  wrote {SPLIT_CSV} and {SPLIT_JSON.name}")
+    export_clean()
+
+
+def export_clean(path=CLEAN_CSV) -> None:
+    """Write the cleaned, deduplicated rows with group_id, split and cv_fold to one CSV (for notebooks and Excel)."""
+    df = load_split()
+    df.to_csv(path, index=False, encoding="utf-8")
+    print(f"  wrote {path} ({len(df)} rows, {df.shape[1]} columns)")
 
 
 if __name__ == "__main__":

@@ -17,6 +17,8 @@ from ml.cleaning import FEATURE_COLS, TARGET, TEXT_COLS, CATEGORICAL_COLS, BINAR
 
 `load_split()` checks the CSV's SHA-256 against the split file and refuses to run if the data changed.
 
+**Just want a file?** `data/fake_job_postings_cleaned.csv` holds the same rows and columns as `load_split()`. `python -m ml.split` rewrites it; don't edit it by hand.
+
 Rebuild everything with:
 - `python -m ml.split`
 - `python -m ml.audit`
