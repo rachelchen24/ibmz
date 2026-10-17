@@ -1,5 +1,10 @@
-# Scraper output, raw responses and caches (build plan 1.2: never commit data/collect/)
-data/collect/
+# Collection output: each scraper's shard folder is committed so teammates can merge them;
+# raw response caches, downloaded reference files, merged output and logs are not.
+data/collect/*
+!data/collect/shard_*/
+!data/collect/shard_assignment.csv
+data/collect/shard_*/logs/
+data/collect/shard_*/*.rejected.jsonl
 __pycache__/
 *.pyc
 .env

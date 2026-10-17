@@ -1,0 +1,301 @@
+ticker,name,sector,priority_tier,shard
+ALLY,Ally Financial Inc.,banking,1,1
+BKU,"BankUnited, Inc.",banking,1,1
+C,CITIGROUP INC,banking,1,1
+CATY,CATHAY GENERAL BANCORP,banking,1,1
+CHCO,CITY HOLDING CO,banking,1,1
+CVBF,CVB FINANCIAL CORP,banking,1,1
+EFSC,ENTERPRISE FINANCIAL SERVICES CORP,banking,1,1
+FBK,FB Financial Corp,banking,1,1
+FRME,FIRST MERCHANTS CORP,banking,1,1
+GABC,"GERMAN AMERICAN BANCORP, INC.",banking,1,1
+GBCI,"GLACIER BANCORP, INC.",banking,1,1
+HWC,HANCOCK WHITNEY CORP,banking,1,1
+KEY,KEYCORP /NEW/,banking,1,1
+LOB,"Live Oak Bancshares, Inc.",banking,1,1
+ONB,OLD NATIONAL BANCORP /IN/,banking,1,1
+RNST,RENASANT CORP,banking,1,1
+SFBS,"ServisFirst Bancshares, Inc.",banking,1,1
+SFNC,SIMMONS FIRST NATIONAL CORP,banking,1,1
+TFC,TRUIST FINANCIAL CORP,banking,1,1
+TRMK,TRUSTMARK CORP,banking,1,1
+WABC,WESTAMERICA BANCORPORATION,banking,1,1
+APAM,Artisan Partners Asset Management Inc.,finance,1,1
+CHYM,"Chime Financial, Inc.",finance,1,1
+CRCL,"Circle Internet Group, Inc.",finance,1,1
+GS,GOLDMAN SACHS GROUP INC,finance,1,1
+HAPN,"Happen, Inc.",finance,1,1
+HLI,"HOULIHAN LOKEY, INC.",finance,1,1
+HOOD,"Robinhood Markets, Inc.",finance,1,1
+IBKR,"Interactive Brokers Group, Inc.",finance,1,1
+ICE,"Intercontinental Exchange, Inc.",finance,1,1
+IVZ,Invesco Ltd.,finance,1,1
+LAZ,"Lazard, Inc.",finance,1,1
+NAVI,NAVIENT CORP,finance,1,1
+NNI,NELNET INC,finance,1,1
+SNEX,StoneX Group Inc.,finance,1,1
+SOFI,"SoFi Technologies, Inc.",finance,1,1
+STEP,StepStone Group Inc.,finance,1,1
+TPG,TPG Inc.,finance,1,1
+VIRT,"Virtu Financial, Inc.",finance,1,1
+ACM,AECOM,professional_services,1,1
+ALIT,"Alight, Inc. / Delaware",professional_services,1,1
+AMTM,"Amentum Holdings, Inc.",professional_services,1,1
+ASTH,"Astrana Health, Inc.",professional_services,1,1
+CART,Maplebear Inc.,professional_services,1,1
+CPAY,"CORPAY, INC.",professional_services,1,1
+DASH,"DoorDash, Inc.",professional_services,1,1
+EFX,EQUIFAX INC,professional_services,1,1
+FIS,"Fidelity National Information Services, Inc.",professional_services,1,1
+HURN,Huron Consulting Group Inc.,professional_services,1,1
+PAY,"Paymentus Holdings, Inc.",professional_services,1,1
+PHR,"Phreesia, Inc.",professional_services,1,1
+RELY,"Remitly Global, Inc.",professional_services,1,1
+TTEK,TETRA TECH INC,professional_services,1,1
+UBER,"Uber Technologies, Inc",professional_services,1,1
+WEX,WEX Inc.,professional_services,1,1
+AGYS,AGILYSYS INC,tech,1,1
+AVGO,Broadcom Inc.,tech,1,1
+CRWD,"CrowdStrike Holdings, Inc.",tech,1,1
+CTSH,COGNIZANT TECHNOLOGY SOLUTIONS CORP,tech,1,1
+DBD,"DIEBOLD NIXDORF, Inc",tech,1,1
+DOCS,"Doximity, Inc.",tech,1,1
+DV,"DoubleVerify Holdings, Inc.",tech,1,1
+ESE,ESCO TECHNOLOGIES INC,tech,1,1
+FA,FIRST ADVANTAGE CORP,tech,1,1
+HPE,Hewlett Packard Enterprise Co,tech,1,1
+LSCC,LATTICE SEMICONDUCTOR CORP,tech,1,1
+MDB,"MongoDB, Inc.",tech,1,1
+NOW,"ServiceNow, Inc.",tech,1,1
+PCTY,Paylocity Holding Corp,tech,1,1
+PI,IMPINJ INC,tech,1,1
+SAIC,Science Applications International Corp,tech,1,1
+SAIL,"SailPoint, Inc.",tech,1,1
+TYL,TYLER TECHNOLOGIES INC,tech,1,1
+VISN,"Vistance Networks, Inc.",tech,1,1
+VRSN,VERISIGN INC/CA,tech,1,1
+ABCB,Ameris Bancorp,banking,1,2
+BANR,BANNER CORP,banking,1,2
+BBT,Beacon Financial Corp,banking,1,2
+BOH,BANK OF HAWAII CORP,banking,1,2
+BUSE,FIRST BUSEY CORP /NV/,banking,1,2
+CBU,"COMMUNITY FINANCIAL SYSTEM, INC.",banking,1,2
+CFG,CITIZENS FINANCIAL GROUP INC/RI,banking,1,2
+CFR,"CULLEN/FROST BANKERS, INC.",banking,1,2
+COF,CAPITAL ONE FINANCIAL CORP,banking,1,2
+COLB,"COLUMBIA BANKING SYSTEM, INC.",banking,1,2
+FCF,FIRST COMMONWEALTH FINANCIAL CORP /PA/,banking,1,2
+FFBC,FIRST FINANCIAL BANCORP /OH/,banking,1,2
+FHN,FIRST HORIZON CORP,banking,1,2
+FLG,"FLAGSTAR BANK, NATIONAL ASSOCIATION",banking,1,2
+FNB,FNB CORP/PA/,banking,1,2
+HBAN,HUNTINGTON BANCSHARES INC /MD/,banking,1,2
+JPM,JPMORGAN CHASE & CO,banking,1,2
+LKFN,LAKELAND FINANCIAL CORP,banking,1,2
+TBBK,"Bancorp, Inc.",banking,1,2
+TCBK,TRICO BANCSHARES /,banking,1,2
+AGM,FEDERAL AGRICULTURAL MORTGAGE CORP,finance,1,2
+APO,"Apollo Global Management, Inc.",finance,1,2
+BAM,Brookfield Asset Management Ltd.,finance,1,2
+BFH,"BREAD FINANCIAL HOLDINGS, INC.",finance,1,2
+BLK,"BlackRock, Inc.",finance,1,2
+CME,CME GROUP INC.,finance,1,2
+DAVE,Dave Inc./DE,finance,1,2
+ENVA,"Enova International, Inc.",finance,1,2
+HLNE,Hamilton Lane INC,finance,1,2
+LPLA,LPL Financial Holdings Inc.,finance,1,2
+MORN,"Morningstar, Inc.",finance,1,2
+PIPR,PIPER SANDLER COMPANIES,finance,1,2
+PJT,PJT Partners Inc.,finance,1,2
+PWP,Perella Weinberg Partners,finance,1,2
+SF,STIFEL FINANCIAL CORP,finance,1,2
+SLM,SLM Corp,finance,1,2
+TW,Tradeweb Markets Inc.,finance,1,2
+VCTR,"Victory Capital Holdings, Inc.",finance,1,2
+ACVA,ACV Auctions Inc.,professional_services,1,2
+ADT,ADT Inc.,professional_services,1,2
+BAH,Booz Allen Hamilton Holding Corp,professional_services,1,2
+CRL,"CHARLES RIVER LABORATORIES INTERNATIONAL, INC.",professional_services,1,2
+ETSY,ETSY INC,professional_services,1,2
+EXLS,"ExlService Holdings, Inc.",professional_services,1,2
+FICO,FAIR ISAAC CORP,professional_services,1,2
+FLYW,Flywire Corp,professional_services,1,2
+GPN,GLOBAL PAYMENTS INC,professional_services,1,2
+ICFI,"ICF International, Inc.",professional_services,1,2
+IT,GARTNER INC,professional_services,1,2
+MCO,MOODYS CORP /DE/,professional_services,1,2
+SEZL,Sezzle Inc.,professional_services,1,2
+SPGI,S&P Global Inc.,professional_services,1,2
+TNET,"TRINET GROUP, INC.",professional_services,1,2
+V,VISA INC.,professional_services,1,2
+WLDN,"Willdan Group, Inc.",professional_services,1,2
+ADBE,ADOBE INC.,tech,1,2
+AVPT,"AvePoint, Inc.",tech,1,2
+BLKB,BLACKBAUD INC,tech,1,2
+CSCO,"CISCO SYSTEMS, INC.",tech,1,2
+FIVN,"Five9, Inc.",tech,1,2
+FLEX,FLEX LTD.,tech,1,2
+GDDY,GoDaddy Inc.,tech,1,2
+GTLB,Gitlab Inc.,tech,1,2
+INTC,INTEL CORP,tech,1,2
+LOGI,LOGITECH INTERNATIONAL S.A.,tech,1,2
+MCHP,MICROCHIP TECHNOLOGY INC,tech,1,2
+MQ,"Marqeta, Inc.",tech,1,2
+NSSC,"NAPCO SECURITY TECHNOLOGIES, INC",tech,1,2
+PBI,PITNEY BOWES INC /DE/,tech,1,2
+PENG,"Penguin Solutions, Inc.",tech,1,2
+PRGS,PROGRESS SOFTWARE CORP /MA,tech,1,2
+PTC,PTC INC.,tech,1,2
+SLAB,SILICON LABORATORIES INC.,tech,1,2
+SMTC,SEMTECH CORP,tech,1,2
+SWKS,"SKYWORKS SOLUTIONS, INC.",tech,1,2
+BANC,"BANC OF CALIFORNIA, INC.",banking,1,3
+BFC,Bank First Corp,banking,1,3
+BOKF,BOK FINANCIAL CORP,banking,1,3
+CIVB,"CIVISTA BANCSHARES, INC.",banking,1,3
+EBC,"Eastern Bankshares, Inc.",banking,1,3
+FCNCA,FIRST CITIZENS BANCSHARES INC /DE/,banking,1,3
+FULT,FULTON FINANCIAL CORP,banking,1,3
+IBOC,INTERNATIONAL BANCSHARES CORP,banking,1,3
+NTRS,NORTHERN TRUST CORP,banking,1,3
+NWBI,"Northwest Bancshares, Inc.",banking,1,3
+PFS,PROVIDENT FINANCIAL SERVICES INC,banking,1,3
+PNC,"PNC FINANCIAL SERVICES GROUP, INC.",banking,1,3
+PRK,PARK NATIONAL CORP /OH/,banking,1,3
+SSB,SouthState Bank Corp,banking,1,3
+STBA,S&T BANCORP INC,banking,1,3
+TFIN,"Triumph Financial, Inc.",banking,1,3
+UCB,UNITED COMMUNITY BANKS INC,banking,1,3
+UMBF,UMB FINANCIAL CORP,banking,1,3
+VLY,VALLEY NATIONAL BANCORP,banking,1,3
+WAFD,WAFD INC,banking,1,3
+AMG,"AFFILIATED MANAGERS GROUP, INC.",finance,1,3
+AMP,AMERIPRISE FINANCIAL INC,finance,1,3
+AXP,AMERICAN EXPRESS CO,finance,1,3
+BGC,"BGC Group, Inc.",finance,1,3
+CG,Carlyle Group Inc.,finance,1,3
+EVR,Evercore Inc.,finance,1,3
+FHI,"FEDERATED HERMES, INC.",finance,1,3
+JEF,Jefferies Financial Group Inc.,finance,1,3
+KKR,KKR & Co. Inc.,finance,1,3
+MC,Moelis & Co,finance,1,3
+OMF,"OneMain Holdings, Inc.",finance,1,3
+PFSI,"PennyMac Financial Services, Inc.",finance,1,3
+RJF,RAYMOND JAMES FINANCIAL INC,finance,1,3
+RKT,"Rocket Companies, Inc.",finance,1,3
+SCHW,SCHWAB CHARLES CORP,finance,1,3
+TROW,PRICE T ROWE GROUP INC,finance,1,3
+VRTS,"VIRTUS INVESTMENT PARTNERS, INC.",finance,1,3
+WD,"Walker & Dunlop, Inc.",finance,1,3
+ACN,Accenture plc,professional_services,1,3
+CBZ,"CBIZ, Inc.",professional_services,1,3
+EBAY,EBAY INC,professional_services,1,3
+EVH,"Evolent Health, Inc.",professional_services,1,3
+EXPO,EXPONENT INC,professional_services,1,3
+FCN,"FTI CONSULTING, INC",professional_services,1,3
+FOUR,"Shift4 Payments, Inc.",professional_services,1,3
+HQY,"HEALTHEQUITY, INC.",professional_services,1,3
+INCY,INCYTE CORP,professional_services,1,3
+IQV,IQVIA HOLDINGS INC.,professional_services,1,3
+MA,Mastercard Inc,professional_services,1,3
+PAYO,Payoneer Global Inc.,professional_services,1,3
+PYPL,"PayPal Holdings, Inc.",professional_services,1,3
+TRU,TransUnion,professional_services,1,3
+WU,Western Union CO,professional_services,1,3
+XMTR,"Xometry, Inc.",professional_services,1,3
+ADSK,"Autodesk, Inc.",tech,1,3
+AEIS,ADVANCED ENERGY INDUSTRIES INC,tech,1,3
+DBX,"DROPBOX, INC.",tech,1,3
+DGII,DIGI INTERNATIONAL INC,tech,1,3
+FORM,FORMFACTOR INC,tech,1,3
+IBM,INTERNATIONAL BUSINESS MACHINES CORP,tech,1,3
+LDOS,"Leidos Holdings, Inc.",tech,1,3
+MPWR,"MONOLITHIC POWER SYSTEMS, INC.",tech,1,3
+MTSI,"MACOM Technology Solutions Holdings, Inc.",tech,1,3
+MXL,"MAXLINEAR, INC",tech,1,3
+NAVN,"Navan, Inc.",tech,1,3
+PANW,Palo Alto Networks Inc,tech,1,3
+POWI,POWER INTEGRATIONS INC,tech,1,3
+RBRK,"Rubrik, Inc.",tech,1,3
+RGTI,"Rigetti Computing, Inc.",tech,1,3
+TTD,"Trade Desk, Inc.",tech,1,3
+TTMI,TTM TECHNOLOGIES INC,tech,1,3
+U,Unity Software Inc.,tech,1,3
+VERX,"Vertex, Inc.",tech,1,3
+VYX,NCR Voyix Corp,tech,1,3
+ZS,"Zscaler, Inc.",tech,1,3
+ASB,ASSOCIATED BANC-CORP,banking,1,4
+BNY,Bank of New York Mellon Corp,banking,1,4
+CNOB,"ConnectOne Bancorp, Inc.",banking,1,4
+CUBI,"Customers Bancorp, Inc.",banking,1,4
+EWBC,EAST WEST BANCORP INC,banking,1,4
+FHB,"FIRST HAWAIIAN, INC.",banking,1,4
+FIBK,FIRST INTERSTATE BANCSYSTEM INC,banking,1,4
+INDB,INDEPENDENT BANK CORP,banking,1,4
+NBHC,National Bank Holdings Corp,banking,1,4
+NBTB,NBT BANCORP INC,banking,1,4
+NIC,NICOLET BANKSHARES INC,banking,1,4
+PB,PROSPERITY BANCSHARES INC,banking,1,4
+PNFP,"Pinnacle Financial Partners, Inc.",banking,1,4
+RF,REGIONS FINANCIAL CORP,banking,1,4
+SBCF,SEACOAST BANKING CORP OF FLORIDA,banking,1,4
+SRCE,1ST SOURCE CORP,banking,1,4
+SYBT,"Stock Yards Bancorp, Inc.",banking,1,4
+TCBIO,TEXAS CAPITAL BANCSHARES INC/TX,banking,1,4
+UBSI,UNITED BANKSHARES INC/WV,banking,1,4
+WFC,WELLS FARGO & COMPANY/MN,banking,1,4
+AB,ALLIANCEBERNSTEIN HOLDING L.P.,finance,1,4
+AFRM,"Affirm Holdings, Inc.",finance,1,4
+BEN,FRANKLIN TEMPLETON INC,finance,1,4
+BX,Blackstone Inc.,finance,1,4
+CACC,CREDIT ACCEPTANCE CORP,finance,1,4
+CNS,"COHEN & STEERS, INC.",finance,1,4
+COIN,"Coinbase Global, Inc.",finance,1,4
+FRHC,Freedom Holding Corp.,finance,1,4
+GLXY,Galaxy Digital Inc.,finance,1,4
+MKTX,MARKETAXESS HOLDINGS INC,finance,1,4
+MS,MORGAN STANLEY,finance,1,4
+NDAQ,"NASDAQ, INC.",finance,1,4
+OWL,BLUE OWL CAPITAL INC.,finance,1,4
+PGY,Pagaya Technologies Ltd.,finance,1,4
+SEIC,SEI INVESTMENTS CO,finance,1,4
+SYF,Synchrony Financial,finance,1,4
+UPST,"Upstart Holdings, Inc.",finance,1,4
+WT,"WisdomTree, Inc.",finance,1,4
+AKAM,AKAMAI TECHNOLOGIES INC,professional_services,1,4
+ARLO,"Arlo Technologies, Inc.",professional_services,1,4
+BR,"BROADRIDGE FINANCIAL SOLUTIONS, INC.",professional_services,1,4
+CNXC,Concentrix Corp,professional_services,1,4
+CRAI,"CRA INTERNATIONAL, INC.",professional_services,1,4
+CSGP,"COSTAR GROUP, INC.",professional_services,1,4
+DFIN,"Donnelley Financial Solutions, Inc.",professional_services,1,4
+FISV,FISERV INC,professional_services,1,4
+LYFT,"Lyft, Inc.",professional_services,1,4
+MEDP,"Medpace Holdings, Inc.",professional_services,1,4
+MMS,"MAXIMUS, INC.",professional_services,1,4
+MSCI,MSCI Inc.,professional_services,1,4
+RPAY,Repay Holdings Corp,professional_services,1,4
+ULS,UL Solutions Inc.,professional_services,1,4
+VSEC,VSE CORP,professional_services,1,4
+ZG,"ZILLOW GROUP, INC.",professional_services,1,4
+AAPL,Apple Inc.,tech,1,4
+ALRM,"Alarm.com Holdings, Inc.",tech,1,4
+AMAT,APPLIED MATERIALS INC /DE,tech,1,4
+ATEN,"A10 Networks, Inc.",tech,1,4
+CACI,CACI INTERNATIONAL INC /DE/,tech,1,4
+CCC,CCC Intelligent Solutions Holdings Inc.,tech,1,4
+FSLY,"Fastly, Inc.",tech,1,4
+FTNT,"Fortinet, Inc.",tech,1,4
+GTM,ZoomInfo Technologies Inc.,tech,1,4
+HPQ,HP INC,tech,1,4
+KVYO,"Klaviyo, Inc.",tech,1,4
+MTCH,"Match Group, Inc.",tech,1,4
+OKTA,"Okta, Inc.",tech,1,4
+PL,Planet Labs PBC,tech,1,4
+Q,"Qnity Electronics, Inc.",tech,1,4
+QLYS,"QUALYS, INC.",tech,1,4
+QUBT,Quantum Computing Inc.,tech,1,4
+SABR,Sabre Corp,tech,1,4
+TDC,TERADATA CORP /DE/,tech,1,4
+TEAM,Atlassian Corp,tech,1,4
+TXN,TEXAS INSTRUMENTS INC,tech,1,4
