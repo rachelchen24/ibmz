@@ -4,7 +4,7 @@
     python -m collect.merge --snapshot 2026-10-17
 
 Writes data/collect/merged/:
-  features_<snapshot>.csv     one row per company, all shards
+  features_<snapshot>.csv     one row per company, all shards (from scraper1..4_features_<date>.csv)
   postings_<snapshot>.csv     all postings (posting fields + extras), deduplicated by posting_id
   candidates.csv              all candidate evidence rows, deduplicated by evidence_id (verify these next)
   coverage_<snapshot>.csv     per shard and sector: companies, and how many have each feature
@@ -28,6 +28,15 @@ def _latest(d, pattern):
     return files[-1] if files else None
 
 
+def _features_file(n: int, snapshot: str | None):
+    """scraper<n>_features_<date>.csv: in shard_<n>/, or anywhere under data/collect/ (e.g. a teammate's file
+    dropped in as-is). The latest date wins unless --snapshot is given."""
+    pattern = f"scraper{n}_features_{snapshot or '*'}.csv"
+    files = [p for p in config.COLLECT_DIR.rglob(pattern) if "merged" not in p.parts]
+    files += [p for p in config.shard_dir(n).glob(f"features_{snapshot or '*'}.csv")]   # older name
+    return max(files, key=lambda p: (p.stem.rsplit("_", 1)[-1], p.stat().st_mtime)) if files else None
+
+
 def main():
     ap = argparse.ArgumentParser(description="Merge scraper1..scraper4 outputs.")
     ap.add_argument("--snapshot", help="postings/features snapshot date (default: latest in each shard)")
@@ -41,17 +50,18 @@ def main():
     for n in range(1, config.N_SHARDS + 1):
         d = config.shard_dir(n)
         man = d / "manifest.json"
-        if not man.exists():
-            report["problems"].append(f"shard {n}: no manifest (scraper{n} has not run)")
-            continue
-        m = json.loads(man.read_text(encoding="utf-8"))
-        report["shards"][n] = {k: m.get(k) for k in ("run_id", "git_commit", "prompt_version", "snapshot_date",
-                                                     "started_at", "ended_at", "row_counts", "failed")}
-        f = d / f"features_{a.snapshot}.csv" if a.snapshot else _latest(d, "features_*.csv")
-        if f and f.exists():
-            feats.append(pd.read_csv(f))
+        if man.exists():
+            m = json.loads(man.read_text(encoding="utf-8"))
+            report["shards"][n] = {k: m.get(k) for k in ("run_id", "git_commit", "prompt_version", "snapshot_date",
+                                                         "started_at", "ended_at", "row_counts", "failed")}
         else:
-            report["problems"].append(f"shard {n}: no features file")
+            report["problems"].append(f"shard {n}: no manifest.json (only the features CSV can be merged)")
+        f = _features_file(n, a.snapshot)
+        if f:
+            feats.append(pd.read_csv(f))
+            report.setdefault("features_files", {})[n] = str(f.relative_to(config.ROOT))
+        else:
+            report["problems"].append(f"shard {n}: no scraper{n}_features_*.csv found under {config.COLLECT_DIR}")
         p = d / f"postings_{a.snapshot}.jsonl" if a.snapshot else _latest(d, "postings_2*.jsonl")
         if p and p.exists():
             df = pd.DataFrame(read_jsonl(p))

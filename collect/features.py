@@ -294,7 +294,7 @@ def build(shard: int, snapshot: str | None = None, companies_path=config.COMPANY
     df = pd.DataFrame(rows)
     lead = ["ticker", "name", "sector", "shard", "snapshot_date"]
     df = df[lead + FEATURES + [c for c in df.columns if c not in lead + FEATURES]]
-    out = d / f"features_{snapshot}.csv"
+    out = d / f"scraper{shard}_features_{snapshot}.csv"
     df.to_csv(out, index=False)
 
     print(f"\n=== features shard {shard}, snapshot {snapshot}: {len(df)} companies -> {out}")

@@ -40,7 +40,7 @@ def latest_features() -> pd.DataFrame:
         return pd.read_csv(merged[-1])
     frames = []
     for d in sorted(config.COLLECT_DIR.glob("shard_*")):
-        files = sorted(d.glob("features_*.csv"))
+        files = sorted(d.glob("scraper*_features_*.csv")) or sorted(d.glob("features_*.csv"))
         if files:
             frames.append(pd.read_csv(files[-1]))
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
