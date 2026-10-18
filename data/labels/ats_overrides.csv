@@ -1,7 +1,0 @@
-ticker,name,shard,ats,careers_url,notes
-ADSK,Autodesk,3,workday:autodesk.wd1.myworkdayjobs.com/Ext,,from open-jobs-data companies.json
-ADBE,Adobe,2,workday:adobe.wd5.myworkdayjobs.com/external_experienced,,from open-jobs-data companies.json
-INTC,Intel,2,workday:intel.wd1.myworkdayjobs.com/External,,from open-jobs-data companies.json
-PYPL,PayPal,3,workday:paypal.wd1.myworkdayjobs.com/jobs,,from open-jobs-data companies.json
-DASH,DoorDash,1,greenhouse:doordashusa,,from open-jobs-data companies.json
-V,Visa,2,none,,uses SmartRecruiters (not supported)
