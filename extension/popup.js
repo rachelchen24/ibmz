@@ -5,8 +5,16 @@
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const state = tab ? await chrome.runtime.sendMessage({ type: "getState", tabId: tab.id }) : null;
 
-  if (!state || !state.score) {
-    status.textContent = "No job listing we can read on this page.";
+  if (!state) {
+    status.textContent = "No job listing on this page. Open a listing on Greenhouse, Lever, Workday or LinkedIn.";
+    return;
+  }
+  if (state.status === "no-listing") {
+    status.textContent = "Job site found, but no listing visible yet. Open a job so its full description shows.";
+    return;
+  }
+  if (state.status === "error") {
+    status.textContent = state.detail || "Couldn't check this listing.";
     return;
   }
   status.textContent = RealRoleFormat.view(state.score).sentence + ".";

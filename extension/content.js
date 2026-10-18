@@ -29,7 +29,17 @@
     const site = RealRoleSites.forUrl(location.href);
     if (!site) return clear();
     const jobposting = site.getJobPosting(document);
-    if (!jobposting || !(jobposting.title || jobposting.description)) return clear();
+    if (!jobposting || !(jobposting.title || jobposting.description)) {
+      // A supported job site, but no listing (yet): a search page, or a single-page app still rendering.
+      removeBadge();
+      const none = "none|" + location.href;
+      if (state.key !== none) {
+        state.key = none;
+        state.score = null;
+        send({ type: "noListing", source: site.source });
+      }
+      return;
+    }
 
     // Re-score when the listing changes (single-page apps swap listings without a page load).
     const key = location.href + "|" + (jobposting.title || "") + "|" + String(jobposting.description || "").length;

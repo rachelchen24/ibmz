@@ -1,5 +1,6 @@
-// Workday career sites: <tenant>.wd<N>.myworkdayjobs.com. A single-page app, so content.js re-runs detection when
-// the page changes.
+// Workday career sites: <tenant>.wd<N>.myworkdayjobs.com and wd<N>.myworkdaysite.com. Job pages are .../job/...
+// or .../details/... (the split view next to search results). A single-page app, so content.js re-runs detection
+// whenever the page changes.
 (function () {
   // --- Selectors (update here when Workday changes its HTML) ---
   const SEL = {
@@ -12,7 +13,7 @@
 
   RealRoleSites.register({
     source: "workday",
-    match: (url) => url.hostname.endsWith(".myworkdayjobs.com") && /\/job\//.test(url.pathname),
+    match: (url) => /\.myworkday(jobs|site)\.com$/.test(url.hostname) && /\/(job|details)\//.test(url.pathname),
     getJobPosting(doc) {
       const jp = RealRoleSites.bestJobPosting(doc, SEL);
       if (jp && !(jp.hiringOrganization && jp.hiringOrganization.name)) {

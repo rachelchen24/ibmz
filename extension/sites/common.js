@@ -72,11 +72,15 @@
     };
   }
 
-  // JSON-LD when present, with any missing title/description filled from the page.
+  const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+  // JSON-LD when present, with any missing title/description filled from the page. Single-page sites (Workday)
+  // can keep the first job's JSON-LD while showing another job: if the visible title differs, trust the page.
   function bestJobPosting(doc, sel) {
     const ld = jsonLdJobPosting(doc);
     const dom = domJobPosting(doc, sel);
     if (!ld) return dom;
+    if (dom && dom.title && ld.title && norm(dom.title) !== norm(ld.title)) return dom;
     return { ...ld, title: ld.title || (dom && dom.title), description: ld.description || (dom && dom.description) };
   }
 

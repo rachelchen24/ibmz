@@ -1,4 +1,4 @@
-# ML dependencies (ml/ only; collection uses collect/requirements.txt). Add yours below with a comment.
+# Dependencies for ml/ and api/ (api/ and lookup/ otherwise use only the Python standard library).
 pandas>=2.0
 numpy>=1.26
 scikit-learn>=1.6   # StratifiedGroupKFold (ml/split.py); FrozenEstimator for calibration (ml/lgbm.py)

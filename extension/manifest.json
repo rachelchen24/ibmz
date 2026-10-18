@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "RealRole",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Checks the job listing you're viewing for signs of a scam, with the reasons behind the score.",
   "minimum_chrome_version": "116",
   "permissions": [
@@ -12,6 +12,7 @@
     "https://*.greenhouse.io/*",
     "https://jobs.lever.co/*",
     "https://*.myworkdayjobs.com/*",
+    "https://*.myworkdaysite.com/*",
     "https://www.linkedin.com/*",
     "http://localhost:8000/*"
   ],
@@ -25,6 +26,7 @@
         "https://job-boards.greenhouse.io/*",
         "https://jobs.lever.co/*",
         "https://*.myworkdayjobs.com/*",
+        "https://*.myworkdaysite.com/*",
         "https://www.linkedin.com/*",
         "http://localhost:8000/demo/*"
       ],
@@ -52,6 +54,7 @@
         "https://*.greenhouse.io/*",
         "https://jobs.lever.co/*",
         "https://*.myworkdayjobs.com/*",
+        "https://*.myworkdaysite.com/*",
         "https://www.linkedin.com/*",
         "http://localhost:8000/*"
       ]

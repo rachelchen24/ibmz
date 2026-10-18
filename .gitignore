@@ -1,16 +1,6 @@
-# Collection output: each scraper's shard folder is committed so teammates can merge them;
-# raw response caches, downloaded reference files, merged output and logs are not.
-data/collect/*
-!data/collect/shard_*/
-!data/collect/shard_assignment.csv
-data/collect/shard_*/logs/
-data/collect/shard_*/*.rejected.jsonl
-# Fitted models are regenerable and large; ml/reports/*.json is the committed deliverable (ml/PLAN.md).
+# Trained models are regenerated with `python -m ml.run train`; the reports in ml/reports/ are committed.
+ml/models/
 ml/artifacts/
 __pycache__/
 *.pyc
 .env
-data/verify/
-data/processed/
-# Fitted model binaries (ml/PLAN.md: keep large outputs out of git); reports in ml/reports/ are committed.
-ml/models/

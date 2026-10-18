@@ -15,13 +15,31 @@ function cacheKey(jobposting) {
   return "score:" + hash(JSON.stringify([jobposting.title, jobposting.description, jobposting.hiringOrganization]));
 }
 
+// A tab's state belongs to one page. Single-page job sites (Workday, LinkedIn) change the URL without reloading,
+// so the state remembers its URL and is ignored once the tab shows a different page.
+function samePage(a, b) {
+  const strip = (u) => String(u || "").split("#")[0];
+  return strip(a) === strip(b);
+}
+
 async function postJSON(path, body) {
-  const res = await fetch(`${CFG.API_URL}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`API returned ${res.status}`);
+  let res;
+  try {
+    res = await fetch(`${CFG.API_URL}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new Error(`Can't reach the RealRole API at ${CFG.API_URL}. Is it running? (py api/main.py)`);
+  }
+  if (!res.ok) {
+    let detail = "";
+    try {
+      detail = (await res.json()).error || "";
+    } catch {}
+    throw new Error(`The RealRole API returned an error (${res.status}${detail ? ": " + detail : ""}).`);
+  }
   return res.json();
 }
 
@@ -32,25 +50,10 @@ async function fetchScore(jobposting, source) {
   const score = await postJSON("/score", { jobposting, source });
   if (typeof score.risk !== "number") {
     // An old or different server on API_URL (e.g. the retired mock): show nothing rather than a fake 0%.
-    throw new Error(`the server at ${CFG.API_URL} isn't the RealRole scam-risk API (no "risk" in its reply). Run: py api/main.py`);
+    throw new Error(`The server at ${CFG.API_URL} isn't the RealRole scam-risk API. Run: py api/main.py`);
   }
   await chrome.storage.session.set({ [key]: score });
   return { key, score };
-}
-
-// The Granite summary is slow (seconds on CPU), so it is fetched after the badge shows and swapped in.
-async function addGraniteSummary(tabId, key, score) {
-  if (score.summary_source !== "template" || score.granite_backend === "template") return;
-  await setTabState(tabId, { score: { ...score, summary_pending: true } });
-  try {
-    const g = await postJSON("/summary", { risk: score.risk, flagged: score.flagged, reasons: score.reasons });
-    const updated = { ...score, summary: g.summary, summary_source: g.summary_source, summary_pending: false };
-    await chrome.storage.session.set({ [key]: updated });
-    await setTabState(tabId, { score: updated });
-  } catch (err) {
-    console.warn("RealRole: summary request failed:", err.message);
-    await setTabState(tabId, { score: { ...score, summary_pending: false } });
-  }
 }
 
 async function setTabState(tabId, value) {
@@ -61,8 +64,37 @@ async function setTabState(tabId, value) {
   chrome.runtime.sendMessage({ type: "stateChanged", tabId }).catch(() => {});
 }
 
+async function getTabState(tabId) {
+  const key = "tab:" + tabId;
+  const state = (await chrome.storage.session.get(key))[key] || null;
+  if (!state) return null;
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    if (!samePage(state.url, tab.url)) return null; // the tab has moved on to another page
+  } catch {
+    return null;
+  }
+  return state;
+}
+
+// The Granite summary is slow (seconds on CPU), so it is fetched after the badge shows and swapped in.
+async function addGraniteSummary(tabId, url, key, score) {
+  if (score.summary_source !== "template" || score.granite_backend === "template") return;
+  await setTabState(tabId, { url, status: "scored", score: { ...score, summary_pending: true } });
+  try {
+    const g = await postJSON("/summary", { risk: score.risk, flagged: score.flagged, reasons: score.reasons });
+    const updated = { ...score, summary: g.summary, summary_source: g.summary_source, summary_pending: false };
+    await chrome.storage.session.set({ [key]: updated });
+    await setTabState(tabId, { url, status: "scored", score: updated });
+  } catch (err) {
+    console.warn("RealRole: summary request failed:", err.message);
+    await setTabState(tabId, { url, status: "scored", score: { ...score, summary_pending: false } });
+  }
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   const tabId = msg.tabId ?? sender.tab?.id;
+  const url = sender.tab?.url;
 
   if (msg.type === "openPanel") {
     // Must be called synchronously inside the click's user gesture, before any await.
@@ -76,15 +108,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "score") {
     fetchScore(msg.jobposting, msg.source)
       .then(async ({ key, score }) => {
-        await setTabState(tabId, { score });
+        await setTabState(tabId, { url, status: "scored", score });
         sendResponse({ ok: true, score });
-        addGraniteSummary(tabId, key, score);
+        addGraniteSummary(tabId, url, key, score);
       })
       .catch(async (err) => {
-        console.warn("RealRole: score request failed:", err.message);
-        await setTabState(tabId, null);
-        sendResponse({ ok: false });
+        console.warn("RealRole:", err.message);
+        await setTabState(tabId, { url, status: "error", detail: err.message });
+        sendResponse({ ok: false, error: err.message });
       });
+    return true;
+  }
+
+  if (msg.type === "noListing") {
+    // A supported job site, but no listing on this page yet (e.g. a search page, or still loading).
+    setTabState(tabId, { url, status: "no-listing", source: msg.source }).then(() => sendResponse({ ok: true }));
     return true;
   }
 
@@ -94,14 +132,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === "getState") {
-    const key = "tab:" + tabId;
-    chrome.storage.session.get(key).then((r) => sendResponse(r[key] || null));
+    getTabState(tabId).then(sendResponse);
     return true;
   }
 });
 
-// A full page load starts fresh; the content script reports again if it finds a listing.
-chrome.tabs.onUpdated.addListener((tabId, info) => {
-  if (info.status === "loading") setTabState(tabId, null);
-});
 chrome.tabs.onRemoved.addListener((tabId) => chrome.storage.session.remove("tab:" + tabId));
