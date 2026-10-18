@@ -10,7 +10,7 @@
     return n;
   }
 
-  const BAND_WORDS = { low: "Low scam risk", medium: "Some scam signals", high: "High scam risk" };
+  const BAND_WORDS = { low: "Low ghost risk", medium: "Some ghost signals", high: "High ghost risk" };
 
   // Everything the UI shows, from one /score response.
   function view(score) {
@@ -28,7 +28,7 @@
       word: BAND_WORDS[band] || score.label,
       title: listing.title || "This listing",
       company: displayName(listing.company),
-      sentence: `${pctText} scam risk: ${(BAND_WORDS[band] || "").toLowerCase()}`,
+      sentence: `${pctText} ghost risk: ${(BAND_WORDS[band] || "").toLowerCase()}`,
     };
   }
 

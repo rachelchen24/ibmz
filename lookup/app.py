@@ -1,4 +1,4 @@
-"""RealRole lookup website: paste a job link (or the listing's text), get its scam-risk check.
+"""RealRole lookup website: paste a job link (or the listing's text), get its ghost-risk check.
 
 Serves the page on port 8501 and one endpoint, POST /resolve {url} -> {jobposting, source, method}, which reads
 the listing behind a job link. The page then sends the listing to the RealRole API's POST /score, exactly like the

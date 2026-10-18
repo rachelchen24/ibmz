@@ -24,7 +24,7 @@ function renderEmpty(state) {
       "This is a job site we support, but we can't see a listing on this page yet. Open a job (on Workday, click a job so its full description shows) and this panel fills in."],
     error: ["Couldn't check this listing", (state && state.detail) || "Something went wrong talking to the RealRole API."],
   }[state && state.status] || ["No job listing on this page",
-    "Open a job listing on Greenhouse, Lever, Workday or LinkedIn and its scam-risk check shows up here."];
+    "Open a job listing on Greenhouse, Lever, Workday or LinkedIn and its ghost-risk check shows up here."];
   content.replaceChildren(
     h("div", { class: "empty" }, h("p", { class: "empty-title" }, msg[0]), h("p", {}, msg[1]))
   );

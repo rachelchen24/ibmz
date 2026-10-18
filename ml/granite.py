@@ -26,17 +26,17 @@ WATSONX_MODEL = os.environ.get("WATSONX_MODEL", "ibm/granite-3-8b-instruct")
 MAX_WORDS = 45
 # A summary describes likelihood and the given signals only: no accusations, no speculation.
 FORBIDDEN = re.compile(
-    r"\b(is|are) (a |definitely |certainly )?(scam|fraud|fake|criminal|illegal)\b|\bscammer|\bfraudster|"
+    r"\b(is|are) (a |definitely |certainly )?(scam|fraud|fake|criminal|illegal|ghost job)\b|\bscammer|\bfraudster|"
     r"\bguarantee|\bdefinitely\b|\bcertainly\b|\bproven\b|\bred flags?\b|\bsuspicious\b|\bmight not\b|"
     r"\bcompetitive\b|\bvague\b|\bhigher-risk location\b|\bis (a )?(genuine|legitimate|real|safe)\b|"
     r"\bhighly risky\b|\brisky\b", re.I)
 
 SYSTEM = ("You summarize an automated job-posting risk score for a job seeker. Rules: write exactly ONE sentence "
           "of at most 35 words; start it with \"This posting\"; mention only the listed signals, in plain words; do "
-          "not add opinions, guesses or facts that are not listed; never say the posting or company is a scam.")
+          "not add opinions, guesses or facts that are not listed; never say the posting or company is a scam or a ghost job.")
 EXAMPLE_IN = ("Verdict: higher risk (72%).\nSignals that raise the risk: no company logo; no salary given.\n"
               "Signals that lower the risk: none.")
-EXAMPLE_OUT = "This posting shows signs often seen in scam listings, mainly the missing company logo and salary."
+EXAMPLE_OUT = "This posting shows signs often seen in ghost listings, mainly the missing company logo and salary."
 EXAMPLE2_IN = ("Verdict: lower risk (3%).\nSignals that raise the risk: none.\n"
                "Signals that lower the risk: has a company logo; required education: Bachelor's Degree.")
 EXAMPLE2_OUT = "This posting looks like a typical genuine listing: it has a company logo and states the education needed."
@@ -67,7 +67,7 @@ def template_summary(probability: float, flagged: bool, reasons: list[dict]) -> 
     pct = round(100 * probability)
     if flagged:
         why = "; ".join(ups) if ups else "several signals together"
-        return (f"This posting shows signs often seen in scam postings ({pct}% risk): {why}. "
+        return (f"This posting shows signs often seen in ghost postings ({pct}% risk): {why}. "
                 "Verify the employer through its official website before sharing personal details.")
     why = "; ".join(downs) if downs else "no strong warning signs"
     return f"This posting looks like a typical genuine listing ({pct}% risk): {why}."

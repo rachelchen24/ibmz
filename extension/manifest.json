@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "RealRole",
   "version": "0.2.2",
-  "description": "Checks the job listing you're viewing for signs of a scam, with the reasons behind the score. Reads only job listings; sends only the listing.",
+  "description": "Checks the job listing you're viewing for its ghost risk, with the reasons behind the score. Reads only job listings; sends only the listing.",
   "minimum_chrome_version": "116",
   "permissions": [
     "sidePanel",

@@ -1,4 +1,4 @@
-// Reads the job listing on the page, asks the service worker for its scam-risk score, and shows the badge next to
+// Reads the job listing on the page, asks the service worker for its ghost-risk score, and shows the badge next to
 // the job title. Reads only this page's listing; sends nothing about the person browsing.
 (function () {
   const HOST_ID = "realrole-badge-host";
@@ -89,7 +89,7 @@
     mark.alt = "RealRole";
     const main = el("div", "rr-main");
     const text = el("div", "rr-text");
-    text.append(el("strong", "rr-num", v.pctText), ` scam risk · ${v.word}`);
+    text.append(el("strong", "rr-num", v.pctText), ` ghost risk · ${v.word}`);
 
     const bar = el("div", "rr-bar");
     bar.setAttribute("aria-hidden", "true");

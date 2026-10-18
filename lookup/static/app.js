@@ -1,4 +1,4 @@
-// RealRole lookup page: link -> listing (our /resolve) or pasted text -> scam-risk score (the API) -> report.js.
+// RealRole lookup page: link -> listing (our /resolve) or pasted text -> ghost-risk score (the API) -> report.js.
 // The Granite summary is requested after the report shows and swapped in when it arrives.
 const API = self.REALROLE_CONFIG.API_URL;
 const { h } = RealRoleReport;
@@ -12,7 +12,7 @@ const pasteForm = $("paste-form");
 const status = $("status");
 const result = $("result");
 
-const EXAMPLES = [["Sample scam-style listing", "scam"], ["Sample medium-risk listing", "medium"],
+const EXAMPLES = [["Sample high-risk listing", "scam"], ["Sample medium-risk listing", "medium"],
                   ["Sample typical listing", "real"]];
 
 async function postJSON(url, body) {

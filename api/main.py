@@ -41,8 +41,8 @@ NEUTRAL_IF_ABSENT_ON_PAGE = ("company_profile", "requirements", "benefits", "dep
 # The model never saw a missing 0/1 flag in training and reads one as 0 ("no logo", "no questions"), which raises
 # risk, so a flag we can't observe is left out of the score instead (its contribution set to the training average).
 UNKNOWN_FLAGS = ("telecommuting", "has_company_logo", "has_questions")
-DISCLAIMER = ("An automated estimate from the listing's text and details, trained on known scam postings. "
-              "It is not proof of fraud: verify the employer through its official website.")
+DISCLAIMER = ("An automated estimate from the listing's text and details. It is not proof that a listing is a "
+              "ghost job: verify the employer through its official website.")
 MAX_BODY = 512 * 1024
 
 
@@ -64,10 +64,10 @@ class Scorer:
 
     def band(self, p: float) -> tuple[str, str]:
         if p >= self.threshold:
-            return "high", "High scam risk"
+            return "high", "High ghost risk"
         if p >= self.prevalence:
-            return "medium", "Some scam signals"
-        return "low", "Low scam risk"
+            return "medium", "Some ghost signals"
+        return "low", "Low ghost risk"
 
     def score(self, body: dict) -> dict:
         from ml.run import clean_postings
@@ -202,8 +202,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"ok": True, "model": self.scorer.model_info(),
                                     "threshold": round(self.scorer.threshold, 4), "granite_backend": backend()})
         if u.path in ("/", "/demo"):
-            labels = {"scam": "scam-style, expect high risk", "medium": "thin listing, expect medium risk",
-                      "real": "typical listing, expect low risk"}
+            labels = {"scam": "expect high ghost risk", "medium": "thin listing, expect medium ghost risk",
+                      "real": "typical listing, expect low ghost risk"}
             links = "".join(f'<li><a href="/demo/posting?case={c}">{html.escape(DEMO[c]["title"])}</a> '
                             f'<small>({labels.get(c, "")})</small></li>' for c in DEMO)
             return self._send(200, f"<!doctype html><meta charset=utf-8><title>RealRole demo</title>"
@@ -235,7 +235,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="RealRole scam-risk API")
+    ap = argparse.ArgumentParser(description="RealRole ghost-risk API")
     ap.add_argument("--port", type=int, default=8000)
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--no-granite", action="store_true", help="template summaries only (no model download)")

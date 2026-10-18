@@ -40,7 +40,7 @@
       h("section", { class: `rr-summary rr-band-${v.color}` },
         h("h1", {}, v.title),
         h("p", { class: "rr-meta" }, [v.company, score.listing && score.listing.source].filter(Boolean).join(" · ")),
-        h("p", { class: "rr-headline" }, h("span", { class: "rr-num" }, v.pctText), ` scam risk · ${v.word}`),
+        h("p", { class: "rr-headline" }, h("span", { class: "rr-num" }, v.pctText), ` ghost risk · ${v.word}`),
         bar(v),
         v.threshold != null
           ? h("p", { class: "rr-range" }, `Flagged at ${Math.round(v.threshold * 100)}% or more.`)
@@ -78,11 +78,11 @@
     parts.push(
       h("footer", { class: "rr-foot" },
         h("p", {}, score.disclaimer ||
-          "An automated estimate from the listing's text and details. It is not proof of fraud."),
+          "An automated estimate from the listing's text and details. It is not proof that a listing is a ghost job."),
         h("p", { class: "rr-fine" },
           `Model: ${(score.model && score.model.name) || "unknown"}`,
-          t ? ` · on held-out listings it caught ${Math.round(t.recall * 100)}% of scams, and ` +
-              `${Math.round(t.precision * 100)}% of its flags were scams (PR-AUC ${t.pr_auc.toFixed(2)})` : "")
+          t ? ` · on held-out listings it caught ${Math.round(t.recall * 100)}% of high-risk listings, and ` +
+              `${Math.round(t.precision * 100)}% of its flags were correct (PR-AUC ${t.pr_auc.toFixed(2)})` : "")
       )
     );
 
