@@ -70,7 +70,8 @@ async function getTabState(tabId) {
   if (!state) return null;
   try {
     const tab = await chrome.tabs.get(tabId);
-    if (!samePage(state.url, tab.url)) return null; // the tab has moved on to another page
+    // Chrome hides tab.url for sites without host permission; then trust the state (the content script clears it).
+    if (tab.url && state.url && !samePage(state.url, tab.url)) return null; // the tab has moved on to another page
   } catch {
     return null;
   }

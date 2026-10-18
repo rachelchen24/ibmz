@@ -13,7 +13,7 @@
 
   RealRoleSites.register({
     source: "workday",
-    match: (url) => /\.myworkday(jobs|site)\.com$/.test(url.hostname) && /\/(job|details)\//.test(url.pathname),
+    match: (url) => /\.myworkday(jobs|site)\.com$/.test(url.hostname),   // job pages and the job panel on search pages
     getJobPosting(doc) {
       const jp = RealRoleSites.bestJobPosting(doc, SEL);
       if (jp && !(jp.hiringOrganization && jp.hiringOrganization.name)) {

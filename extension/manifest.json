@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "RealRole",
-  "version": "0.2.1",
-  "description": "Checks the job listing you're viewing for signs of a scam, with the reasons behind the score.",
+  "version": "0.2.2",
+  "description": "Checks the job listing you're viewing for signs of a scam, with the reasons behind the score. Reads only job listings; sends only the listing.",
   "minimum_chrome_version": "116",
   "permissions": [
     "sidePanel",
@@ -22,13 +22,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://boards.greenhouse.io/*",
-        "https://job-boards.greenhouse.io/*",
-        "https://jobs.lever.co/*",
-        "https://*.myworkdayjobs.com/*",
-        "https://*.myworkdaysite.com/*",
-        "https://www.linkedin.com/*",
-        "http://localhost:8000/demo/*"
+        "<all_urls>"
       ],
       "js": [
         "config.js",
@@ -39,9 +33,11 @@
         "sites/workday.js",
         "sites/linkedin.js",
         "sites/demo.js",
+        "sites/careers.js",
         "content.js"
       ],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
@@ -51,12 +47,7 @@
         "icons/logo.png"
       ],
       "matches": [
-        "https://*.greenhouse.io/*",
-        "https://jobs.lever.co/*",
-        "https://*.myworkdayjobs.com/*",
-        "https://*.myworkdaysite.com/*",
-        "https://www.linkedin.com/*",
-        "http://localhost:8000/*"
+        "<all_urls>"
       ]
     }
   ],

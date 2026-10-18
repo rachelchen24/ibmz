@@ -25,11 +25,15 @@
     state.score = null;
   }
 
+  const IN_FRAME = window.top !== window;
+
   async function detect() {
     const site = RealRoleSites.forUrl(location.href);
     if (!site) return clear();
+    if (IN_FRAME && site.source !== "greenhouse") return; // in frames, only the embedded Greenhouse job form
     const jobposting = site.getJobPosting(document);
     if (!jobposting || !(jobposting.title || jobposting.description)) {
+      if (site.generic) return clear(); // an ordinary page: say nothing
       // A supported job site, but no listing (yet): a search page, or a single-page app still rendering.
       removeBadge();
       const none = "none|" + location.href;
@@ -131,16 +135,23 @@
     return e;
   }
 
-  // Single-page apps (Workday, LinkedIn) change the job without a page load: re-check on DOM changes, debounced.
+  // Job sites that are single-page apps (Workday, LinkedIn, Greenhouse's new boards) change the job without a page
+  // load: re-check on DOM changes, debounced. Other pages only get a few checks while they finish loading, so
+  // ordinary websites aren't watched.
   let timer = null;
   const schedule = () => {
     clearTimeout(timer);
     timer = setTimeout(detect, 400);
   };
-  new MutationObserver((mutations) => {
-    if (mutations.every((m) => state.host && (m.target === state.host || state.host.contains(m.target)))) return;
-    schedule();
-  }).observe(document.documentElement, { childList: true, subtree: true });
+  const site = RealRoleSites.forUrl(location.href);
+  if (site && !site.generic) {
+    new MutationObserver((mutations) => {
+      if (mutations.every((m) => state.host && (m.target === state.host || state.host.contains(m.target)))) return;
+      schedule();
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  } else {
+    [1500, 4000].forEach((ms) => setTimeout(detect, ms)); // JobPosting data some sites add after load
+  }
   window.addEventListener("popstate", schedule);
   detect();
 })();
