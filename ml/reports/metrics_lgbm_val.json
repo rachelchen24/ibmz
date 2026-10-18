@@ -1,7 +1,6 @@
 {
-  "model": "lgbm_v1",
+  "model": "lgbm",
   "split": "val",
-  "predictions_file": "C:/Users/rache/AppData/Local/Temp/claude/c--Users-rache--0Documents-Projects-ibmz/867b7dd2-44ad-44c5-94d6-ab06bb180699/scratchpad/preds/preds_lgbm_val.csv",
   "schema_version": "1",
   "rows": 2514,
   "groups": 656,
@@ -10,9 +9,9 @@
     "rate": 0.0485
   },
   "threshold": {
-    "value": 0.1527,
+    "value": 0.152717,
     "chosen_for_recall": 0.8,
-    "chosen_on": "max F1 on validation (Olivia; not independent)"
+    "chosen_on": "max F1 on validation"
   },
   "ranking": {
     "pr_auc": {
@@ -33,7 +32,7 @@
     "pr_auc_lift_over_prevalence": 12.77
   },
   "at_threshold": {
-    "threshold": 0.1527,
+    "threshold": 0.152717,
     "precision": 0.6179,
     "recall": 0.623,
     "f1": 0.6204,
@@ -186,5 +185,5 @@
     "numpy": "2.4.4",
     "pandas": "2.3.3"
   },
-  "generated_utc": "2026-10-18T01:19:44Z"
+  "generated_utc": "2026-10-18T01:30:16Z"
 }

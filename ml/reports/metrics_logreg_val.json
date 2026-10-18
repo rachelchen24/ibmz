@@ -1,7 +1,6 @@
 {
-  "model": "logreg_baseline",
+  "model": "logreg",
   "split": "val",
-  "predictions_file": "C:/Users/rache/AppData/Local/Temp/claude/c--Users-rache--0Documents-Projects-ibmz/867b7dd2-44ad-44c5-94d6-ab06bb180699/scratchpad/preds/preds_logreg_val.csv",
   "schema_version": "1",
   "rows": 2514,
   "groups": 656,
@@ -10,9 +9,9 @@
     "rate": 0.0485
   },
   "threshold": {
-    "value": 0.1059,
+    "value": 0.105941,
     "chosen_for_recall": 0.8,
-    "chosen_on": "train OOF, recall 0.80"
+    "chosen_on": "train OOF, recall 0.8"
   },
   "ranking": {
     "pr_auc": {
@@ -33,7 +32,7 @@
     "pr_auc_lift_over_prevalence": 11.8
   },
   "at_threshold": {
-    "threshold": 0.1059,
+    "threshold": 0.105941,
     "precision": 0.1298,
     "recall": 0.7459,
     "f1": 0.2211,
@@ -186,5 +185,5 @@
     "numpy": "2.4.4",
     "pandas": "2.3.3"
   },
-  "generated_utc": "2026-10-18T00:37:57Z"
+  "generated_utc": "2026-10-18T01:30:05Z"
 }
