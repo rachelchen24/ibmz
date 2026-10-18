@@ -1,22 +1,29 @@
 {
   "manifest_version": 3,
   "name": "RealRole",
-  "version": "0.1.0",
-  "description": "Shows how likely a company's job postings are to lead to a hire, with reasons and sources.",
+  "version": "0.2.0",
+  "description": "Checks the job listing you're viewing for signs of a scam, with the reasons behind the score.",
   "minimum_chrome_version": "116",
-  "permissions": ["sidePanel", "storage"],
+  "permissions": [
+    "sidePanel",
+    "storage"
+  ],
   "host_permissions": [
     "https://*.greenhouse.io/*",
+    "https://jobs.lever.co/*",
     "https://*.myworkdayjobs.com/*",
     "https://www.linkedin.com/*",
     "http://localhost:8000/*"
   ],
-  "background": { "service_worker": "background.js" },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [
         "https://boards.greenhouse.io/*",
         "https://job-boards.greenhouse.io/*",
+        "https://jobs.lever.co/*",
         "https://*.myworkdayjobs.com/*",
         "https://www.linkedin.com/*",
         "http://localhost:8000/demo/*"
@@ -26,6 +33,7 @@
         "format.js",
         "sites/common.js",
         "sites/greenhouse.js",
+        "sites/lever.js",
         "sites/workday.js",
         "sites/linkedin.js",
         "sites/demo.js",
@@ -36,15 +44,23 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["badge.css"],
+      "resources": [
+        "badge.css"
+      ],
       "matches": [
         "https://*.greenhouse.io/*",
+        "https://jobs.lever.co/*",
         "https://*.myworkdayjobs.com/*",
         "https://www.linkedin.com/*",
         "http://localhost:8000/*"
       ]
     }
   ],
-  "side_panel": { "default_path": "sidepanel.html" },
-  "action": { "default_title": "RealRole", "default_popup": "popup.html" }
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "RealRole",
+    "default_popup": "popup.html"
+  }
 }

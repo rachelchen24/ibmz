@@ -1,37 +1,32 @@
-// LinkedIn job pages (logged in and logged out). No JobPosting JSON-LD for the signed-in view,
-// so the employer comes from the visible top card. These selectors are the most likely to break.
+// LinkedIn job pages (logged in and logged out). The signed-in view has no JobPosting JSON-LD, so the listing is
+// read from the visible page. These selectors are the most likely to break.
 (function () {
   // --- Selectors (update here when LinkedIn changes its HTML) ---
-  const TITLE_SELECTORS = [
-    ".job-details-jobs-unified-top-card__job-title h1",
-    ".job-details-jobs-unified-top-card__job-title",
-    ".jobs-unified-top-card__job-title",
-    ".top-card-layout__title", // logged-out job page
-    ".jobs-details h1",
-  ];
-  const COMPANY_SELECTORS = [
-    ".job-details-jobs-unified-top-card__company-name a",
-    ".job-details-jobs-unified-top-card__company-name",
-    ".jobs-unified-top-card__company-name a",
-    ".jobs-unified-top-card__company-name",
-    ".topcard__org-name-link", // logged-out job page
-    'a[data-tracking-control-name="public_jobs_topcard-org-name"]',
-  ];
+  const SEL = {
+    title: [
+      ".job-details-jobs-unified-top-card__job-title h1",
+      ".job-details-jobs-unified-top-card__job-title",
+      ".jobs-unified-top-card__job-title",
+      ".top-card-layout__title", // logged-out job page
+      ".jobs-details h1",
+    ],
+    company: [
+      ".job-details-jobs-unified-top-card__company-name a",
+      ".job-details-jobs-unified-top-card__company-name",
+      ".jobs-unified-top-card__company-name a",
+      ".topcard__org-name-link", // logged-out job page
+    ],
+    description: [".jobs-description__content", ".jobs-box__html-content", ".show-more-less-html__markup",
+                  "#job-details"],
+    logo: [".job-details-jobs-unified-top-card__container--two-pane img", ".jobs-unified-top-card img",
+           ".top-card-layout__entity-image", ".artdeco-entity-image"],
+  };
   // ---------------------------------------------------------------
 
   RealRoleSites.register({
     source: "linkedin",
     match: (url) => /(^|\.)linkedin\.com$/.test(url.hostname) && url.pathname.startsWith("/jobs"),
-    getCompanyName(doc) {
-      const el = RealRoleSites.firstText(doc, COMPANY_SELECTORS);
-      if (el) return el.textContent.trim();
-      // Logged-out pages sometimes carry JSON-LD.
-      const fromLd = RealRoleSites.jsonLdHiringOrg(doc);
-      if (fromLd) return fromLd;
-      // ARIA label on the company logo link: "Company, Acme Corp."
-      const aria = doc.querySelector('.jobs-details [aria-label^="Company, "]');
-      return aria ? aria.getAttribute("aria-label").replace(/^Company,\s*/, "").replace(/\.$/, "") : null;
-    },
-    getTitleAnchor: (doc) => RealRoleSites.firstText(doc, TITLE_SELECTORS),
+    getJobPosting: (doc) => RealRoleSites.bestJobPosting(doc, SEL),
+    getTitleAnchor: (doc) => RealRoleSites.firstText(doc, SEL.title),
   });
 })();

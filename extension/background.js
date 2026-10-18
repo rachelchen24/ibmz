@@ -1,37 +1,52 @@
 // Service worker: the only part of the extension that talks to the RealRole API.
-// Sends only {company_name, source}. Keeps scores for this browser session only (storage.session),
-// never a history of what the person viewed.
+// Sends only the listing's public content ({jobposting, source}). Keeps scores for this browser session only
+// (storage.session), never a history of what the person viewed.
 importScripts("config.js");
 
 const CFG = self.REALROLE_CONFIG;
 
-function cacheKey(name) {
-  return "score:" + name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+function hash(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
 }
 
-async function fetchScore(company_name, source) {
-  const key = cacheKey(company_name);
-  const cached = (await chrome.storage.session.get(key))[key];
-  if (cached) return cached;
+function cacheKey(jobposting) {
+  return "score:" + hash(JSON.stringify([jobposting.title, jobposting.description, jobposting.hiringOrganization]));
+}
 
-  const res = await fetch(`${CFG.API_URL}/score`, {
+async function postJSON(path, body) {
+  const res = await fetch(`${CFG.API_URL}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ company_name, source }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`API returned ${res.status}`);
-  const score = await res.json();
-  await chrome.storage.session.set({ [key]: score });
-  return score;
+  return res.json();
 }
 
-// Dev only: replace the probability and shift the range with it, to preview the color bands.
-function applyDevOverride(score) {
-  const p = CFG.DEV_FORCE_PROBABILITY;
-  if (p == null || !score.in_dataset) return score;
-  const shift = p - score.probability;
-  const clamp = (x) => Math.min(1, Math.max(0, x));
-  return { ...score, probability: p, range: score.range.map((r) => clamp(r + shift)) };
+async function fetchScore(jobposting, source) {
+  const key = cacheKey(jobposting);
+  const cached = (await chrome.storage.session.get(key))[key];
+  if (cached) return { key, score: cached };
+  const score = await postJSON("/score", { jobposting, source });
+  await chrome.storage.session.set({ [key]: score });
+  return { key, score };
+}
+
+// The Granite summary is slow (seconds on CPU), so it is fetched after the badge shows and swapped in.
+async function addGraniteSummary(tabId, key, score) {
+  if (score.summary_source !== "template" || score.granite_backend === "template") return;
+  await setTabState(tabId, { score: { ...score, summary_pending: true } });
+  try {
+    const g = await postJSON("/summary", { risk: score.risk, flagged: score.flagged, reasons: score.reasons });
+    const updated = { ...score, summary: g.summary, summary_source: g.summary_source, summary_pending: false };
+    await chrome.storage.session.set({ [key]: updated });
+    await setTabState(tabId, { score: updated });
+  } catch (err) {
+    console.warn("RealRole: summary request failed:", err.message);
+    await setTabState(tabId, { score: { ...score, summary_pending: false } });
+  }
 }
 
 async function setTabState(tabId, value) {
@@ -55,11 +70,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === "score") {
-    fetchScore(msg.company_name, msg.source)
-      .then(async (raw) => {
-        const score = applyDevOverride(raw);
-        await setTabState(tabId, score.in_dataset ? { score, source: msg.source } : null);
+    fetchScore(msg.jobposting, msg.source)
+      .then(async ({ key, score }) => {
+        await setTabState(tabId, { score });
         sendResponse({ ok: true, score });
+        addGraniteSummary(tabId, key, score);
       })
       .catch(async (err) => {
         console.warn("RealRole: score request failed:", err.message);
@@ -81,7 +96,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 });
 
-// A full page load starts fresh; the content script reports again if it finds a company.
+// A full page load starts fresh; the content script reports again if it finds a listing.
 chrome.tabs.onUpdated.addListener((tabId, info) => {
   if (info.status === "loading") setTabState(tabId, null);
 });

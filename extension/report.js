@@ -1,7 +1,15 @@
-// The full RealRole analysis for one /score response, as DOM nodes. Shared by the extension's
-// side panel and the lookup website (lookup/ serves this file), so both always look the same.
+// The full RealRole analysis for one listing (/score response), as DOM nodes. Shared by the extension's side
+// panel and the lookup website (lookup/ serves this file), so both always look the same.
 // Needs config.js and format.js loaded first.
 (function () {
+  const FIELD_NAMES = {
+    company_profile: "company description", requirements: "requirements", benefits: "benefits",
+    has_questions: "screening questions", required_experience: "experience level", department: "department",
+    function: "job function", salary_range: "salary", employment_type: "employment type",
+    required_education: "education", industry: "industry", telecommuting: "remote work",
+    has_company_logo: "company logo",
+  };
+
   function h(tag, attrs = {}, ...children) {
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs)) {
@@ -13,43 +21,34 @@
     return e;
   }
 
+  function summarySource(score) {
+    const src = score.summary_source || "template";
+    if (src.startsWith("granite")) {
+      const model = src.split(":")[1] || "Granite";
+      return `Summary written by IBM Granite (${model.replace("ibm-granite/", "")}) from the reasons below.`;
+    }
+    if (score.summary_pending) return "IBM Granite is writing a summary…";
+    return "Summary from a fixed template (IBM Granite unavailable or its draft didn't pass our wording check).";
+  }
+
   // Returns a <div class="rr-report"> holding the whole analysis.
   function render(score) {
     const v = RealRoleFormat.view(score);
     const parts = [];
 
-    if (score.model_version === "mock") {
-      parts.push(h("div", { class: "rr-notice" },
-        h("strong", {}, "Sample data. "),
-        "The scoring model isn't live yet, so the numbers and reasons below are placeholders."));
-    }
-
     parts.push(
-      h("section", { class: `rr-summary rr-band-${v.band}` },
-        h("h1", {}, v.name),
-        h("p", { class: "rr-meta" }, [v.ticker, v.sector].filter(Boolean).join(" · ")),
-        h("p", { class: "rr-headline" },
-          h("span", { class: "rr-num" }, `${v.pct}% ± ${v.plusMinus}%`),
-          ` chance ${RealRoleFormat.possessive(v.name)} postings don't lead to a hire`),
+      h("section", { class: `rr-summary rr-band-${v.color}` },
+        h("h1", {}, v.title),
+        h("p", { class: "rr-meta" }, [v.company, score.listing && score.listing.source].filter(Boolean).join(" · ")),
+        h("p", { class: "rr-headline" }, h("span", { class: "rr-num" }, `${v.pct}%`), ` scam risk · ${v.word}`),
         bar(v),
-        h("p", { class: "rr-range" }, `Likely between ${v.rangeLow}% and ${v.rangeHigh}%.`),
-        score.summary ? h("p", { class: "rr-lede" }, score.summary) : null
+        v.threshold != null
+          ? h("p", { class: "rr-range" }, `Flagged at ${Math.round(v.threshold * 100)}% or more.`)
+          : null,
+        score.summary ? h("p", { class: "rr-lede" }, score.summary) : null,
+        score.summary ? h("p", { class: "rr-fine" }, summarySource(score)) : null
       )
     );
-
-    if (score.sector && score.sector.median != null) {
-      const sectorNoHire = Math.round((1 - score.sector.median) * 100);
-      const above = score.sector.percentile != null ? 100 - score.sector.percentile : null;
-      parts.push(
-        h("section", { class: "rr-sector" },
-          h("h2", {}, "Compared with its sector"),
-          h("p", {}, `Typical ${score.sector.name} company in our dataset: `, h("strong", {}, `${sectorNoHire}%`), "."),
-          above != null
-            ? h("p", {}, `${v.name}'s chance is higher than about `, h("strong", {}, `${above}%`), ` of ${score.sector.name} companies.`)
-            : null
-        )
-      );
-    }
 
     if (score.reasons && score.reasons.length) {
       parts.push(
@@ -60,71 +59,51 @@
       );
     }
 
-    if (score.employer_response) {
+    const leftOut = (score.left_out || []).map((f) => FIELD_NAMES[f] || f);
+    const unknown = (score.unknown_inputs || []).filter((f) => !(score.left_out || []).includes(f))
+      .map((f) => FIELD_NAMES[f] || f);
+    if (leftOut.length || unknown.length) {
       parts.push(
-        h("section", { class: "rr-employer" },
-          h("h2", {}, `Response from ${v.name}`),
-          h("blockquote", { class: "rr-response" }, score.employer_response)
+        h("section", { class: "rr-sector" },
+          h("h2", {}, "What we couldn't see"),
+          leftOut.length
+            ? h("p", {}, `Not shown separately on this page, so left out of the score: ${leftOut.join(", ")}.`)
+            : null,
+          unknown.length ? h("p", { class: "rr-fine" }, `Treated as unknown: ${unknown.join(", ")}.`) : null
         )
       );
     }
 
+    const t = score.model && score.model.test;
     parts.push(
       h("footer", { class: "rr-foot" },
-        h("p", {}, "A company-level likelihood based on public data, not a verdict on any one posting."),
+        h("p", {}, score.disclaimer ||
+          "An automated estimate from the listing's text and details. It is not proof of fraud."),
         h("p", { class: "rr-fine" },
-          score.refreshed_at ? `Refreshed ${formatDate(score.refreshed_at)} · ` : "",
-          `Model ${score.model_version || "unknown"}`)
+          `Model: ${(score.model && score.model.name) || "unknown"}`,
+          t ? ` · on held-out listings it caught ${Math.round(t.recall * 100)}% of scams, and ` +
+              `${Math.round(t.precision * 100)}% of its flags were scams (PR-AUC ${t.pr_auc.toFixed(2)})` : "")
       )
     );
 
-    return h("div", { class: `rr-report rr-band-${v.band}` }, parts);
+    return h("div", { class: `rr-report rr-band-${v.color}` }, parts);
   }
 
   function bar(v) {
     return h("div", { class: "rr-bar", "aria-hidden": "true" },
-      h("div", { class: "rr-bar-range", style: `left:${v.barLow * 100}%;width:${(v.barHigh - v.barLow) * 100}%` }),
-      h("div", { class: "rr-bar-fill", style: `width:${v.noHire * 100}%` })
+      v.threshold != null
+        ? h("div", { class: "rr-bar-range", style: `left:${v.threshold * 100}%;width:${(1 - v.threshold) * 100}%` })
+        : null,
+      h("div", { class: "rr-bar-fill", style: `width:${Math.max(v.risk * 100, 1)}%` })
     );
   }
 
-  // direction is relative to the API's probability of a hire: "lower" lowers the chance of a hire,
-  // which raises the number we display.
   function reason(r) {
-    const raises = r.direction === "lower";
-    const evidence = (r.evidence || []).filter((e) => e && typeof e === "object");
+    const raises = r.direction === "raises";
     return h("li", { class: raises ? "rr-raises" : "rr-lowers" },
-      h("span", { class: "rr-dir" }, raises ? "▲ Raises the chance" : "▼ Lowers the chance"),
-      h("p", { class: "rr-reason-text" }, r.text),
-      evidence.length
-        ? h("details", {},
-            h("summary", {}, evidence.length === 1 ? "Source" : `${evidence.length} sources`),
-            evidence.map(source))
-        : null
+      h("span", { class: "rr-dir" }, raises ? "▲ Raises the risk" : "▼ Lowers the risk"),
+      h("p", { class: "rr-reason-text" }, r.text)
     );
-  }
-
-  function source(e) {
-    const link = e.source_url
-      ? h("a", { href: e.source_url, target: "_blank", rel: "noopener noreferrer" }, hostOf(e.source_url))
-      : h("span", { class: "rr-fine" }, "No source link");
-    return h("div", { class: "rr-source" },
-      e.quote ? h("blockquote", {}, `“${e.quote}”`) : null,
-      h("p", { class: "rr-fine" }, link, e.page_date ? ` · ${formatDate(e.page_date)}` : "")
-    );
-  }
-
-  function hostOf(url) {
-    try {
-      return new URL(url).hostname.replace(/^www\./, "");
-    } catch {
-      return url;
-    }
-  }
-
-  function formatDate(s) {
-    const d = new Date(s);
-    return isNaN(d) ? s : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
   }
 
   self.RealRoleReport = { render, h };

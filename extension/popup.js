@@ -6,7 +6,7 @@
   const state = tab ? await chrome.runtime.sendMessage({ type: "getState", tabId: tab.id }) : null;
 
   if (!state || !state.score) {
-    status.textContent = "Not in our dataset yet, or not a job posting we can read.";
+    status.textContent = "No job listing we can read on this page.";
     return;
   }
   status.textContent = RealRoleFormat.view(state.score).sentence + ".";

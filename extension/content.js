@@ -1,5 +1,5 @@
-// Finds the employer on a job page, asks the service worker for its score, and shows the badge
-// next to the job title. Shows nothing for companies outside our dataset.
+// Reads the job listing on the page, asks the service worker for its scam-risk score, and shows the badge next to
+// the job title. Reads only this page's listing; sends nothing about the person browsing.
 (function () {
   const HOST_ID = "realrole-badge-host";
   const state = { key: null, score: null, host: null, floating: false, dismissedKey: null, pending: false };
@@ -28,15 +28,15 @@
   async function detect() {
     const site = RealRoleSites.forUrl(location.href);
     if (!site) return clear();
-    const name = site.getCompanyName(document);
-    if (!name) return clear();
+    const jobposting = site.getJobPosting(document);
+    if (!jobposting || !(jobposting.title || jobposting.description)) return clear();
 
-    const key = location.href + "|" + name;
+    // Re-score when the listing changes (single-page apps swap listings without a page load).
+    const key = location.href + "|" + (jobposting.title || "") + "|" + String(jobposting.description || "").length;
     if (key === state.key) {
       if (state.pending || !state.score || key === state.dismissedKey) return;
       const anchor = site.getTitleAnchor(document);
       const attached = state.host && document.contains(state.host);
-      // Re-render if the page redrew and dropped the badge, or the title appeared after a fallback.
       if (!attached || (state.floating && anchor)) render(state.score, anchor);
       return;
     }
@@ -45,10 +45,10 @@
     state.key = key;
     state.score = null;
     state.pending = true;
-    const resp = await send({ type: "score", company_name: name, source: site.source });
+    const resp = await send({ type: "score", jobposting, source: site.source });
     if (state.key !== key) return; // the page moved on while we waited
     state.pending = false;
-    if (!resp || !resp.ok || !resp.score || !resp.score.in_dataset) return;
+    if (!resp || !resp.ok || !resp.score) return;
     state.score = resp.score;
     render(resp.score, site.getTitleAnchor(document));
   }
@@ -67,25 +67,28 @@
     root.appendChild(css);
 
     const floating = !anchor;
-    const badge = el("div", `rr-badge rr-${v.band}${floating ? " rr-floating" : ""}`);
+    const badge = el("div", `rr-badge rr-${v.color}${floating ? " rr-floating" : ""}`);
     badge.setAttribute("role", "status");
 
     const mark = el("span", "rr-mark", "RealRole");
     const main = el("div", "rr-main");
     const text = el("div", "rr-text");
-    text.append(el("strong", "rr-num", `${v.pct}% ± ${v.plusMinus}%`), ` chance ${RealRoleFormat.possessive(v.name)} postings don't lead to a hire`);
+    text.append(el("strong", "rr-num", `${v.pct}%`), ` scam risk · ${v.word}`);
 
     const bar = el("div", "rr-bar");
     bar.setAttribute("aria-hidden", "true");
-    const range = el("div", "rr-range");
-    range.style.left = `${v.barLow * 100}%`;
-    range.style.width = `${(v.barHigh - v.barLow) * 100}%`;
+    if (v.threshold != null) {
+      const zone = el("div", "rr-range"); // the flagged zone, from the threshold up
+      zone.style.left = `${v.threshold * 100}%`;
+      zone.style.width = `${(1 - v.threshold) * 100}%`;
+      bar.append(zone);
+    }
     const fill = el("div", "rr-fill");
-    fill.style.width = `${v.noHire * 100}%`;
-    bar.append(range, fill);
+    fill.style.width = `${Math.max(v.risk * 100, 1)}%`;
+    bar.append(fill);
     main.append(text, bar);
 
-    const why = el("button", "rr-why", "Tell me why");
+    const why = el("button", "rr-why", "Why?");
     why.type = "button";
     why.addEventListener("click", () => send({ type: "openPanel" }));
 
@@ -116,8 +119,7 @@
     return e;
   }
 
-  // Single-page apps (Workday, LinkedIn) change the job without a page load: re-check on DOM
-  // changes, debounced. detect() is a no-op when nothing relevant changed.
+  // Single-page apps (Workday, LinkedIn) change the job without a page load: re-check on DOM changes, debounced.
   let timer = null;
   const schedule = () => {
     clearTimeout(timer);

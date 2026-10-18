@@ -166,3 +166,15 @@ main { max-width: 920px; margin: 0 auto; padding: 0 16px 48px; }
   .search { flex-direction: column; }
   .search button { padding: 14px; }
 }
+
+/* Paste-the-listing box */
+#paste-form input, #paste-form textarea {
+  display: block; width: 100%; box-sizing: border-box; margin: 4px 0 12px; padding: 10px 12px;
+  border: 1px solid #c8ccd6; border-radius: 8px; font: inherit; background: #fff; color: inherit;
+}
+#paste-form textarea { resize: vertical; min-height: 160px; }
+#paste-form button[type="submit"] { padding: 8px 18px; border-radius: 999px; border: 0; background: #1d2433; color: #fff; font: 600 14px system-ui, sans-serif; cursor: pointer; }
+@media (prefers-color-scheme: dark) {
+  #paste-form input, #paste-form textarea { background: #1b1f29; border-color: #3a4152; }
+  #paste-form button[type="submit"] { background: #e7e9ee; color: #1d2433; }
+}

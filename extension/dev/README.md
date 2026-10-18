@@ -1,24 +1,14 @@
 # Extension dev setup
 
-## 1. Run the mock API
+## 1. Run the API
 
-From the repo root (Python 3, standard library only):
+From the repo root:
 
 ```
-py extension/dev/mock_api.py            # Windows; python3 elsewhere
+py api/main.py              # Windows; python3 elsewhere. Add --no-granite to skip the Granite summaries
 ```
 
-It serves the public API contract (build plan 2.6) on http://localhost:8000. Every company in
-`data/collect/shard_assignment.csv` gets the contract's example score (41% chance of a hire, so the
-badge shows 59% ± 12%) with `model_version: "mock"`; any other name gets "Not in our dataset yet".
-
-Run it as a script, not with `python -m`: Chrome refuses to load an extension folder that contains
-`__pycache__`.
-
-Options:
-- `--force-p 0.85` gives every company that probability of a hire, to preview other color bands
-  (0.85 → 15%, green; 0.20 → 80%, red).
-- `?p=0.85` on `/company/{ticker}` does the same for one request.
+This serves the scam-risk API on http://localhost:8000 (see `api/README.md`). It needs the trained model at `ml/models/lgbm_v1.joblib`; if it's missing, run `py -3 -m ml.run train --model lgbm`.
 
 ## 2. Load the extension
 
@@ -26,13 +16,14 @@ Options:
 2. **Load unpacked** → choose the `extension/` folder.
 3. After editing files, click the reload icon on the RealRole card, then reload the job page.
 
+Chrome refuses to load an extension folder that contains `__pycache__`, so keep Python files out of `extension/`.
+
 ## 3. Try it
 
-- Sample postings: http://localhost:8000/demo (a company in our dataset, one that isn't, and a page
-  with no job title to show the floating fallback).
-- Real pages: any Greenhouse, Workday or LinkedIn job posting from one of our 300 companies.
-- Click **Tell me why** to open the side panel.
+- **Sample listings:** open http://localhost:8000/demo. It has a scam-style listing and a typical listing, both carrying JobPosting data like a real job site. The badge appears under the title.
+- **Real listings:** any job page on Greenhouse, Lever, Workday or LinkedIn.
+- **Why?** opens the side panel with the reasons. The IBM Granite summary replaces the template sentence after about 20 seconds on a laptop CPU.
 
-## Switching to the real API
+## What the extension sends
 
-Change `API_URL` in `extension/config.js`. Nothing else depends on the mock.
+Only the listing's public content: the page's JobPosting data, or the visible title, description, company name and whether a logo is shown. It never sends anything about the person browsing. Scores are kept for the browser session only.

@@ -1,4 +1,4 @@
-// "Tell me why" side panel: the full analysis (report.js) for the company on the active tab.
+// "Why?" side panel: the full analysis (report.js) for the listing on the active tab.
 const content = document.getElementById("content");
 const { h } = RealRoleReport;
 
@@ -21,8 +21,8 @@ function render(score) {
 function renderEmpty() {
   content.replaceChildren(
     h("div", { class: "empty" },
-      h("p", { class: "empty-title" }, "No RealRole data for this page"),
-      h("p", {}, "Open a job posting on Greenhouse, Workday or LinkedIn from a company in our dataset, and its details show up here.")
+      h("p", { class: "empty-title" }, "No job listing on this page"),
+      h("p", {}, "Open a job listing on Greenhouse, Lever, Workday or LinkedIn and its scam-risk check shows up here.")
     )
   );
 }

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>RealRole Lookup</title>
-    <meta name="description" content="Paste a job link to see how likely that company's postings are to lead to a hire, with reasons and sources." />
+    <meta name="description" content="Paste a job link or a job listing's text to check it for signs of a scam, with the reasons behind the score." />
     <link rel="stylesheet" href="/shared/report.css" />
     <link rel="stylesheet" href="/static/style.css" />
   </head>
@@ -15,29 +15,30 @@
 
     <main>
       <section class="hero">
-        <h1>Will this job posting lead to a hire?</h1>
-        <p class="sub">Paste a link to a job posting. We'll show how often that company's postings lead to a hire, with the reasons and sources behind it.</p>
+        <h1>Is this job listing a scam?</h1>
+        <p class="sub">Paste a link to a job listing. We'll check it for the signs most often seen in scam postings and show the reasons behind the score.</p>
 
         <form id="link-form" class="search" autocomplete="off">
-          <label for="link" class="visually-hidden">Job posting link</label>
+          <label for="link" class="visually-hidden">Job listing link</label>
           <input id="link" name="url" type="text" inputmode="url" placeholder="https://job-boards.greenhouse.io/…" required />
           <button type="submit">Check</button>
         </form>
         <p class="hint">
-          Works with Greenhouse, Workday, Lever and LinkedIn links.
-          <button type="button" class="linkish" id="show-search">Search by company name instead</button>
+          Works with Greenhouse, Lever and Workday links, and most company careers pages.
+          <button type="button" class="linkish" id="show-paste">Paste the listing's text instead</button>
         </p>
         <p class="examples" id="examples"></p>
       </section>
 
-      <section id="company-search" class="company-search" hidden>
-        <p id="search-why" class="search-why"></p>
-        <label for="company" class="search-label">Which company is it?</label>
-        <div class="combo">
-          <input id="company" type="text" placeholder="Start typing a company name" role="combobox"
-                 aria-expanded="false" aria-controls="company-results" aria-autocomplete="list" />
-          <ul id="company-results" class="results" role="listbox"></ul>
-        </div>
+      <section id="paste-box" class="company-search" hidden>
+        <p id="paste-why" class="search-why"></p>
+        <form id="paste-form" autocomplete="off">
+          <label for="paste-title" class="search-label">Job title</label>
+          <input id="paste-title" type="text" placeholder="e.g. Data Entry Clerk" />
+          <label for="paste-text" class="search-label">The listing's text</label>
+          <textarea id="paste-text" rows="10" placeholder="Paste the full job description here" required></textarea>
+          <p><button type="submit">Check this text</button></p>
+        </form>
       </section>
 
       <div id="status" class="status" aria-live="polite"></div>
@@ -45,7 +46,7 @@
     </main>
 
     <footer class="page-foot">
-      RealRole · IBM Z Datathon 2026. Scores are company-level likelihoods from public data, not a verdict on any one posting.
+      RealRole · IBM Z Datathon 2026. Scores are automated estimates from the listing's text and details, trained on known scam postings. They are not proof of fraud.
     </footer>
 
     <script src="/shared/config.js"></script>

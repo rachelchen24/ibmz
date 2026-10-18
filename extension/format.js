@@ -1,63 +1,34 @@
-// Display helpers shared by the badge, side panel and popup.
-// The API's `probability` is the chance a posting leads to a hire; we display the flip of it.
+// Display helpers shared by the badge, side panel, popup and lookup site.
+// The API's `risk` is the probability that the listing is a scam posting (calibrated, 0 to 1).
 (function () {
-  const SUFFIXES = /[\s,]+(inc|incorporated|corp|corporation|co|company|ltd|llc|plc|holdings|group|n\.?a|s\.?a|national association)\.?$/i;
-
-  const SMALL_WORDS = new Set(["of", "and", "the", "for", "in", "at", "on", "de"]);
-  // Short all-caps words that are words, not acronyms.
-  const COMMON_SHORT = new Set(["OLD", "NEW", "ONE", "BIG", "AIR", "SUN", "OAK", "WEB", "BAY", "FOX"]);
+  const SUFFIXES = /[\s,]+(inc|incorporated|corp|corporation|co|company|ltd|llc|plc|holdings|group)\.?$/i;
 
   function displayName(name) {
     if (!name) return "";
-    let n = name
-      .trim()
-      .replace(/\s+\/\s*[A-Za-z]+$/, "") // "Inc. / Delaware", but not "Cullen/Frost"
-      .replace(/\s*\/[A-Z]{2,3}\/?$/i, ""); // SEC tags: "/IN/", "/DE/", "/MN", "/NEW/"
+    let n = name.trim();
     for (let i = 0; i < 3; i++) n = n.replace(SUFFIXES, "").replace(/[\s,&/]+$/, "");
-    // Fix ALL-CAPS names ("BANK OF HAWAII CORP" -> "Bank of Hawaii"), keeping short acronyms ("IBM").
-    if (n === n.toUpperCase() && /[A-Z]{2}/.test(n)) {
-      n = n
-        .split(/(\s+|-|\/)/)
-        .map((w, i) => {
-          if (i > 0 && SMALL_WORDS.has(w.toLowerCase())) return w.toLowerCase();
-          if (w.length <= 3 && /^[A-Z&]+$/.test(w) && !COMMON_SHORT.has(w)) return w;
-          return w.charAt(0) + w.slice(1).toLowerCase();
-        })
-        .join("");
-    }
     return n;
   }
 
-  function possessive(name) {
-    return /s$/i.test(name) ? `${name}'` : `${name}'s`;
-  }
+  const BAND_WORDS = { low: "Low scam risk", medium: "Some scam signals", high: "High scam risk" };
 
   // Everything the UI shows, from one /score response.
   function view(score) {
-    const p = score.probability;
-    const [lo, hi] = score.range || [p, p];
-    const noHire = 1 - p;
-    const bands = self.REALROLE_CONFIG.BANDS;
-    const band = noHire < bands.GREEN_BELOW ? "green" : noHire >= bands.RED_FROM ? "red" : "amber";
-    const name = displayName(score.company.name);
-    const pct = Math.round(noHire * 100);
-    const plusMinus = Math.round(((hi - lo) / 2) * 100);
+    const band = score.band || "low";
+    const pct = score.risk_pct != null ? score.risk_pct : Math.round((score.risk || 0) * 100);
+    const listing = score.listing || {};
     return {
-      name,
-      ticker: score.company.ticker,
-      sector: score.company.sector,
       band,
-      noHire,
+      color: self.REALROLE_CONFIG.BAND_COLORS[band] || "amber",
       pct,
-      plusMinus,
-      // Exact range of no_hire (flipped, so the low end comes from the API's high end).
-      rangeLow: Math.round((1 - hi) * 100),
-      rangeHigh: Math.round((1 - lo) * 100),
-      barLow: 1 - hi,
-      barHigh: 1 - lo,
-      sentence: `${pct}% ± ${plusMinus}% chance ${possessive(name)} postings don't lead to a hire`,
+      risk: score.risk || 0,
+      threshold: score.threshold,
+      word: BAND_WORDS[band] || score.label,
+      title: listing.title || "This listing",
+      company: displayName(listing.company),
+      sentence: `${pct}% scam risk: ${(BAND_WORDS[band] || "").toLowerCase()}`,
     };
   }
 
-  self.RealRoleFormat = { displayName, possessive, view };
+  self.RealRoleFormat = { displayName, view };
 })();

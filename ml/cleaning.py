@@ -153,7 +153,9 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     out["salary_max"] = sal.str[1].astype("float64")
     out["salary_invalid"] = sal.str[2].astype("int8")
     for c in BINARY_COLS + [TARGET]:
-        out[c] = out[c].astype("int8")
+        # Training data always has 0/1 (validate_raw). When scoring a live page, a flag the page can't show
+        # (e.g. has_questions) stays missing (float NaN) rather than being guessed; LightGBM handles NaN natively.
+        out[c] = out[c].astype("float64") if out[c].isna().any() else out[c].astype("int8")
     return out
 
 

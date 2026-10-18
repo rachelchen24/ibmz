@@ -1,5 +1,7 @@
 // Site registry and helpers shared by the per-site readers.
-// Each site module calls RealRoleSites.register({ source, match, getCompanyName, getTitleAnchor }).
+// Each site module calls RealRoleSites.register({ source, match, getJobPosting, getTitleAnchor }).
+// getJobPosting returns a schema.org JobPosting object: the page's own JSON-LD when it has one, otherwise one
+// built from the visible title, company, description and logo. Only this listing's public content is read.
 (function () {
   const sites = [];
 
@@ -11,40 +13,34 @@
     return sites.find((s) => s.match(new URL(url))) || null;
   }
 
-  // Walks JSON-LD blocks (including @graph and arrays) for a JobPosting's hiringOrganization.name.
-  function jsonLdHiringOrg(doc) {
-    const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
-    for (const s of scripts) {
+  // The page's JSON-LD JobPosting (including inside @graph and arrays), or null.
+  function jsonLdJobPosting(doc) {
+    for (const s of doc.querySelectorAll('script[type="application/ld+json"]')) {
       let data;
       try {
         data = JSON.parse(s.textContent);
       } catch {
         continue;
       }
-      const name = findOrg(data, 0);
-      if (name) return name;
+      const jp = findJobPosting(data, 0);
+      if (jp && (jp.title || jp.description)) return jp;
     }
     return null;
   }
 
-  function findOrg(node, depth) {
+  function findJobPosting(node, depth) {
     if (!node || typeof node !== "object" || depth > 6) return null;
     if (Array.isArray(node)) {
       for (const item of node) {
-        const n = findOrg(item, depth + 1);
-        if (n) return n;
+        const jp = findJobPosting(item, depth + 1);
+        if (jp) return jp;
       }
       return null;
     }
-    const type = [].concat(node["@type"] || []);
-    if (type.includes("JobPosting") && node.hiringOrganization) {
-      const org = [].concat(node.hiringOrganization)[0];
-      const name = typeof org === "string" ? org : org && org.name;
-      if (name && name.trim()) return name.trim();
-    }
+    if ([].concat(node["@type"] || []).includes("JobPosting")) return node;
     for (const key of ["@graph", "mainEntity", "itemListElement"]) {
-      const n = findOrg(node[key], depth + 1);
-      if (n) return n;
+      const jp = findJobPosting(node[key], depth + 1);
+      if (jp) return jp;
     }
     return null;
   }
@@ -58,5 +54,31 @@
     return null;
   }
 
-  self.RealRoleSites = { register, forUrl, jsonLdHiringOrg, firstText };
+  // A JobPosting built from what's visible, for pages without JSON-LD (or with an incomplete one).
+  function domJobPosting(doc, sel) {
+    const title = firstText(doc, sel.title || []);
+    const desc = firstText(doc, sel.description || []);
+    if (!title && !desc) return null;
+    const company = firstText(doc, sel.company || []);
+    const logo = (sel.logo || []).some((s) => doc.querySelector(s));
+    return {
+      "@type": "JobPosting",
+      title: title ? title.textContent.trim() : undefined,
+      description: desc ? desc.innerText.trim().slice(0, 20000) : undefined,
+      hiringOrganization: {
+        name: company ? company.textContent.trim().replace(/^at\s+/i, "") : undefined,
+        logo: logo ? "present" : undefined,
+      },
+    };
+  }
+
+  // JSON-LD when present, with any missing title/description filled from the page.
+  function bestJobPosting(doc, sel) {
+    const ld = jsonLdJobPosting(doc);
+    const dom = domJobPosting(doc, sel);
+    if (!ld) return dom;
+    return { ...ld, title: ld.title || (dom && dom.title), description: ld.description || (dom && dom.description) };
+  }
+
+  self.RealRoleSites = { register, forUrl, jsonLdJobPosting, domJobPosting, bestJobPosting, firstText };
 })();

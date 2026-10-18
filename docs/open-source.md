@@ -14,6 +14,9 @@ This list is required by the competition rules. Add every package and source whe
 | scikit-learn | Split, preprocessing, logistic baseline, calibration (`ml/`) | https://github.com/scikit-learn/scikit-learn |
 | LightGBM | Fraud classifier, stronger model (`ml/lgbm.py`) | https://github.com/microsoft/LightGBM |
 | joblib | Saving and loading trained models (`ml/lgbm.py`, `ml/run.py`) | https://github.com/joblib/joblib |
+| Hugging Face Transformers | Running IBM Granite locally for summaries (`ml/granite.py`) | https://github.com/huggingface/transformers |
+| PyTorch | Backend for Transformers (`ml/granite.py`) | https://github.com/pytorch/pytorch |
+| IBM Granite 3.1 1B-A400M Instruct (model) | One-sentence explanations of the score (`ml/granite.py`) | https://huggingface.co/ibm-granite/granite-3.1-1b-a400m-instruct |
 
 ## Data sources
 

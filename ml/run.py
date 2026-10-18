@@ -66,13 +66,20 @@ def predict(bundle: dict, df: pd.DataFrame) -> np.ndarray:
     return p
 
 
-def score_raw(bundle: dict, postings: pd.DataFrame | list[dict]) -> pd.DataFrame:
-    """Score new postings given in the raw Kaggle columns. job_id and fraudulent are optional; the three 0/1 flags
-    (telecommuting, has_company_logo, has_questions) are required, since a missing flag can't be assumed."""
+def score_raw(bundle: dict, postings: pd.DataFrame | list[dict], allow_unknown_flags: bool = False) -> pd.DataFrame:
+    """Score new postings given in the raw Kaggle columns. job_id and fraudulent are optional. The three 0/1 flags
+    (telecommuting, has_company_logo, has_questions) are required unless allow_unknown_flags, which leaves an absent
+    flag missing instead of guessing it; only the LightGBM model accepts that (it handles missing values natively)."""
     raw = pd.DataFrame(postings).copy()
     missing_flags = [c for c in BINARY_COLS if c not in raw.columns or raw[c].isna().any()]
-    if missing_flags:
+    if missing_flags and not allow_unknown_flags:
         raise ValueError(f"postings need 0/1 values for {missing_flags}")
+    for c in BINARY_COLS:
+        if c not in raw.columns:
+            raw[c] = np.nan
+    bad = [c for c in BINARY_COLS if not raw[c].dropna().isin([0, 1, True, False]).all()]
+    if bad:
+        raise ValueError(f"{bad} must be 0 or 1")
     if ID not in raw.columns:
         raw[ID] = np.arange(1, len(raw) + 1)
     raw[TARGET] = 0                      # placeholder so clean() sees the full schema; never used as input
@@ -84,6 +91,21 @@ def score_raw(bundle: dict, postings: pd.DataFrame | list[dict]) -> pd.DataFrame
             raw[c] = raw[c].astype("string")
     p = predict(bundle, clean(raw[RAW_COLUMNS]))
     return pd.DataFrame({ID: raw[ID].to_numpy(), "fraud_probability": p, "flagged": p >= bundle["threshold"]})
+
+
+def clean_postings(postings: pd.DataFrame | list[dict]) -> pd.DataFrame:
+    """Raw postings (Kaggle columns, any subset) -> cleaned rows, with absent flags left missing."""
+    raw = pd.DataFrame(postings).copy()
+    if ID not in raw.columns:
+        raw[ID] = np.arange(1, len(raw) + 1)
+    raw[TARGET] = 0
+    for c in RAW_COLUMNS:
+        if c not in raw.columns:
+            raw[c] = np.nan if c in BINARY_COLS else pd.NA
+    for c in RAW_COLUMNS:
+        if c not in (ID, TARGET, *BINARY_COLS):
+            raw[c] = raw[c].astype("string")
+    return clean(raw[RAW_COLUMNS])
 
 
 def train_logreg(log=print) -> dict:
