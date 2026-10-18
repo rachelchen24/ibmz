@@ -107,18 +107,20 @@ def build_model() -> sklearn.pipeline.Pipeline: ...   # unfitted
 
 ### Threshold
 
-Person 3 hands over a **number**, the recall target it was chosen for, and the fitted calibrator. Person 4
-applies it once and does not re-derive it. Choose it on **train out-of-fold predictions (612 fraud rows)**,
-not on val's 122 — a threshold fitted on 122 positives is noisy, and that noise lands in every reported
-number. OOF is leakage-safe because no group crosses a CV fold. Val then checks the calibration instead of
-fitting it. If `--threshold` is omitted, the report says so, in words, in `threshold.chosen_on`.
+**Decided 2026-10-17: the cut-off maximizing F1 on the validation split, for every model.** This is Person 3's
+`ml.lgbm.choose_threshold`, and `ml/run.py` applies the same rule to the baseline. It is consistent with
+LightGBM's calibration, which is also fitted on validation. The cost: validation has only 122 fraud rows, so the
+cut-off is somewhat noisy, and validation precision/recall at that cut-off are optimistic. The test split, scored
+once with `--final`, gives the honest numbers. (Considered and not chosen: 80% recall on train out-of-fold
+predictions, 612 fraud rows, which is less noisy but on the uncalibrated scale.) If `--threshold` is omitted,
+the report says so, in words, in `threshold.chosen_on`.
 
 ### Artifact paths
 
 | What | Where | In git? |
 |---|---|---|
 | Metrics report | `ml/reports/metrics_<name>.json` | yes — it is the deliverable |
-| Fitted model | `ml/artifacts/<name>/model.joblib` | no — add `ml/artifacts/` to `.gitignore` |
+| Fitted model | `ml/models/<name>_v1.joblib` (Person 3's path, adopted for all models) | no — git-ignored |
 
 ### Metrics report
 

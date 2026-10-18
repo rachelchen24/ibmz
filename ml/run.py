@@ -1,6 +1,6 @@
 """One entry point for the fraud classifier: train, predict, evaluate, score new postings (Person 4 integration).
 
-    python -m ml.run train --model logreg            # Person 2's baseline; threshold from train OOF (~2 min)
+    python -m ml.run train --model logreg            # Person 2's baseline (~1 min)
     python -m ml.run train --model lgbm              # Person 3's LightGBM (ml.lgbm: tune + calibrate, ~40 min)
     python -m ml.run evaluate --model lgbm --split val
     python -m ml.run evaluate --model lgbm --split test --final   # the one holdout evaluation, at the end
@@ -10,6 +10,10 @@
 Every model is saved as the same bundle, ml/models/<name>_v1.joblib (git-ignored):
     {"model": fitted, "threshold": float, "threshold_source": str, "feature_cols": [...], "split_version": "v1"}
     bundle["model"].predict_proba(df[bundle["feature_cols"]])[:, 1] -> fraud probability in [0, 1]
+
+Threshold rule (team decision 2026-10-17): the cut-off maximizing F1 on the validation split, for every model
+(Person 3's ml.lgbm.choose_threshold). Validation's own precision/recall at that cut-off are therefore optimistic;
+the test split, scored once with --final, gives the honest numbers.
 
 Metrics go through ml.evaluate.evaluate (PR-AUC primary, group bootstrap), so every model's report has the same
 schema: ml/reports/metrics_<name>_<split>.json. The test split needs --final.
@@ -27,12 +31,11 @@ import numpy as np
 import pandas as pd
 
 from .cleaning import BINARY_COLS, FEATURE_COLS, ID, RAW_COLUMNS, TARGET, clean
-from .evaluate import REPORT_DIR, evaluate, summary_lines, threshold_for_recall
+from .evaluate import REPORT_DIR, evaluate, summary_lines
 from .split import VERSION, load_split
 
 MODEL_DIR = Path(__file__).resolve().parent / "models"
 MODELS = ("logreg", "lgbm")
-DEFAULT_RECALL = 0.80
 
 
 def bundle_path(name: str) -> Path:
@@ -84,10 +87,11 @@ def score_raw(bundle: dict, postings: pd.DataFrame | list[dict]) -> pd.DataFrame
 
 
 def train_logreg(log=print) -> dict:
-    """Person 2's class-weighted logistic baseline on all of train; threshold = 80% recall on train out-of-fold
-    predictions (the shared contract in ml/PLAN.md), so validation stays independent."""
+    """Person 2's class-weighted logistic baseline fitted on all of train. Out-of-fold PR-AUC on the train CV folds
+    is recorded for model comparison; the threshold uses the same rule as LightGBM (max F1 on validation)."""
     from sklearn.metrics import average_precision_score
 
+    from .lgbm import choose_threshold
     from .preprocessing import make_logistic_baseline, select_features
 
     df = load_split()
@@ -98,10 +102,12 @@ def train_logreg(log=print) -> dict:
         hold = (train["cv_fold"] == k).to_numpy()
         oof[hold] = make_logistic_baseline().fit(X[~hold], y[~hold]).predict_proba(X[hold])[:, 1]
         log(f"  fold {k}: PR-AUC {average_precision_score(y[hold], oof[hold]):.4f}")
-    threshold = threshold_for_recall(y, oof, DEFAULT_RECALL)
-    bundle = {"model": make_logistic_baseline().fit(X, y), "threshold": threshold,
-              "threshold_source": f"train OOF, recall {DEFAULT_RECALL}", "feature_cols": list(FEATURE_COLS),
-              "split_version": VERSION, "cv_oof_pr_auc": float(average_precision_score(y, oof))}
+    model = make_logistic_baseline().fit(X, y)
+    val = df[df["split"] == "val"]
+    threshold = choose_threshold(val[TARGET].to_numpy(), model.predict_proba(select_features(val))[:, 1])
+    bundle = {"model": model, "threshold": threshold, "threshold_source": "max F1 on validation",
+              "feature_cols": list(FEATURE_COLS), "split_version": VERSION,
+              "cv_oof_pr_auc": float(average_precision_score(y, oof))}
     log(f"  train OOF PR-AUC {bundle['cv_oof_pr_auc']:.4f}; threshold {threshold:.4f} ({bundle['threshold_source']})")
     return bundle
 

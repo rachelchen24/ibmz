@@ -11,7 +11,9 @@ This list is required by the competition rules. Add every package and source whe
 | openpyxl | Reading state WARN spreadsheets (through pandas) | https://foss.heptapod.net/openpyxl/openpyxl |
 | NumPy | Bootstrap intervals (`dataset/`), arrays (`ml/`) | https://github.com/numpy/numpy |
 | Matplotlib | Findings charts (`dataset/findings.py`) | https://github.com/matplotlib/matplotlib |
-| scikit-learn | Group-aware stratified train/validation/test split (`ml/split.py`) | https://github.com/scikit-learn/scikit-learn |
+| scikit-learn | Split, preprocessing, logistic baseline, calibration (`ml/`) | https://github.com/scikit-learn/scikit-learn |
+| LightGBM | Fraud classifier, stronger model (`ml/lgbm.py`) | https://github.com/microsoft/LightGBM |
+| joblib | Saving and loading trained models (`ml/lgbm.py`, `ml/run.py`) | https://github.com/joblib/joblib |
 
 ## Data sources
 

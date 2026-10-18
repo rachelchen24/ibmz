@@ -40,4 +40,4 @@ The full list is in `AUDIT.md` § "Leakage risks". The main ones:
 - Validation has only 122 fraud postings, so the confidence intervals are wide.
 - Part of the model's lift comes from `company_profile` text: CV PR-AUC drops from 0.68 to 0.62 without it.
 - The 2012–2014 data may not reflect today's scams.
-- The LightGBM threshold was chosen on validation, so its validation precision and recall are optimistic.
+- Both models' thresholds are the best-F1 cut-off on validation (team decision), so their validation precision and recall are optimistic. The one `--final` test run gives the honest numbers.

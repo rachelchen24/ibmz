@@ -9,9 +9,9 @@
     "rate": 0.0485
   },
   "threshold": {
-    "value": 0.105941,
+    "value": 0.806726,
     "chosen_for_recall": 0.8,
-    "chosen_on": "train OOF, recall 0.8"
+    "chosen_on": "max F1 on validation"
   },
   "ranking": {
     "pr_auc": {
@@ -32,16 +32,16 @@
     "pr_auc_lift_over_prevalence": 11.8
   },
   "at_threshold": {
-    "threshold": 0.105941,
-    "precision": 0.1298,
-    "recall": 0.7459,
-    "f1": 0.2211,
-    "tp": 91,
-    "fp": 610,
-    "fn": 31,
-    "tn": 1782,
-    "flagged": 701,
-    "flag_rate": 0.2788
+    "threshold": 0.806726,
+    "precision": 0.8182,
+    "recall": 0.4426,
+    "f1": 0.5745,
+    "tp": 54,
+    "fp": 12,
+    "fn": 68,
+    "tn": 2380,
+    "flagged": 66,
+    "flag_rate": 0.0263
   },
   "operating_points": [
     {
@@ -185,5 +185,5 @@
     "numpy": "2.4.4",
     "pandas": "2.3.3"
   },
-  "generated_utc": "2026-10-18T01:30:05Z"
+  "generated_utc": "2026-10-18T01:38:59Z"
 }
