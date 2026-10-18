@@ -1,0 +1,725 @@
+{
+  "model": "lightgbm",
+  "split_version": "v1",
+  "preprocessor": "ml.features_standin",
+  "seed": 42,
+  "selection": {
+    "metric": "average_precision (PR-AUC)",
+    "cv": "split_v1 cv_fold 0-4 (group-aware, train only)",
+    "early_stopping": "PR-AUC on a 1/7 group-aware slice of each fold's training rows, patience 50; final model uses the median tree count",
+    "n_iter": 20,
+    "best": {
+      "cv_pr_auc_mean": 0.6675,
+      "cv_pr_auc_std": 0.1705,
+      "cv_pr_auc_folds": [
+        0.7581,
+        0.656,
+        0.7922,
+        0.7902,
+        0.3413
+      ],
+      "trees_per_fold": [
+        465,
+        211,
+        152,
+        787,
+        656
+      ],
+      "seconds": 72,
+      "params": {
+        "subsample": 1.0,
+        "reg_lambda": 1.0,
+        "num_leaves": 15,
+        "min_child_samples": 50,
+        "learning_rate": 0.05,
+        "colsample_bytree": 0.3,
+        "class_weight": "balanced"
+      },
+      "final_params": {
+        "subsample": 1.0,
+        "reg_lambda": 1.0,
+        "num_leaves": 15,
+        "min_child_samples": 50,
+        "learning_rate": 0.05,
+        "colsample_bytree": 0.3,
+        "class_weight": "balanced",
+        "n_estimators": 465
+      }
+    },
+    "all": [
+      {
+        "cv_pr_auc_mean": 0.6675,
+        "cv_pr_auc_std": 0.1705,
+        "cv_pr_auc_folds": [
+          0.7581,
+          0.656,
+          0.7922,
+          0.7902,
+          0.3413
+        ],
+        "trees_per_fold": [
+          465,
+          211,
+          152,
+          787,
+          656
+        ],
+        "seconds": 72,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 1.0,
+          "num_leaves": 15,
+          "min_child_samples": 50,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.3,
+          "class_weight": "balanced"
+        }
+      },
+      {
+        "cv_pr_auc_mean": 0.6648,
+        "cv_pr_auc_std": 0.1736,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          396,
+          245,
+          151,
+          432,
+          543
+        ],
+        "seconds": 80,
+        "params": {
+          "subsample": 0.7,
+          "reg_lambda": 1.0,
+          "num_leaves": 15,
+          "min_child_samples": 10,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.5,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6579,
+        "cv_pr_auc_std": 0.1592,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          780,
+          289,
+          129,
+          186,
+          274
+        ],
+        "seconds": 70,
+        "params": {
+          "subsample": 0.7,
+          "reg_lambda": 0.0,
+          "num_leaves": 15,
+          "min_child_samples": 10,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.3,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6567,
+        "cv_pr_auc_std": 0.1602,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          805,
+          370,
+          77,
+          645,
+          703
+        ],
+        "seconds": 99,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 10.0,
+          "num_leaves": 15,
+          "min_child_samples": 20,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.5,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6539,
+        "cv_pr_auc_std": 0.1819,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          1959,
+          216,
+          92,
+          431,
+          250
+        ],
+        "seconds": 126,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 10.0,
+          "num_leaves": 31,
+          "min_child_samples": 100,
+          "learning_rate": 0.1,
+          "colsample_bytree": 0.3,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6476,
+        "cv_pr_auc_std": 0.167,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          372,
+          180,
+          103,
+          181,
+          155
+        ],
+        "seconds": 38,
+        "params": {
+          "subsample": 0.9,
+          "reg_lambda": 0.0,
+          "num_leaves": 31,
+          "min_child_samples": 100,
+          "learning_rate": 0.1,
+          "colsample_bytree": 0.1,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6475,
+        "cv_pr_auc_std": 0.1612,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          742,
+          212,
+          29,
+          312,
+          240
+        ],
+        "seconds": 78,
+        "params": {
+          "subsample": 0.9,
+          "reg_lambda": 1.0,
+          "num_leaves": 15,
+          "min_child_samples": 50,
+          "learning_rate": 0.1,
+          "colsample_bytree": 0.3,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6472,
+        "cv_pr_auc_std": 0.168,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          386,
+          70,
+          53,
+          191,
+          221
+        ],
+        "seconds": 53,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 0.0,
+          "num_leaves": 31,
+          "min_child_samples": 100,
+          "learning_rate": 0.1,
+          "colsample_bytree": 0.3,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6394,
+        "cv_pr_auc_std": 0.1726,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          1995,
+          414,
+          74,
+          268,
+          535
+        ],
+        "seconds": 123,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 10.0,
+          "num_leaves": 63,
+          "min_child_samples": 100,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.3,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6359,
+        "cv_pr_auc_std": 0.1707,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          882,
+          625,
+          345,
+          443,
+          869
+        ],
+        "seconds": 134,
+        "params": {
+          "subsample": 0.9,
+          "reg_lambda": 10.0,
+          "num_leaves": 31,
+          "min_child_samples": 20,
+          "learning_rate": 0.03,
+          "colsample_bytree": 0.3,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.629,
+        "cv_pr_auc_std": 0.178,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          30,
+          240,
+          249,
+          616,
+          283
+        ],
+        "seconds": 49,
+        "params": {
+          "subsample": 0.7,
+          "reg_lambda": 0.0,
+          "num_leaves": 15,
+          "min_child_samples": 20,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.1,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6282,
+        "cv_pr_auc_std": 0.1927,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          302,
+          260,
+          144,
+          317,
+          126
+        ],
+        "seconds": 27,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 10.0,
+          "num_leaves": 15,
+          "min_child_samples": 100,
+          "learning_rate": 0.1,
+          "colsample_bytree": 0.1,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6281,
+        "cv_pr_auc_std": 0.1706,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          911,
+          446,
+          118,
+          617,
+          798
+        ],
+        "seconds": 114,
+        "params": {
+          "subsample": 0.7,
+          "reg_lambda": 10.0,
+          "num_leaves": 15,
+          "min_child_samples": 10,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.3,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6269,
+        "cv_pr_auc_std": 0.1848,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          453,
+          204,
+          74,
+          263,
+          446
+        ],
+        "seconds": 63,
+        "params": {
+          "subsample": 0.7,
+          "reg_lambda": 10.0,
+          "num_leaves": 31,
+          "min_child_samples": 100,
+          "learning_rate": 0.1,
+          "colsample_bytree": 0.3,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6236,
+        "cv_pr_auc_std": 0.1795,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          507,
+          444,
+          168,
+          1127,
+          509
+        ],
+        "seconds": 87,
+        "params": {
+          "subsample": 0.7,
+          "reg_lambda": 10.0,
+          "num_leaves": 31,
+          "min_child_samples": 50,
+          "learning_rate": 0.03,
+          "colsample_bytree": 0.1,
+          "class_weight": null
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.6092,
+        "cv_pr_auc_std": 0.1662,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          348,
+          209,
+          47,
+          261,
+          309
+        ],
+        "seconds": 72,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 0.0,
+          "num_leaves": 15,
+          "min_child_samples": 100,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.5,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.5984,
+        "cv_pr_auc_std": 0.1712,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          1035,
+          32,
+          22,
+          537,
+          452
+        ],
+        "seconds": 98,
+        "params": {
+          "subsample": 0.9,
+          "reg_lambda": 10.0,
+          "num_leaves": 63,
+          "min_child_samples": 100,
+          "learning_rate": 0.03,
+          "colsample_bytree": 0.3,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.5641,
+        "cv_pr_auc_std": 0.1838,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          3,
+          286,
+          132,
+          503,
+          340
+        ],
+        "seconds": 38,
+        "params": {
+          "subsample": 0.9,
+          "reg_lambda": 0.0,
+          "num_leaves": 15,
+          "min_child_samples": 100,
+          "learning_rate": 0.03,
+          "colsample_bytree": 0.1,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.55,
+        "cv_pr_auc_std": 0.2217,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          1,
+          818,
+          121,
+          732,
+          941
+        ],
+        "seconds": 72,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 10.0,
+          "num_leaves": 63,
+          "min_child_samples": 10,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.1,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      },
+      {
+        "cv_pr_auc_mean": 0.5148,
+        "cv_pr_auc_std": 0.2328,
+        "cv_pr_auc_folds": null,
+        "trees_per_fold": [
+          1,
+          468,
+          350,
+          677,
+          14
+        ],
+        "seconds": 131,
+        "params": {
+          "subsample": 1.0,
+          "reg_lambda": 10.0,
+          "num_leaves": 31,
+          "min_child_samples": 100,
+          "learning_rate": 0.03,
+          "colsample_bytree": 0.5,
+          "class_weight": "balanced"
+        },
+        "note": "recovered from the run log; per-fold scores not logged"
+      }
+    ]
+  },
+  "calibration": {
+    "method": "sigmoid (Platt) on validation, model frozen"
+  },
+  "threshold": {
+    "rule": "max F1 on calibrated validation probabilities",
+    "value": 0.213
+  },
+  "validation": {
+    "rows": 2514,
+    "fraud": 122,
+    "prevalence": 0.0485,
+    "pr_auc": 0.5721,
+    "pr_auc_95ci": [
+      0.4847,
+      0.6524
+    ],
+    "roc_auc": 0.8435,
+    "brier_uncalibrated": 0.02857,
+    "brier_calibrated": 0.02904,
+    "brier_predict_prevalence": 0.04617,
+    "operating_point": {
+      "threshold": 0.213,
+      "precision": 0.6875,
+      "recall": 0.541,
+      "f1": 0.6055,
+      "flagged": 96,
+      "confusion": {
+        "tn": 2362,
+        "fp": 30,
+        "fn": 56,
+        "tp": 66
+      }
+    },
+    "threshold_tradeoffs": [
+      {
+        "precision_target": 0.5,
+        "threshold": 0.1437,
+        "precision": 0.5,
+        "recall": 0.5902,
+        "f1": 0.5414,
+        "flagged": 144,
+        "confusion": {
+          "tn": 2320,
+          "fp": 72,
+          "fn": 50,
+          "tp": 72
+        }
+      },
+      {
+        "precision_target": 0.7,
+        "threshold": 0.2479,
+        "precision": 0.7037,
+        "recall": 0.4672,
+        "f1": 0.5616,
+        "flagged": 81,
+        "confusion": {
+          "tn": 2368,
+          "fp": 24,
+          "fn": 65,
+          "tp": 57
+        }
+      },
+      {
+        "precision_target": 0.8,
+        "threshold": 0.3429,
+        "precision": 0.806,
+        "recall": 0.4426,
+        "f1": 0.5714,
+        "flagged": 67,
+        "confusion": {
+          "tn": 2379,
+          "fp": 13,
+          "fn": 68,
+          "tp": 54
+        }
+      },
+      {
+        "precision_target": 0.9,
+        "threshold": 0.5378,
+        "precision": 0.9149,
+        "recall": 0.3525,
+        "f1": 0.5089,
+        "flagged": 47,
+        "confusion": {
+          "tn": 2388,
+          "fp": 4,
+          "fn": 79,
+          "tp": 43
+        }
+      }
+    ],
+    "note": "Calibration and threshold were fitted on these rows, so these numbers are in-sample for both. The holdout estimate is Person 4's test evaluation."
+  },
+  "ablation": {
+    "column": "company_profile",
+    "cv_pr_auc_mean": 0.5715,
+    "cv_pr_auc_std": 0.1811,
+    "cv_pr_auc_folds": [
+      0.4858,
+      0.7133,
+      0.7171,
+      0.6886,
+      0.2527
+    ]
+  },
+  "top_features_by_gain": [
+    {
+      "feature": "tfidf_company_profile__we",
+      "gain_share": 0.0556
+    },
+    {
+      "feature": "tfidf_company_profile__that",
+      "gain_share": 0.049
+    },
+    {
+      "feature": "lengths__company_profile_len",
+      "gain_share": 0.0404
+    },
+    {
+      "feature": "num__has_company_logo",
+      "gain_share": 0.0347
+    },
+    {
+      "feature": "tfidf_company_profile__into",
+      "gain_share": 0.0272
+    },
+    {
+      "feature": "tfidf_company_profile__000",
+      "gain_share": 0.0269
+    },
+    {
+      "feature": "tfidf_company_profile__and",
+      "gain_share": 0.0238
+    },
+    {
+      "feature": "tfidf_company_profile__work",
+      "gain_share": 0.0231
+    },
+    {
+      "feature": "tfidf_company_profile__the",
+      "gain_share": 0.0228
+    },
+    {
+      "feature": "tfidf_company_profile__of",
+      "gain_share": 0.0186
+    },
+    {
+      "feature": "tfidf_company_profile__your",
+      "gain_share": 0.0134
+    },
+    {
+      "feature": "cat__loc_country_US",
+      "gain_share": 0.0125
+    },
+    {
+      "feature": "cat__required_education_Bachelor's Degree",
+      "gain_share": 0.0116
+    },
+    {
+      "feature": "tfidf_company_profile__your career",
+      "gain_share": 0.0102
+    },
+    {
+      "feature": "tfidf_company_profile__industry",
+      "gain_share": 0.0101
+    },
+    {
+      "feature": "cat__industry_Oil & Energy",
+      "gain_share": 0.0086
+    },
+    {
+      "feature": "tfidf_company_profile__management",
+      "gain_share": 0.0075
+    },
+    {
+      "feature": "tfidf_company_profile__more than",
+      "gain_share": 0.007
+    },
+    {
+      "feature": "tfidf_description__per",
+      "gain_share": 0.0066
+    },
+    {
+      "feature": "tfidf_company_profile__excellence",
+      "gain_share": 0.0064
+    },
+    {
+      "feature": "tfidf_company_profile__information",
+      "gain_share": 0.0064
+    },
+    {
+      "feature": "tfidf_requirements__high school",
+      "gain_share": 0.0064
+    },
+    {
+      "feature": "tfidf_company_profile__to the",
+      "gain_share": 0.0061
+    },
+    {
+      "feature": "tfidf_company_profile__candidates",
+      "gain_share": 0.0059
+    },
+    {
+      "feature": "tfidf_company_profile__staffing",
+      "gain_share": 0.0059
+    }
+  ],
+  "runtime_seconds": 58
+}
