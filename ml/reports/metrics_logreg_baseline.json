@@ -1,0 +1,190 @@
+{
+  "model": "logreg_baseline",
+  "split": "val",
+  "predictions_file": "C:/Users/rache/AppData/Local/Temp/claude/c--Users-rache--0Documents-Projects-ibmz/867b7dd2-44ad-44c5-94d6-ab06bb180699/scratchpad/preds/preds_logreg_val.csv",
+  "schema_version": "1",
+  "rows": 2514,
+  "groups": 656,
+  "prevalence": {
+    "positives": 122,
+    "rate": 0.0485
+  },
+  "threshold": {
+    "value": 0.1059,
+    "chosen_for_recall": 0.8,
+    "chosen_on": "train OOF, recall 0.80"
+  },
+  "ranking": {
+    "pr_auc": {
+      "value": 0.5728,
+      "ci_low": 0.4024,
+      "ci_high": 0.829,
+      "replicates": 1000,
+      "skipped": 0
+    },
+    "roc_auc": {
+      "value": 0.8296,
+      "ci_low": 0.6687,
+      "ci_high": 0.9766,
+      "replicates": 1000,
+      "skipped": 0
+    },
+    "pr_auc_floor_is_prevalence": 0.0485,
+    "pr_auc_lift_over_prevalence": 11.8
+  },
+  "at_threshold": {
+    "threshold": 0.1059,
+    "precision": 0.1298,
+    "recall": 0.7459,
+    "f1": 0.2211,
+    "tp": 91,
+    "fp": 610,
+    "fn": 31,
+    "tn": 1782,
+    "flagged": 701,
+    "flag_rate": 0.2788
+  },
+  "operating_points": [
+    {
+      "threshold": 0.69387,
+      "precision": 0.5446,
+      "recall": 0.5,
+      "f1": 0.5214,
+      "tp": 61,
+      "fp": 51,
+      "fn": 61,
+      "tn": 2341,
+      "flagged": 112,
+      "flag_rate": 0.0446,
+      "recall_target": 0.5
+    },
+    {
+      "threshold": 0.23816,
+      "precision": 0.2363,
+      "recall": 0.7049,
+      "f1": 0.3539,
+      "tp": 86,
+      "fp": 278,
+      "fn": 36,
+      "tn": 2114,
+      "flagged": 364,
+      "flag_rate": 0.1448,
+      "recall_target": 0.7
+    },
+    {
+      "threshold": 0.055359,
+      "precision": 0.102,
+      "recall": 0.8033,
+      "f1": 0.181,
+      "tp": 98,
+      "fp": 863,
+      "fn": 24,
+      "tn": 1529,
+      "flagged": 961,
+      "flag_rate": 0.3823,
+      "recall_target": 0.8
+    },
+    {
+      "threshold": 0.002718,
+      "precision": 0.0613,
+      "recall": 0.9098,
+      "f1": 0.1149,
+      "tp": 111,
+      "fp": 1699,
+      "fn": 11,
+      "tn": 693,
+      "flagged": 1810,
+      "flag_rate": 0.72,
+      "recall_target": 0.9
+    }
+  ],
+  "calibration": {
+    "brier": 0.049398,
+    "brier_baseline_predict_prevalence": 0.046173,
+    "expected_calibration_error": 0.0797,
+    "bins": [
+      {
+        "bin": 0,
+        "rows": 252,
+        "mean_predicted": 0.0002,
+        "fraction_positive": 0.0,
+        "positives": 0
+      },
+      {
+        "bin": 1,
+        "rows": 251,
+        "mean_predicted": 0.0008,
+        "fraction_positive": 0.0199,
+        "positives": 5
+      },
+      {
+        "bin": 2,
+        "rows": 251,
+        "mean_predicted": 0.0021,
+        "fraction_positive": 0.0359,
+        "positives": 9
+      },
+      {
+        "bin": 3,
+        "rows": 252,
+        "mean_predicted": 0.0055,
+        "fraction_positive": 0.0079,
+        "positives": 2
+      },
+      {
+        "bin": 4,
+        "rows": 251,
+        "mean_predicted": 0.0142,
+        "fraction_positive": 0.0199,
+        "positives": 5
+      },
+      {
+        "bin": 5,
+        "rows": 251,
+        "mean_predicted": 0.035,
+        "fraction_positive": 0.008,
+        "positives": 2
+      },
+      {
+        "bin": 6,
+        "rows": 252,
+        "mean_predicted": 0.069,
+        "fraction_positive": 0.0317,
+        "positives": 8
+      },
+      {
+        "bin": 7,
+        "rows": 251,
+        "mean_predicted": 0.1256,
+        "fraction_positive": 0.008,
+        "positives": 2
+      },
+      {
+        "bin": 8,
+        "rows": 251,
+        "mean_predicted": 0.2444,
+        "fraction_positive": 0.0398,
+        "positives": 10
+      },
+      {
+        "bin": 9,
+        "rows": 252,
+        "mean_predicted": 0.6625,
+        "fraction_positive": 0.3135,
+        "positives": 79
+      }
+    ]
+  },
+  "bootstrap": {
+    "n": 1000,
+    "unit": "group",
+    "seed": 42,
+    "alpha": 0.05
+  },
+  "versions": {
+    "sklearn": "1.8.0",
+    "numpy": "2.4.4",
+    "pandas": "2.3.3"
+  },
+  "generated_utc": "2026-10-18T00:37:57Z"
+}
