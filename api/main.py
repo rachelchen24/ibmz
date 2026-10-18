@@ -11,7 +11,7 @@ Endpoints
   POST /summary  {"risk", "flagged", "reasons"} (from /score) -> Granite one-sentence summary (~20 s on CPU)
   GET  /health   model, threshold, test metrics, Granite backend
   GET  /demo     sample job pages with JobPosting JSON-LD, to try the extension without a job site
-  GET  /demo/jobposting?case=scam|real   the same samples as JSON (the lookup site's "try a sample")
+  GET  /demo/jobposting?case=scam|medium|real   the same samples as JSON (the lookup site's "try a sample")
 
 Privacy: the request carries only the listing's public content. Nothing is stored, and request bodies are never
 logged (log_message is silenced). A scam-risk score is an automated estimate, not proof of fraud.
@@ -135,6 +135,14 @@ DEMO = {
              "baseSalary": {"@type": "MonetaryAmount", "value": {"minValue": 50000, "maxValue": 90000}},
              "jobLocation": {"@type": "Place", "address": {"addressCountry": "US", "addressRegion": "TX",
                                                            "addressLocality": "Houston"}}},
+    # Medium risk (~9%): a thin listing with no logo or company details; plausible, but worth a closer look.
+    "medium": {"title": "Administrative Assistant",
+               "description": "<p>Busy office seeks an administrative assistant. Answer phones, schedule appointments, data "
+                              "entry and filing. Must be organized and reliable. Pay is weekly.</p>",
+               "hiringOrganization": {"@type": "Organization", "name": "Coastal Group"},
+               "employmentType": "PART_TIME",
+               "jobLocation": {"@type": "Place", "address": {"addressCountry": "US", "addressRegion": "FL",
+                                                             "addressLocality": "Tampa"}}},
     "real": {"title": "Senior Software Engineer, Payments",
              "description": "<p>Join the Payments team to design and run our card processing services. You will "
                             "report to the Engineering Manager and work with product and risk teams.</p>"
@@ -194,8 +202,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"ok": True, "model": self.scorer.model_info(),
                                     "threshold": round(self.scorer.threshold, 4), "granite_backend": backend()})
         if u.path in ("/", "/demo"):
-            links = "".join(f'<li><a href="/demo/posting?case={c}">{html.escape(DEMO[c]["title"])}</a></li>'
-                            for c in DEMO)
+            labels = {"scam": "scam-style, expect high risk", "medium": "thin listing, expect medium risk",
+                      "real": "typical listing, expect low risk"}
+            links = "".join(f'<li><a href="/demo/posting?case={c}">{html.escape(DEMO[c]["title"])}</a> '
+                            f'<small>({labels.get(c, "")})</small></li>' for c in DEMO)
             return self._send(200, f"<!doctype html><meta charset=utf-8><title>RealRole demo</title>"
                                    f"<h1>Sample listings</h1><ul>{links}</ul>", "text/html")
         if u.path == "/demo/jobposting":

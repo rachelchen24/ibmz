@@ -101,6 +101,13 @@ class Server(unittest.TestCase):
         self.assertIn("has_company_logo", scam["left_out"])  # can't see a logo: left out, not "no logo"
         self.assertIn("has_questions", real["left_out"])
 
+    def test_demo_listings_cover_every_band(self):
+        bands = {}
+        for case in self.demo:
+            _, r, _ = self.call("/score", {"jobposting": {"@type": "JobPosting", **self.demo[case]}})
+            bands[case] = r["band"]
+        self.assertEqual(bands, {"scam": "high", "medium": "medium", "real": "low"})
+
     def test_kaggle_style_posting(self):
         s, r, _ = self.call("/score", {"posting": {"title": "Accountant", "description": "Reconcile accounts.",
                                                    "has_company_logo": 1, "telecommuting": 0}})

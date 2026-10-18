@@ -62,7 +62,7 @@ Backends (environment variables):
 
 - `GET /health`: the model, the threshold, the test metrics and the Granite backend.
 - `GET /demo`: sample listing pages with JobPosting JSON-LD, for trying the extension.
-- `GET /demo/jobposting?case=scam|real`: the same samples as JSON.
+- `GET /demo/jobposting?case=scam|medium|real`: the same samples as JSON (high, medium and low risk).
 
 ## Privacy
 

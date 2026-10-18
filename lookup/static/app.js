@@ -12,7 +12,8 @@ const pasteForm = $("paste-form");
 const status = $("status");
 const result = $("result");
 
-const EXAMPLES = [["Sample scam-style listing", "scam"], ["Sample typical listing", "real"]];
+const EXAMPLES = [["Sample scam-style listing", "scam"], ["Sample medium-risk listing", "medium"],
+                  ["Sample typical listing", "real"]];
 
 async function postJSON(url, body) {
   const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
