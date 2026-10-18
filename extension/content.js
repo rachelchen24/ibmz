@@ -70,7 +70,9 @@
     const badge = el("div", `rr-badge rr-${v.color}${floating ? " rr-floating" : ""}`);
     badge.setAttribute("role", "status");
 
-    const mark = el("span", "rr-mark", "RealRole");
+    const mark = el("img", "rr-mark");
+    mark.src = chrome.runtime.getURL("icons/logo.png");
+    mark.alt = "RealRole";
     const main = el("div", "rr-main");
     const text = el("div", "rr-text");
     text.append(el("strong", "rr-num", v.pctText), ` scam risk · ${v.word}`);

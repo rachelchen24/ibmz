@@ -10,15 +10,8 @@ body {
 }
 
 .brand { margin-bottom: 12px; }
-.mark {
-  padding: 2px 7px;
-  border-radius: 5px;
-  background: var(--rr-ink);
-  color: var(--rr-page);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
+.brand { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+.brand .wordmark { font-weight: 700; }
 
 .empty { padding: 32px 8px; color: var(--rr-muted); text-align: center; }
 .empty p { margin: 0 0 6px; }

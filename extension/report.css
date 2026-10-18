@@ -118,3 +118,6 @@
 }
 
 .rr-foot { padding: 4px 4px 0; color: var(--rr-muted); font-size: 13px; }
+
+/* Logo: the R with an echo of its right side (bowl curve + leg) beside it (icons/logo.png), on the site's coral, lightened. */
+.rr-logo { display: inline-block; flex: none; width: 1.9em; height: 1.9em; vertical-align: middle; }
