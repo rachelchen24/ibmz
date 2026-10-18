@@ -161,6 +161,12 @@ def demo_page(case: str) -> str:
 {jp['description']}</body></html>"""
 
 
+class ExclusiveServer(ThreadingHTTPServer):
+    """On Windows, SO_REUSEADDR lets a second server bind the same port and silently share requests with an old
+    one. Refuse instead, so a stale server can't answer for the new one."""
+    allow_reuse_address = sys.platform != "win32"
+
+
 class Handler(BaseHTTPRequestHandler):
     scorer: Scorer = None
 
@@ -227,7 +233,11 @@ def main():
     Handler.scorer = Scorer(granite=not a.no_granite)
     print(f"RealRole API on http://{a.host}:{a.port}  (demo listings: /demo; model {MODEL_NAME}, "
           f"threshold {Handler.scorer.threshold:.3f})", flush=True)
-    ThreadingHTTPServer((a.host, a.port), Handler).serve_forever()
+    try:
+        server = ExclusiveServer((a.host, a.port), Handler)
+    except OSError:
+        sys.exit(f"Port {a.port} is already in use: another API (or the old mock) is running. Stop it first.")
+    server.serve_forever()
 
 
 if __name__ == "__main__":

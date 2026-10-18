@@ -183,7 +183,12 @@ def main():
     ap.add_argument("--port", type=int, default=8501)
     args = ap.parse_args()
     print(f"Open http://localhost:{args.port}  (scores come from the API in extension/config.js)")
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    class ExclusiveServer(ThreadingHTTPServer):
+        allow_reuse_address = sys.platform != "win32"   # Windows would let two servers share the port silently
+    try:
+        server = ExclusiveServer(("127.0.0.1", args.port), Handler)
+    except OSError:
+        sys.exit(f"Port {args.port} is already in use: another lookup server is running. Stop it first.")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
