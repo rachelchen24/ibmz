@@ -40,7 +40,7 @@
       h("section", { class: `rr-summary rr-band-${v.color}` },
         h("h1", {}, v.title),
         h("p", { class: "rr-meta" }, [v.company, score.listing && score.listing.source].filter(Boolean).join(" · ")),
-        h("p", { class: "rr-headline" }, h("span", { class: "rr-num" }, `${v.pct}%`), ` scam risk · ${v.word}`),
+        h("p", { class: "rr-headline" }, h("span", { class: "rr-num" }, v.pctText), ` scam risk · ${v.word}`),
         bar(v),
         v.threshold != null
           ? h("p", { class: "rr-range" }, `Flagged at ${Math.round(v.threshold * 100)}% or more.`)

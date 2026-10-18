@@ -30,6 +30,10 @@ async function fetchScore(jobposting, source) {
   const cached = (await chrome.storage.session.get(key))[key];
   if (cached) return { key, score: cached };
   const score = await postJSON("/score", { jobposting, source });
+  if (typeof score.risk !== "number") {
+    // An old or different server on API_URL (e.g. the retired mock): show nothing rather than a fake 0%.
+    throw new Error(`the server at ${CFG.API_URL} isn't the RealRole scam-risk API (no "risk" in its reply). Run: py api/main.py`);
+  }
   await chrome.storage.session.set({ [key]: score });
   return { key, score };
 }

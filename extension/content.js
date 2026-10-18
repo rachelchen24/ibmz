@@ -73,7 +73,7 @@
     const mark = el("span", "rr-mark", "RealRole");
     const main = el("div", "rr-main");
     const text = el("div", "rr-text");
-    text.append(el("strong", "rr-num", `${v.pct}%`), ` scam risk · ${v.word}`);
+    text.append(el("strong", "rr-num", v.pctText), ` scam risk · ${v.word}`);
 
     const bar = el("div", "rr-bar");
     bar.setAttribute("aria-hidden", "true");

@@ -15,18 +15,20 @@
   // Everything the UI shows, from one /score response.
   function view(score) {
     const band = score.band || "low";
-    const pct = score.risk_pct != null ? score.risk_pct : Math.round((score.risk || 0) * 100);
+    const pct = Math.round((score.risk || 0) * 100);
+    const pctText = score.risk > 0 && score.risk < 0.005 ? "<1%" : `${pct}%`;   // genuine listings are often < 1%
     const listing = score.listing || {};
     return {
       band,
       color: self.REALROLE_CONFIG.BAND_COLORS[band] || "amber",
       pct,
+      pctText,
       risk: score.risk || 0,
       threshold: score.threshold,
       word: BAND_WORDS[band] || score.label,
       title: listing.title || "This listing",
       company: displayName(listing.company),
-      sentence: `${pct}% scam risk: ${(BAND_WORDS[band] || "").toLowerCase()}`,
+      sentence: `${pctText} scam risk: ${(BAND_WORDS[band] || "").toLowerCase()}`,
     };
   }
 
