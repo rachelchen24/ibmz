@@ -1,12 +1,12 @@
 <p align="center"><img src="extension/icons/logo.png" width="96" alt="RealRole logo" /></p>
 
-# RealRole: is this job listing a scam?
+# RealRole: is this job listing a ghost job?
 
 **[Team Name_IBM Z Datathon 2026 Project]**: IBM Z Datathon 2026, Theme 2: *AI Secured: Innovation Without Exposure*
 
-RealRole checks a job listing for the signs most often seen in scam postings, while you look at it. A browser extension puts a badge on the listing (for example **"74% scam risk · High"**), and **Why?** shows the reasons behind the score. IBM Granite then sums them up in one plain sentence.
+RealRole checks a job listing for the signs most often seen in ghost job postings, while you look at it. A browser extension puts a badge on the listing (for example **"74% ghost risk · High ghost risk"**), and **Why?** shows the reasons behind the score. IBM Granite then sums them up in one plain sentence.
 
-Job scams cost applicants money and personal data, and many look like normal listings. RealRole gives a second opinion before anyone shares a bank account number or an ID. The score is a probability with reasons, never a verdict: it says "shows signs often seen in scam postings", not "this is a scam".
+Ghost jobs cost applicants time, money and personal data, and many look like normal listings. RealRole gives a second opinion before anyone applies or shares a bank account number or an ID. The score is a probability with reasons, never a verdict: it says "shows signs often seen in ghost postings", not "this is a ghost job".
 
 ## How it works
 
@@ -26,7 +26,7 @@ The full diagram, including which IBM lab each part uses, is in [`docs/architect
 
 | Part | What it does |
 |---|---|
-| **Model** (`ml/`) | LightGBM on the text and details of 17,880 labeled listings (EMSCAD). It's calibrated, so a 70% risk means about 70%. |
+| **Model** (`ml/`) | LightGBM on the text and details of 17,880 labeled listings (EMSCAD, which labels the bad ones "fraudulent"). It's calibrated, so a 70% risk means about 70%. |
 | **Explanations** (`ml/explain.py`) | Each score is broken down into the fields that pushed it up or down, quoting words from the listing. |
 | **IBM Granite** (`ml/granite.py`) | Writes one sentence from those reasons only. Locally it's `granite-3.1-1b-a400m-instruct`; on LinuxONE it runs through watsonx.ai. A wording check blocks accusations and falls back to a template. |
 | **API** (`api/`) | `POST /score` (~100 ms), `POST /summary` (Granite), `GET /health`, `GET /demo`. Standard library only. |
@@ -35,13 +35,13 @@ The full diagram, including which IBM lab each part uses, is in [`docs/architect
 
 ## Results
 
-From **one evaluation on a held-out test set**: 2,514 listings, 122 scams, from companies the model never saw. The split is by company, because no company in the data has both real and fake listings. A random split would let the model memorize companies; in our check, that doubled a naive model's score.
+From **one evaluation on a held-out test set**: 2,514 listings, 122 ghost listings, from companies the model never saw. The split is by company, because no company in the data has both real and fake listings. A random split would let the model memorize companies; in our check, that doubled a naive model's score.
 
 | | |
 |---|---|
 | PR-AUC (main metric; chance = 0.049) | **0.739** (95% CI 0.57–0.89) |
-| Scams caught at the operating threshold | **68%** |
-| Flags that are real scams | **66%**, i.e. 2 in 3 |
+| Ghost listings caught at the operating threshold | **68%** |
+| Flags that are real ghost listings | **66%**, i.e. 2 in 3 |
 | Genuine listings wrongly flagged | 1.8% |
 | Calibration (Brier; base rate = 0.046) | 0.023 |
 | Real listings from public companies scored live | 200 checked: median risk 0.6%, none flagged |
@@ -64,7 +64,7 @@ Requires Python 3.10+ and Chrome.
 
 ```
 pip install -r ml/requirements.txt
-python -m ml.run train --model lgbm      # ~40 min; saves ml/models/lgbm_v1.joblib (not in git)
+python -m ml.run train --model lgbm      # ~40 min; saves ml/models/lgbm_v1.joblib (already in git; retrain only to change it)
 python api/main.py                       # API on http://localhost:8000  (add --no-granite to skip Granite)
 python lookup/app.py                     # lookup site on http://localhost:8501
 ```
@@ -87,8 +87,8 @@ The first Granite summary downloads the model (~2.6 GB) and then takes ~20 s per
 
 ## Limitations
 
-- **Old training data:** listings from 2012–2014, mostly US/UK and in English, so newer scam styles may not be recognized.
-- **Polished scams slip through:** scams with a company logo and detailed text are mostly missed.
+- **Old training data:** listings from 2012–2014, mostly US/UK and in English, so newer ghost job styles may not be recognized.
+- **Polished ghost jobs slip through:** ghost listings with a company logo and detailed text are mostly missed.
 - **Some genuine listings are flagged more often:** remote, part-time and no-logo listings (8–11% wrongly flagged vs 1.8% overall).
 - **Live pages show less than the training data did.** Fields a page doesn't provide (company description, logo, screening questions) are left out of the score rather than guessed.
 - **The small local Granite model** passes the wording check about 6 times in 10; otherwise a template sentence is shown.
