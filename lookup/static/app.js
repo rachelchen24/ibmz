@@ -1,6 +1,7 @@
 // RealRole lookup page: link -> listing (our /resolve) or pasted text -> ghost-risk score (the API) -> report.js.
 // The Granite summary is requested after the report shows and swapped in when it arrives.
-const API = self.REALROLE_CONFIG.API_URL;
+// Locally the API is a separate server (config.js); deployed (Vercel), it's served from this same site.
+const API = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? self.REALROLE_CONFIG.API_URL : "";
 const { h } = RealRoleReport;
 
 const $ = (id) => document.getElementById(id);

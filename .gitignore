@@ -1,5 +1,7 @@
 # Trained models are regenerated with `python -m ml.run train`; the reports in ml/reports/ are committed.
-ml/models/
+# The serving model (lgbm_v1.joblib, 11 MB) is committed too, so deployments (Vercel) can load it.
+ml/models/*
+!ml/models/lgbm_v1.joblib
 ml/artifacts/
 __pycache__/
 *.pyc

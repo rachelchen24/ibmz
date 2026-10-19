@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "builds": [
+    {
+      "src": "vercel_app.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": ["api/*.py", "lookup/app.py", "ml/*.py", "ml/models/lgbm_v1.joblib", "ml/reports/metrics_lgbm_test.json"],
+        "excludeFiles": "{**/tests/**,**/testing/**,**/*.pyi,**/__pycache__/**,**/sklearn/datasets/data/**,**/sklearn/datasets/descr/**,**/sklearn/datasets/images/**}"
+      }
+    },
+    { "src": "lookup/static/**", "use": "@vercel/static" },
+    { "src": "extension/{config,format,report}.js", "use": "@vercel/static" },
+    { "src": "extension/report.css", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/", "dest": "/lookup/static/index.html" },
+    { "src": "/static/(.*)", "dest": "/lookup/static/$1" },
+    { "src": "/shared/(config\\.js|format\\.js|report\\.js|report\\.css)", "dest": "/extension/$1" },
+    { "src": "/(score|summary|health|resolve|demo|demo/posting|demo/jobposting)", "dest": "/vercel_app.py?route=$1" }
+  ]
+}

@@ -1,0 +1,9 @@
+# Deployment (Vercel) dependencies for vercel_app.py: scoring only, no Granite (torch is too large for a function).
+# Pinned to the versions ml/models/lgbm_v1.joblib was saved with, so it unpickles the same way.
+# For training and local Granite, use ml/requirements.txt instead.
+pandas==2.3.3
+numpy==2.4.4
+scikit-learn==1.8.0
+scipy==1.16.3
+lightgbm==4.7.0
+joblib==1.5.3
